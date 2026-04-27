@@ -201,7 +201,7 @@ export async function wppNovaAssinaturaBarbearia(
 ): Promise<void> {
   const periodLabel = period === 'MENSAL' ? 'Mensal' : period === 'ANUAL' ? 'Anual' : period;
   await sendTemplate(phone, 'aviso_promocao', [
-    { name: 'cliente_nome',    value: 'Barbearia Novo Jeito' },
+    { name: 'cliente_nome',    value: 'Barbearia LOPHER' },
     { name: 'descricao_promo', value: `Novo cliente VIP: ${clientName} — ${planName} (${periodLabel})` },
     { name: 'validade',        value: `R$ ${price.toFixed(2)}` },
     { name: 'link',            value: '' },
@@ -266,7 +266,7 @@ export async function wppAssinaturaVencendo(
   await sendTemplate(phone, template, [
     { name: 'cliente_nome',    value: clientName },
     { name: 'data_vencimento', value: formatDate(endDate) },
-    { name: 'link_renovacao',  value: 'https://novojeitobarbearia.pages.dev' },
+    { name: 'link_renovacao',  value: 'https://lopher.pages.dev/' },
   ]);
 }
 
@@ -277,6 +277,6 @@ export async function wppPromoDiaFraco(
     { name: 'cliente_nome',    value: clientName },
     { name: 'descricao_promo', value: descricao },
     { name: 'validade',        value: validade },
-    { name: 'link',            value: 'https://novojeitobarbearia.pages.dev' },
+    { name: 'link',            value: 'https://lopher.pages.dev/' },
   ]);
 }
