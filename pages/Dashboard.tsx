@@ -133,7 +133,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className={`text-3xl md:text-4xl font-black font-display tracking-tight flex items-center gap-3 ${isDark ? 'text-white' : 'text-zinc-900'}`}>
-            Gestão <span className="text-[#C58A4A] italic">LOPHER</span>
+            Gestão <span className="text-white italic">LOPHER</span>
           </h1>
           <p className={`mt-1 text-sm font-medium opacity-60 ${subTextClass}`}>Controle completo da sua unidade.</p>
         </div>
@@ -242,7 +242,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                 onClick={() => onNavigate('appointments')}
                 className={`flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all group border border-transparent hover:border-[#C58A4A]/20 ${isDark ? 'hover:bg-white/5' : 'hover:bg-zinc-50'}`}
               >
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm transition-all group-hover:bg-[#C58A4A] group-hover:text-black ${isDark ? 'bg-zinc-900 text-[#C58A4A]' : 'bg-zinc-100 text-[#C58A4A]'}`}>
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm transition-all group-hover:bg-[#C58A4A] group-hover:text-black ${isDark ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-white'}`}>
                   {app.clientName.charAt(0)}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -270,7 +270,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         {/* Ranking de Serviços */}
         <div className={`${cardClass} rounded-[2rem] p-6 md:p-8`}>
           <div className="flex items-center gap-3 mb-6">
-            <Trophy size={18} className="text-[#C58A4A]" />
+            <Trophy size={18} className="text-white" />
             <h3 className={`text-base font-bold italic ${isDark ? 'text-white' : 'text-zinc-900'}`}>Serviços Mais Realizados</h3>
           </div>
           {serviceRanking.length === 0 ? (
@@ -279,7 +279,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
             <div className="space-y-3">
               {serviceRanking.map((svc, i) => (
                 <div key={svc.name} className="flex items-center gap-4">
-                  <span className={`text-[10px] font-black w-5 ${i === 0 ? 'text-[#C58A4A]' : subTextClass}`}>#{i + 1}</span>
+                  <span className={`text-[10px] font-black w-5 ${i === 0 ? 'text-white' : subTextClass}`}>#{i + 1}</span>
                   <div className="flex-1">
                     <div className="flex justify-between mb-1">
                       <span className={`text-xs font-bold ${isDark ? 'text-white' : 'text-zinc-800'}`}>{svc.name}</span>
@@ -301,7 +301,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         {/* Ranking de Profissionais */}
         <div className={`${cardClass} rounded-[2rem] p-6 md:p-8`}>
           <div className="flex items-center gap-3 mb-6">
-            <Zap size={18} className="text-[#C58A4A]" />
+            <Zap size={18} className="text-white" />
             <h3 className={`text-base font-bold italic ${isDark ? 'text-white' : 'text-zinc-900'}`}>Profissionais por Receita</h3>
           </div>
           {professionalRanking.length === 0 ? (
@@ -310,7 +310,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
             <div className="space-y-3">
               {professionalRanking.map((prof, i) => (
                 <div key={prof.id} className="flex items-center gap-4">
-                  <span className={`text-[10px] font-black w-5 ${i === 0 ? 'text-[#C58A4A]' : subTextClass}`}>#{i + 1}</span>
+                  <span className={`text-[10px] font-black w-5 ${i === 0 ? 'text-white' : subTextClass}`}>#{i + 1}</span>
                   <img src={prof.avatar} className="w-7 h-7 rounded-xl object-cover" alt={prof.name} />
                   <div className="flex-1">
                     <div className="flex justify-between mb-1">
