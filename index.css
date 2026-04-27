@@ -10,8 +10,7 @@
 }
 
 :root {
-  --primario-ouro: #8B1F1C;
-  --primario-azul: #1E4A6E;
+  --primario-ouro: #C58A4A;
   --fundo: #050505;
   --texto: #f9fafb;
   --texto-secundario: #9ca3af;
@@ -43,13 +42,12 @@ body {
   font-family: 'Fraunces', Georgia, serif;
 }
 
-/* Gradiente principal — vermelho e azul da logo */
 .gradiente-ouro {
-  background: linear-gradient(135deg, #9B2420 0%, #8B1F1C 50%, #1E4A6E 100%);
+  background: linear-gradient(135deg, #C58A4A 0%, #C58A4A 50%, #C58A4A 100%);
 }
 
 .gradiente-texto-ouro {
-  background: linear-gradient(135deg, #9B2420 0%, #8B1F1C 50%, #1E4A6E 100%);
+  background: linear-gradient(135deg, #C58A4A 0%, #C58A4A 50%, #C58A4A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
