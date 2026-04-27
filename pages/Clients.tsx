@@ -137,15 +137,15 @@ const Clients: React.FC = () => {
           placeholder="Pesquisar Clientes (Nome ou Celular)..." 
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
-          className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-5 pl-16 pr-8 text-sm focus:border-[#8B1F1C]/50 outline-none transition-all placeholder:text-zinc-700 font-bold text-white"
+          className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-5 pl-16 pr-8 text-sm focus:border-[#C58A4A]/50 outline-none transition-all placeholder:text-zinc-700 font-bold text-white"
         />
       </div>
 
       {/* ── Painel de Indicações Pendentes ── */}
       {(referrals || []).filter((r: any) => r.status === 'PENDENTE').length > 0 && (
-        <div className={`rounded-2xl p-5 border ${theme === 'light' ? 'bg-amber-50 border-amber-200' : 'bg-[#8B1F1C]/10 border-[#8B1F1C]/25'}`}>
+        <div className={`rounded-2xl p-5 border ${theme === 'light' ? 'bg-amber-50 border-amber-200' : 'bg-[#C58A4A]/10 border-[#C58A4A]/25'}`}>
           <div className="flex items-center gap-3 mb-4">
-            <Users size={18} className="text-[#8B1F1C]"/>
+            <Users size={18} className="text-[#C58A4A]"/>
             <h3 className={`font-black text-sm uppercase tracking-widest ${theme === 'light' ? 'text-zinc-900' : 'text-white'}`}>
               Indicações Pendentes de Validação
             </h3>
@@ -153,7 +153,7 @@ const Clients: React.FC = () => {
               {(referrals || []).filter((r: any) => r.status === 'PENDENTE').length}
             </span>
           </div>
-          <p className={`text-[10px] mb-3 ${theme === 'light' ? 'text-amber-700' : 'text-[#8B1F1C]/80'}`}>
+          <p className={`text-[10px] mb-3 ${theme === 'light' ? 'text-amber-700' : 'text-[#C58A4A]/80'}`}>
             Valide quando o indicado concluir o primeiro corte. O indicador receberá R$ {' '}
             automaticamente na carteira.
           </p>
@@ -178,7 +178,7 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
                   </button>
                   <button
                     onClick={() => { if (window.confirm('Cancelar esta indicação?')) cancelReferral(r.id); }}
-                    className="p-2 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-xl transition-all"
+                    className="p-2 bg-red-500/10 text-purple-400 hover:bg-red-500/20 rounded-xl transition-all"
                   >
                     <X size={12}/>
                   </button>
@@ -205,11 +205,11 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
                 <tr key={client.id} className="hover:bg-white/[0.02] transition-colors group cursor-pointer" onClick={() => setSelectedClient(client)}>
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-[#8B1F1C]/20 flex items-center justify-center font-black text-[#8B1F1C] text-sm italic group-hover:bg-[#8B1F1C] group-hover:text-black transition-all">
+                      <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-[#C58A4A]/20 flex items-center justify-center font-black text-[#C58A4A] text-sm italic group-hover:bg-[#C58A4A] group-hover:text-black transition-all">
                         {(client.name || "?").charAt(0)}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-white group-hover:text-[#8B1F1C] transition-all">{client.name}</p>
+                        <p className="text-sm font-bold text-white group-hover:text-[#C58A4A] transition-all">{client.name}</p>
                         <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest mt-0.5">Desde: {client.createdAt ? new Date(client.createdAt).toLocaleDateString('pt-BR') : '—'}</p>
                       </div>
                     </div>
@@ -247,10 +247,10 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
       {/* Histórico e Agendamentos Detalhados do Cliente */}
       {selectedClient && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl animate-in zoom-in-95">
-          <div className="cartao-vidro w-full max-w-2xl rounded-[3rem] p-8 md:p-12 space-y-8 border-[#8B1F1C]/10 relative shadow-2xl max-h-[85vh] overflow-hidden flex flex-col">
+          <div className="cartao-vidro w-full max-w-2xl rounded-[3rem] p-8 md:p-12 space-y-8 border-[#C58A4A]/10 relative shadow-2xl max-h-[85vh] overflow-hidden flex flex-col">
             <div className="flex justify-between items-start">
                <div className="flex items-center gap-5">
-                  <div className="w-16 h-16 rounded-[1.5rem] bg-[#8B1F1C] text-black flex items-center justify-center text-3xl font-black italic">{(selectedClient.name || "?").charAt(0)}</div>
+                  <div className="w-16 h-16 rounded-[1.5rem] bg-[#C58A4A] text-black flex items-center justify-center text-3xl font-black italic">{(selectedClient.name || "?").charAt(0)}</div>
                   <div>
                     <h2 className="text-2xl font-black font-display italic text-white tracking-tight">{selectedClient.name}</h2>
                     <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest">{selectedClient.phone}</p>
@@ -263,7 +263,7 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
                <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
                      <p className="text-[8px] text-zinc-500 font-black uppercase tracking-widest mb-1">Total Investido</p>
-                     <p className="text-xl font-black text-[#8B1F1C] italic font-display">R$ {(selectedClient.totalSpent || 0).toFixed(2)}</p>
+                     <p className="text-xl font-black text-[#C58A4A] italic font-display">R$ {(selectedClient.totalSpent || 0).toFixed(2)}</p>
                   </div>
                   <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
                      <p className="text-[8px] text-zinc-500 font-black uppercase tracking-widest mb-1">Serviços Concluídos</p>
@@ -273,11 +273,11 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
 
                {/* Futuros Agendamentos */}
                <div className="space-y-4">
-                  <h3 className="text-[10px] font-black text-[#8B1F1C] uppercase tracking-[0.2em] mb-4 flex items-center gap-2"><CheckCircle2 size={14} /> Próximos Serviços</h3>
+                  <h3 className="text-[10px] font-black text-[#C58A4A] uppercase tracking-[0.2em] mb-4 flex items-center gap-2"><CheckCircle2 size={14} /> Próximos Serviços</h3>
                   {clientAppointments.future.map(app => (
-                    <div key={app.id} className="bg-white/5 border border-[#8B1F1C]/20 p-4 rounded-2xl flex items-center justify-between group hover:bg-[#8B1F1C]/5 transition-all">
+                    <div key={app.id} className="bg-white/5 border border-[#C58A4A]/20 p-4 rounded-2xl flex items-center justify-between group hover:bg-[#C58A4A]/5 transition-all">
                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center text-[#8B1F1C]"><Calendar size={18}/></div>
+                          <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center text-[#C58A4A]"><Calendar size={18}/></div>
                           <div>
                              <p className="text-sm font-bold text-white">{app.serviceName}</p>
                              <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">{new Date(app.date + 'T12:00:00').toLocaleDateString('pt-BR')} • {app.startTime}</p>
@@ -317,7 +317,7 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
                <div className="space-y-4 mt-2">
                   <div className="flex items-center justify-between">
                     <h3 className={`text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 ${theme === 'light' ? 'text-zinc-700' : 'text-zinc-400'}`}>
-                      <Camera size={14} className="text-[#8B1F1C]"/> Fotos dos Cortes
+                      <Camera size={14} className="text-[#C58A4A]"/> Fotos dos Cortes
                     </h3>
                     <label className={`flex items-center gap-1.5 px-3 py-2 rounded-xl cursor-pointer font-black text-[9px] uppercase tracking-widest transition-all ${photoUploading ? 'opacity-60 pointer-events-none bg-zinc-800 text-zinc-500' : 'gradiente-ouro text-black hover:scale-105'}`}>
                       {photoUploading ? <><span className="animate-spin inline-block">⟳</span> Salvando</> : <><Camera size={11}/> Adicionar</>}
@@ -362,7 +362,7 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => selectedClient && handleDeleteClientPhoto((selectedClient.photos as string[]).indexOf(photoLightbox))}
-                className="flex-1 py-3 rounded-2xl bg-red-500/20 border border-red-500/30 text-red-400 font-black text-[10px] uppercase tracking-widest hover:bg-red-500/30 transition-all"
+                className="flex-1 py-3 rounded-2xl bg-red-500/20 border border-red-500/30 text-purple-400 font-black text-[10px] uppercase tracking-widest hover:bg-red-500/30 transition-all"
               >
                 🗑 Excluir Foto
               </button>
@@ -379,12 +379,12 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
 
       {showAddModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl animate-in zoom-in-95 duration-300">
-          <div className={`w-full max-w-lg rounded-[2.5rem] shadow-2xl flex flex-col max-h-[92vh] ${theme === 'light' ? 'bg-white border border-zinc-200' : 'cartao-vidro border-[#8B1F1C]/10'}`}>
+          <div className={`w-full max-w-lg rounded-[2.5rem] shadow-2xl flex flex-col max-h-[92vh] ${theme === 'light' ? 'bg-white border border-zinc-200' : 'cartao-vidro border-[#C58A4A]/10'}`}>
 
             {/* Header */}
             <div className="px-8 pt-8 pb-4 flex items-center justify-between shrink-0">
               <div>
-                <p className="text-[9px] font-black uppercase tracking-widest text-[#8B1F1C] mb-1">{editingId ? 'Editar Cadastro' : 'Novo Cliente'}</p>
+                <p className="text-[9px] font-black uppercase tracking-widest text-[#C58A4A] mb-1">{editingId ? 'Editar Cadastro' : 'Novo Cliente'}</p>
                 <h2 className={`text-2xl font-black font-display italic ${theme === 'light' ? 'text-zinc-900' : 'text-white'}`}>
                   {formData.name || 'Ficha Completa'}
                 </h2>
@@ -400,12 +400,12 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
               {/* Identificação */}
               <div className="space-y-2">
                 <p className={`text-[9px] font-black uppercase tracking-widest ${theme === 'light' ? 'text-zinc-400' : 'text-zinc-600'}`}>Identificação</p>
-                <input type="text" placeholder="Nome completo *" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}/>
+                <input type="text" placeholder="Nome completo *" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}/>
                 <div className="grid grid-cols-2 gap-2">
-                  <input type="tel" placeholder="WhatsApp *" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}/>
-                  <input type="text" placeholder="CPF / CNPJ" value={formData.cpfCnpj} onChange={e => setFormData({...formData, cpfCnpj: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}/>
+                  <input type="tel" placeholder="WhatsApp *" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}/>
+                  <input type="text" placeholder="CPF / CNPJ" value={formData.cpfCnpj} onChange={e => setFormData({...formData, cpfCnpj: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}/>
                 </div>
-                <input type="email" placeholder="E-mail" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}/>
+                <input type="email" placeholder="E-mail" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}/>
               </div>
 
               {/* Dados pessoais */}
@@ -414,11 +414,11 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <p className={`text-[8px] font-black uppercase mb-1 ml-1 ${theme === 'light' ? 'text-zinc-400' : 'text-zinc-600'}`}>Data de Nascimento</p>
-                    <input type="date" value={formData.birthdate} onChange={e => setFormData({...formData, birthdate: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}/>
+                    <input type="date" value={formData.birthdate} onChange={e => setFormData({...formData, birthdate: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}/>
                   </div>
                   <div>
                     <p className={`text-[8px] font-black uppercase mb-1 ml-1 ${theme === 'light' ? 'text-zinc-400' : 'text-zinc-600'}`}>Gênero</p>
-                    <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}>
+                    <select value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}>
                       <option value="">Selecione</option>
                       <option value="M">Masculino</option>
                       <option value="F">Feminino</option>
@@ -426,24 +426,24 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
                     </select>
                   </div>
                 </div>
-                <input type="text" placeholder="Profissão" value={formData.profession} onChange={e => setFormData({...formData, profession: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}/>
+                <input type="text" placeholder="Profissão" value={formData.profession} onChange={e => setFormData({...formData, profession: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}/>
               </div>
 
               {/* Endereço */}
               <div className="space-y-2">
                 <p className={`text-[9px] font-black uppercase tracking-widest ${theme === 'light' ? 'text-zinc-400' : 'text-zinc-600'}`}>Endereço</p>
-                <input type="text" placeholder="Logradouro e número" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}/>
+                <input type="text" placeholder="Logradouro e número" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}/>
                 <div className="grid grid-cols-2 gap-2">
-                  <input type="text" placeholder="Bairro" value={formData.neighborhood} onChange={e => setFormData({...formData, neighborhood: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}/>
-                  <input type="text" placeholder="Cidade" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}/>
+                  <input type="text" placeholder="Bairro" value={formData.neighborhood} onChange={e => setFormData({...formData, neighborhood: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}/>
+                  <input type="text" placeholder="Cidade" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}/>
                 </div>
               </div>
 
               {/* Social & Origem */}
               <div className="space-y-2">
                 <p className={`text-[9px] font-black uppercase tracking-widest ${theme === 'light' ? 'text-zinc-400' : 'text-zinc-600'}`}>Social & Origem</p>
-                <input type="text" placeholder="@instagram (sem @)" value={formData.instagram} onChange={e => setFormData({...formData, instagram: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}/>
-                <select value={formData.howFound} onChange={e => setFormData({...formData, howFound: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}>
+                <input type="text" placeholder="@instagram (sem @)" value={formData.instagram} onChange={e => setFormData({...formData, instagram: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}/>
+                <select value={formData.howFound} onChange={e => setFormData({...formData, howFound: e.target.value})} className={`w-full border p-4 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}>
                   <option value="">Como nos conheceu?</option>
                   <option value="Indicação">Indicação de amigo</option>
                   <option value="Instagram">Instagram</option>
@@ -464,7 +464,7 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
                     placeholder="Senha (opcional — cliente define no 1º acesso)"
                     value={formData.password}
                     onChange={e => setFormData({...formData, password: e.target.value})}
-                    className={`w-full border p-4 pr-12 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]/50'}`}
+                    className={`w-full border p-4 pr-12 rounded-2xl outline-none text-sm font-bold transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]/50'}`}
                   />
                   <button
                     type="button"
