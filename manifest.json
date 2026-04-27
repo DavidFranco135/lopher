@@ -1,11 +1,11 @@
 {
-  "name": "Barbearia LOPHER",
-  "short_name": "LOPHER",
-  "description": "Sistema Premium de agendamento LOPHER",
+  "name": "Barbearia Lopher",
+  "short_name": "Lopher",
+  "description": "Sistema Premium de Gestão de Barbearia",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#050505",
-  "theme_color": "#C58A4A",
+  "theme_color": "#8B1F1C",
   "orientation": "portrait-primary",
   "icons": [
     {
