@@ -7,7 +7,7 @@ import {
 import { useBarberStore } from '../store';
 
 // ─────────────────────────────────────────────────────────────
-// Automações de Marketing — Barbearia Novo Jeito
+// Automações de Marketing — Barbearia LOPHER
 // 7 módulos: horários vagos, promoção dias fracos, aniversário,
 // indicação premiada, manutenção do corte, ranking barbeiros,
 // cashback automático
@@ -27,7 +27,7 @@ const Automacoes: React.FC = () => {
   // ── Estados de configuração de cada módulo ─────────────────
   const [cfg1, setCfg1] = useState({ ativo: false, diasSemana: [0,1,2,3,4,5,6], antecedencia: 30 });
   const [cfg2, setCfg2] = useState({ ativo: false, diasFracos: ['terça','quarta'], mensagem: '🔥 Promo meio de semana! Corte + barba hoje por R$45 até 18h. Agende agora!' });
-  const [cfg3, setCfg3] = useState({ ativo: false, desconto: 10, mensagem: '🎉 Feliz Aniversário, {{nome}}! Você tem {{desconto}}% de desconto essa semana na Barbearia Novo Jeito. Agende agora!' });
+  const [cfg3, setCfg3] = useState({ ativo: false, desconto: 10, mensagem: '🎉 Feliz Aniversário, {{nome}}! Você tem {{desconto}}% de desconto essa semana na Barbearia LOPHER. Agende agora!' });
   const [cfg4, setCfg4] = useState({ ativo: false, credito: 10, mensagem: '🎁 Indique um amigo e ganhe R${{credito}} de crédito no próximo corte! Seu código: {{codigo}}' });
   const [cfg5, setCfg5] = useState({ ativo: false, dias: 18, mensagem: '✂️ {{nome}}, já faz {{dias}} dias desde seu último corte. Que tal renovar o visual? Agende agora!' });
   const [cfg7, setCfg7] = useState({ ativo: false, percentual: 5 });
@@ -288,7 +288,7 @@ const Automacoes: React.FC = () => {
             Todo dia às 08:00 o sistema verifica aniversariantes e envia mensagem personalizada com desconto. O campo data de nascimento pode ser preenchido na aba Membros.
           </p>
           <div className={`p-4 rounded-2xl border text-sm italic ${isDark ? 'border-white/10 bg-white/3 text-zinc-300' : 'border-zinc-200 bg-zinc-50 text-zinc-600'}`}>
-            💬 "🎉 Feliz Aniversário, João! A Barbearia Novo Jeito te dá 10% de desconto no corte essa semana."
+            💬 "🎉 Feliz Aniversário, João! A Barbearia LOPHER te dá 10% de desconto no corte essa semana."
           </div>
           <div className="flex items-center gap-3">
             <label className={`text-[10px] font-black uppercase tracking-widest ${sub}`}>Desconto (%)</label>
