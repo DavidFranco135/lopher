@@ -179,7 +179,7 @@ const Subscriptions: React.FC = () => {
     ATIVA:    { color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20', icon: Check },
     VENCIDA:  { color: 'text-red-500 bg-red-500/10 border-red-500/20',            icon: AlertCircle },
     CANCELADA:{ color: 'text-zinc-500 bg-white/5 border-white/10',                icon: X },
-    PAUSADA:  { color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',      icon: Clock },
+    PAUSADA:  { color: 'text-white bg-amber-500/10 border-amber-500/20',      icon: Clock },
   };
 
 
@@ -283,9 +283,9 @@ const Subscriptions: React.FC = () => {
         <div className={`rounded-2xl p-5 border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4
           ${isDark ? 'border-amber-500/20 bg-amber-500/5' : 'border-amber-400/30 bg-amber-50'}`}>
           <div className="flex items-center gap-3">
-            <Bell size={20} className="text-amber-500 flex-shrink-0" />
+            <Bell size={20} className="text-white flex-shrink-0" />
             <div>
-              <p className="text-amber-500 font-black text-sm">
+              <p className="text-white font-black text-sm">
                 {aVencerCount} assinatura{aVencerCount !== 1 ? 's' : ''} vence{aVencerCount === 1 ? '' : 'm'} em até 5 dias
               </p>
               <p className={`text-[10px] font-bold mt-0.5 ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
@@ -346,14 +346,14 @@ const Subscriptions: React.FC = () => {
                     <button onClick={() => toggleSelect(sub.id)}
                       className="flex-shrink-0 transition-transform hover:scale-110">
                       {isSelected
-                        ? <CheckSquare size={22} className="text-amber-500" />
+                        ? <CheckSquare size={22} className="text-white" />
                         : <Square size={22} className={isDark ? 'text-zinc-600' : 'text-zinc-400'} />}
                     </button>
                   )}
 
                   {/* Avatar + info */}
                   <div className="flex items-center gap-5 flex-1">
-                    <div className="w-14 h-14 rounded-2xl bg-[#C58A4A]/10 flex items-center justify-center text-2xl font-black text-[#C58A4A] flex-shrink-0">
+                    <div className="w-14 h-14 rounded-2xl bg-[#C58A4A]/10 flex items-center justify-center text-2xl font-black text-white flex-shrink-0">
                       {sub.clientName?.charAt(0) || '?'}
                     </div>
                     <div>
@@ -364,12 +364,12 @@ const Subscriptions: React.FC = () => {
                           <StatusIcon size={10} /> {sub.computedStatus}
                         </span>
                         {sub.computedStatus === 'ATIVA' && sub.daysLeft > 0 && (
-                          <span className={`text-[9px] font-black ${sub.daysLeft <= 5 ? 'text-amber-500' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                          <span className={`text-[9px] font-black ${sub.daysLeft <= 5 ? 'text-white' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
                             {sub.daysLeft <= 5 ? `⚠️ Vence em ${sub.daysLeft}d` : `${sub.daysLeft}d restantes`}
                           </span>
                         )}
                         {sub.computedStatus === 'ATIVA' && sub.daysLeft <= 0 && (
-                          <span className="text-[9px] font-black text-amber-500">Vence hoje</span>
+                          <span className="text-[9px] font-black text-white">Vence hoje</span>
                         )}
                       </div>
                     </div>
@@ -389,7 +389,7 @@ const Subscriptions: React.FC = () => {
                   </div>
                   <div className="text-center">
                     <p className="text-[8px] font-black uppercase text-zinc-500 mb-1">Valor</p>
-                    <p className="font-black text-xl text-[#C58A4A]">R$ {sub.price.toFixed(2)}</p>
+                    <p className="font-black text-xl text-white">R$ {sub.price.toFixed(2)}</p>
                 {(() => {
                   const plan = (config as any).vipPlans?.find((p: any) => p.id === sub.planId);
                   if (!plan) return null;
@@ -408,7 +408,7 @@ const Subscriptions: React.FC = () => {
                             <div key={member.label}>
                               <div className="flex justify-between text-[9px] font-black uppercase mb-1">
                                 <span className={isDark ? 'text-zinc-400' : 'text-zinc-600'}>{member.label}</span>
-                                <span className={used >= max ? 'text-red-400' : 'text-[#C58A4A]'}>{used}/{max}</span>
+                                <span className={used >= max ? 'text-red-400' : 'text-white'}>{used}/{max}</span>
                               </div>
                               <div className={`w-full h-1.5 rounded-full ${isDark ? 'bg-white/10' : 'bg-zinc-200'}`}>
                                 <div className={`h-full rounded-full transition-all ${used >= max ? 'bg-red-500' : 'bg-[#C58A4A]'}`} style={{width: `${pct}%`}}/>
@@ -430,7 +430,7 @@ const Subscriptions: React.FC = () => {
                     <div className="mt-2">
                       <div className="flex justify-between text-[9px] font-black uppercase mb-1">
                         <span className={isDark ? 'text-zinc-500' : 'text-zinc-400'}>Cortes usados</span>
-                        <span className={used >= max ? 'text-red-400' : 'text-[#C58A4A]'}>{used}/{max}</span>
+                        <span className={used >= max ? 'text-red-400' : 'text-white'}>{used}/{max}</span>
                       </div>
                       <div className={`w-full h-1.5 rounded-full ${isDark ? 'bg-white/10' : 'bg-zinc-200'}`}>
                         <div className={`h-full rounded-full transition-all ${used >= max ? 'bg-red-500' : 'bg-[#C58A4A]'}`} style={{width: `${pct}%`}}/>
@@ -461,7 +461,7 @@ const Subscriptions: React.FC = () => {
                     </button>
                     <button onClick={() => openEditSub(sub)}
                       title="Editar assinatura"
-                      className={`p-3 rounded-xl border transition-all ${isDark ? 'bg-blue-500/10 border-[#3b0f7a]/20 text-white hover:bg-blue-500/20' : 'bg-blue-50 border-[#3b0f7a]/40 text-white hover:bg-blue-100'}`}>
+                      className={`p-3 rounded-xl border transition-all ${isDark ? 'bg-blue-500/10 border-blue-500/20 text-white hover:bg-blue-500/20' : 'bg-blue-50 border-blue-200 text-white hover:bg-blue-100'}`}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     </button>
                     <button onClick={() => handleDeleteSub(sub.id)}
@@ -523,7 +523,7 @@ const Subscriptions: React.FC = () => {
                   ))}
                 </select>
                 {plans.length === 0 && (
-                  <p className="text-[10px] text-amber-500 font-bold">⚠️ Nenhum plano VIP ativo. Crie um em Configurações.</p>
+                  <p className="text-[10px] text-white font-bold">⚠️ Nenhum plano VIP ativo. Crie um em Configurações.</p>
                 )}
                 {/* Preview do plano selecionado */}
                 {formData.planId && (() => {
@@ -532,7 +532,7 @@ const Subscriptions: React.FC = () => {
                   const end = calcEndDate(plan);
                   return (
                     <div className={`p-3 rounded-xl border mt-2 ${isDark ? 'border-[#C58A4A]/20 bg-[#C58A4A]/5' : 'border-amber-300 bg-amber-50'}`}>
-                      <p className="text-[9px] font-black uppercase text-[#C58A4A]">
+                      <p className="text-[9px] font-black uppercase text-white">
                         Vencimento: {end.toLocaleDateString('pt-BR')} · {periodLabel(plan)}
                       </p>
                     </div>
