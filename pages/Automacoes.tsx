@@ -156,7 +156,7 @@ const Automacoes: React.FC = () => {
           <div className="text-left">
             <div className="flex items-center gap-2">
               <p className={`font-black text-sm ${txt}`}>{title}</p>
-              {badge && <span className="text-[9px] font-black px-2 py-0.5 bg-[#C58A4A]/20 text-[#C58A4A] rounded-lg uppercase">{badge}</span>}
+              {badge && <span className="text-[9px] font-black px-2 py-0.5 bg-[#8B1F1C]/20 text-[#8B1F1C] rounded-lg uppercase">{badge}</span>}
             </div>
             <p className={`text-[10px] font-bold uppercase tracking-widest ${sub}`}>{subtitle}</p>
           </div>
@@ -397,7 +397,7 @@ const Automacoes: React.FC = () => {
                   <div className="flex items-center gap-3 mt-1">
                     <div className={`h-1.5 rounded-full flex-1 ${isDark ? 'bg-white/10' : 'bg-zinc-200'}`}>
                       <div
-                        className="h-full bg-gradient-to-r from-[#C58A4A] to-[#e6a85c] rounded-full transition-all"
+                        className="h-full bg-gradient-to-r from-[#8B1F1C] to-[#e6a85c] rounded-full transition-all"
                         style={{ width: `${ranking[0]?.cortes > 0 ? (prof.cortes / ranking[0].cortes) * 100 : 0}%` }}
                       />
                     </div>
@@ -453,10 +453,10 @@ const Automacoes: React.FC = () => {
         </ModCard>
 
         {/* ── Nota sobre Cloud Functions ── */}
-        <div className={`rounded-2xl border p-5 flex gap-4 items-start ${isDark ? 'border-[#C58A4A]/20 bg-[#C58A4A]/5' : 'border-amber-200 bg-amber-50'}`}>
-          <Zap size={18} className="text-[#C58A4A] mt-0.5 shrink-0" />
+        <div className={`rounded-2xl border p-5 flex gap-4 items-start ${isDark ? 'border-[#8B1F1C]/20 bg-[#8B1F1C]/5' : 'border-amber-200 bg-amber-50'}`}>
+          <Zap size={18} className="text-[#8B1F1C] mt-0.5 shrink-0" />
           <div>
-            <p className={`text-[10px] font-black uppercase tracking-widest text-[#C58A4A] mb-1`}>Deploy de Cloud Functions necessário</p>
+            <p className={`text-[10px] font-black uppercase tracking-widest text-[#8B1F1C] mb-1`}>Deploy de Cloud Functions necessário</p>
             <p className={`text-xs ${sub}`}>
               Os módulos 1, 2, 3 e 5 precisam de novas Cloud Functions e templates WhatsApp configurados no Meta Business Manager para funcionar de forma totalmente automática. Os módulos 6 e 7 funcionam direto nesta tela.
             </p>
