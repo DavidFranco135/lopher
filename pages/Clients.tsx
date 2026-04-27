@@ -145,7 +145,7 @@ const Clients: React.FC = () => {
       {(referrals || []).filter((r: any) => r.status === 'PENDENTE').length > 0 && (
         <div className={`rounded-2xl p-5 border ${theme === 'light' ? 'bg-amber-50 border-amber-200' : 'bg-[#C58A4A]/10 border-[#C58A4A]/25'}`}>
           <div className="flex items-center gap-3 mb-4">
-            <Users size={18} className="text-[#C58A4A]"/>
+            <Users size={18} className="text-white"/>
             <h3 className={`font-black text-sm uppercase tracking-widest ${theme === 'light' ? 'text-zinc-900' : 'text-white'}`}>
               Indicações Pendentes de Validação
             </h3>
@@ -153,7 +153,7 @@ const Clients: React.FC = () => {
               {(referrals || []).filter((r: any) => r.status === 'PENDENTE').length}
             </span>
           </div>
-          <p className={`text-[10px] mb-3 ${theme === 'light' ? 'text-amber-700' : 'text-[#C58A4A]/80'}`}>
+          <p className={`text-[10px] mb-3 ${theme === 'light' ? 'text-white' : 'text-white/80'}`}>
             Valide quando o indicado concluir o primeiro corte. O indicador receberá R$ {' '}
             automaticamente na carteira.
           </p>
@@ -205,11 +205,11 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
                 <tr key={client.id} className="hover:bg-white/[0.02] transition-colors group cursor-pointer" onClick={() => setSelectedClient(client)}>
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-[#C58A4A]/20 flex items-center justify-center font-black text-[#C58A4A] text-sm italic group-hover:bg-[#C58A4A] group-hover:text-black transition-all">
+                      <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-[#C58A4A]/20 flex items-center justify-center font-black text-white text-sm italic group-hover:bg-[#C58A4A] group-hover:text-black transition-all">
                         {(client.name || "?").charAt(0)}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-white group-hover:text-[#C58A4A] transition-all">{client.name}</p>
+                        <p className="text-sm font-bold text-white group-hover:text-white transition-all">{client.name}</p>
                         <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest mt-0.5">Desde: {client.createdAt ? new Date(client.createdAt).toLocaleDateString('pt-BR') : '—'}</p>
                       </div>
                     </div>
@@ -263,7 +263,7 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
                <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
                      <p className="text-[8px] text-zinc-500 font-black uppercase tracking-widest mb-1">Total Investido</p>
-                     <p className="text-xl font-black text-[#C58A4A] italic font-display">R$ {(selectedClient.totalSpent || 0).toFixed(2)}</p>
+                     <p className="text-xl font-black text-white italic font-display">R$ {(selectedClient.totalSpent || 0).toFixed(2)}</p>
                   </div>
                   <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
                      <p className="text-[8px] text-zinc-500 font-black uppercase tracking-widest mb-1">Serviços Concluídos</p>
@@ -273,11 +273,11 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
 
                {/* Futuros Agendamentos */}
                <div className="space-y-4">
-                  <h3 className="text-[10px] font-black text-[#C58A4A] uppercase tracking-[0.2em] mb-4 flex items-center gap-2"><CheckCircle2 size={14} /> Próximos Serviços</h3>
+                  <h3 className="text-[10px] font-black text-white uppercase tracking-[0.2em] mb-4 flex items-center gap-2"><CheckCircle2 size={14} /> Próximos Serviços</h3>
                   {clientAppointments.future.map(app => (
                     <div key={app.id} className="bg-white/5 border border-[#C58A4A]/20 p-4 rounded-2xl flex items-center justify-between group hover:bg-[#C58A4A]/5 transition-all">
                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center text-[#C58A4A]"><Calendar size={18}/></div>
+                          <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center text-white"><Calendar size={18}/></div>
                           <div>
                              <p className="text-sm font-bold text-white">{app.serviceName}</p>
                              <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">{new Date(app.date + 'T12:00:00').toLocaleDateString('pt-BR')} • {app.startTime}</p>
@@ -317,7 +317,7 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
                <div className="space-y-4 mt-2">
                   <div className="flex items-center justify-between">
                     <h3 className={`text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 ${theme === 'light' ? 'text-zinc-700' : 'text-zinc-400'}`}>
-                      <Camera size={14} className="text-[#C58A4A]"/> Fotos dos Cortes
+                      <Camera size={14} className="text-white"/> Fotos dos Cortes
                     </h3>
                     <label className={`flex items-center gap-1.5 px-3 py-2 rounded-xl cursor-pointer font-black text-[9px] uppercase tracking-widest transition-all ${photoUploading ? 'opacity-60 pointer-events-none bg-zinc-800 text-zinc-500' : 'gradiente-ouro text-black hover:scale-105'}`}>
                       {photoUploading ? <><span className="animate-spin inline-block">⟳</span> Salvando</> : <><Camera size={11}/> Adicionar</>}
@@ -384,7 +384,7 @@ ${r.referrerName} receberá R$ ${r.rewardAmount} na carteira.`)) validateReferra
             {/* Header */}
             <div className="px-8 pt-8 pb-4 flex items-center justify-between shrink-0">
               <div>
-                <p className="text-[9px] font-black uppercase tracking-widest text-[#C58A4A] mb-1">{editingId ? 'Editar Cadastro' : 'Novo Cliente'}</p>
+                <p className="text-[9px] font-black uppercase tracking-widest text-white mb-1">{editingId ? 'Editar Cadastro' : 'Novo Cliente'}</p>
                 <h2 className={`text-2xl font-black font-display italic ${theme === 'light' ? 'text-zinc-900' : 'text-white'}`}>
                   {formData.name || 'Ficha Completa'}
                 </h2>
