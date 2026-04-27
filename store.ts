@@ -234,9 +234,6 @@ export function BarberProvider({ children }: { children?: ReactNode }) {
   }, [user]);
 
   useEffect(() => {
-    // ── Primeiro acesso: popula Firestore se estiver vazio ────
-    seedInitialData();
-
     const unsubscribers = [
       onSnapshot(collection(db, COLLECTIONS.CLIENTS), snap => setClients(snap.docs.map(d => ({ id: d.id, ...d.data() } as Client)))),
       onSnapshot(collection(db, COLLECTIONS.PROFESSIONALS), snap => setProfessionals(snap.docs.map(d => ({ id: d.id, ...d.data() } as Professional)))),
@@ -402,13 +399,18 @@ export function BarberProvider({ children }: { children?: ReactNode }) {
       try {
         const snap = await getDoc(doc(db, COLLECTIONS.CONFIG, 'main'));
         if (snap.exists()) adminPass = snap.data().adminPassword;
-      } catch {}
+      } catch {
+        // Firestore vazio no primeiro acesso — usa senha padrão
+      }
     }
+    // Senha padrão caso config/main ainda não exista
     adminPass = adminPass || '654326';
     if (id === 'novojeitoadm@gmail.com' && pass === adminPass) {
       const adminName = config.adminName || 'Novo Jeito';
       const adminAvatar = config.logo || 'https://i.pravatar.cc/150';
       setUser({ id: 'admin', name: adminName, email: id, role: 'ADMIN', avatar: adminAvatar });
+      // ── Primeiro acesso: popula Firestore se estiver vazio ──
+      seedInitialData();
       return;
     }
     // Check staff members
