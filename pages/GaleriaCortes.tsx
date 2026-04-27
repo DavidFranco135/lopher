@@ -26,7 +26,7 @@ const GaleriaCortes: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const card = isDark ? 'bg-[#0f0f0f] border border-white/5' : 'bg-white border border-zinc-200 shadow-sm';
-  const inp  = `w-full border p-4 rounded-xl text-sm font-bold outline-none transition-all ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-zinc-600 focus:border-[#8B1F1C]' : 'bg-zinc-50 border-zinc-300 text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500'}`;
+  const inp  = `w-full border p-4 rounded-xl text-sm font-bold outline-none transition-all ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-zinc-600 focus:border-[#C58A4A]' : 'bg-zinc-50 border-zinc-300 text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500'}`;
 
   const activeAlbum = albums.find(a => a.id === activeAlbumId) || null;
   const photos = activeAlbum?.photos || [];
@@ -168,8 +168,8 @@ const GaleriaCortes: React.FC = () => {
 
       {/* Nova pasta form */}
       {showNewAlbum && !activeAlbum && (
-        <div className={`rounded-2xl p-6 border animate-in slide-in-from-top-2 space-y-4 ${isDark ? 'bg-[#8B1F1C]/5 border-[#8B1F1C]/20' : 'bg-amber-50 border-amber-200'}`}>
-          <p className="text-[10px] font-black uppercase tracking-widest text-[#8B1F1C]">📁 Nome da Nova Pasta</p>
+        <div className={`rounded-2xl p-6 border animate-in slide-in-from-top-2 space-y-4 ${isDark ? 'bg-[#C58A4A]/5 border-[#C58A4A]/20' : 'bg-amber-50 border-amber-200'}`}>
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#C58A4A]">📁 Nome da Nova Pasta</p>
           <div className="flex gap-3">
             <input type="text" placeholder="Ex: Degradês, Cortes Clássicos, Barba..." value={newAlbumName} onChange={e => setNewAlbumName(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleCreateAlbum()} autoFocus className={inp}/>
             <button onClick={handleCreateAlbum} className="px-5 py-3 gradiente-ouro text-black rounded-xl font-black text-[10px] uppercase whitespace-nowrap">Criar</button>
@@ -189,7 +189,7 @@ const GaleriaCortes: React.FC = () => {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {albums.map(album => (
-              <div key={album.id} className={`rounded-[2rem] border overflow-hidden group cursor-pointer transition-all hover:scale-[1.02] hover:border-[#8B1F1C]/40 ${card}`} onClick={() => setActiveAlbumId(album.id)}>
+              <div key={album.id} className={`rounded-[2rem] border overflow-hidden group cursor-pointer transition-all hover:scale-[1.02] hover:border-[#C58A4A]/40 ${card}`} onClick={() => setActiveAlbumId(album.id)}>
                 <div className="aspect-square relative bg-zinc-900">
                   {album.photos.length === 0 ? (
                     <div className="w-full h-full flex items-center justify-center"><Folder size={40} className="text-zinc-700"/></div>
@@ -209,7 +209,7 @@ const GaleriaCortes: React.FC = () => {
                   {editingAlbumId === album.id ? (
                     <div className="flex gap-2" onClick={e => e.stopPropagation()}>
                       <input autoFocus value={editingAlbumName} onChange={e => setEditingAlbumName(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleRenameAlbum(album.id)} className={`flex-1 border p-2 rounded-lg text-xs font-bold outline-none ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-zinc-50 border-zinc-300 text-zinc-900'}`}/>
-                      <button onClick={() => handleRenameAlbum(album.id)} className="p-2 bg-[#8B1F1C] text-black rounded-lg"><Check size={12}/></button>
+                      <button onClick={() => handleRenameAlbum(album.id)} className="p-2 bg-[#C58A4A] text-black rounded-lg"><Check size={12}/></button>
                     </div>
                   ) : (
                     <>
@@ -228,10 +228,10 @@ const GaleriaCortes: React.FC = () => {
       {activeAlbum && (
         <>
           {uploading && (
-            <div className={`rounded-2xl p-4 border ${isDark ? 'bg-[#8B1F1C]/5 border-[#8B1F1C]/20' : 'bg-amber-50 border-amber-200'}`}>
+            <div className={`rounded-2xl p-4 border ${isDark ? 'bg-[#C58A4A]/5 border-[#C58A4A]/20' : 'bg-amber-50 border-amber-200'}`}>
               <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-[#8B1F1C]">Enviando fotos ao ImgBB...</p>
-                <p className="text-[10px] font-black text-[#8B1F1C]">{uploadProgress}%</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#C58A4A]">Enviando fotos ao ImgBB...</p>
+                <p className="text-[10px] font-black text-[#C58A4A]">{uploadProgress}%</p>
               </div>
               <div className={`h-2 rounded-full ${isDark ? 'bg-white/10' : 'bg-zinc-200'}`}>
                 <div className="h-full gradiente-ouro rounded-full transition-all duration-300" style={{width:`${uploadProgress}%`}}/>
@@ -256,7 +256,7 @@ const GaleriaCortes: React.FC = () => {
                       <Trash2 size={12}/>
                     </button>
                   </div>
-                  <input type="text" placeholder="Descrição (opcional)" value={photo.desc} onChange={e => handleUpdateDesc(idx, e.target.value)} className={`w-full border p-2 rounded-xl text-[10px] font-bold outline-none transition-all ${isDark ? 'bg-white/5 border-white/5 text-white placeholder:text-zinc-700 focus:border-[#8B1F1C]/50' : 'bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:border-blue-400'}`}/>
+                  <input type="text" placeholder="Descrição (opcional)" value={photo.desc} onChange={e => handleUpdateDesc(idx, e.target.value)} className={`w-full border p-2 rounded-xl text-[10px] font-bold outline-none transition-all ${isDark ? 'bg-white/5 border-white/5 text-white placeholder:text-zinc-700 focus:border-[#C58A4A]/50' : 'bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:border-blue-400'}`}/>
                 </div>
               ))}
             </div>
@@ -297,12 +297,12 @@ const GaleriaCortes: React.FC = () => {
             {photos.length > 1 && (
               <div className="flex justify-center gap-1.5 mt-4">
                 {photos.map((_, i) => (
-                  <button key={i} onClick={e => { e.stopPropagation(); setLightboxIdx(i); }} className={`rounded-full transition-all ${i === lightboxIdx ? 'w-4 h-2 bg-[#8B1F1C]' : 'w-2 h-2 bg-white/30'}`}/>
+                  <button key={i} onClick={e => { e.stopPropagation(); setLightboxIdx(i); }} className={`rounded-full transition-all ${i === lightboxIdx ? 'w-4 h-2 bg-[#C58A4A]' : 'w-2 h-2 bg-white/30'}`}/>
                 ))}
               </div>
             )}
             <div className="flex gap-3 mt-4">
-              <button onClick={e => { e.stopPropagation(); handleDeletePhoto(lightboxIdx); }} className="flex-1 py-3 rounded-2xl bg-red-500/20 border border-red-500/30 text-red-400 font-black text-[10px] uppercase tracking-widest hover:bg-red-500/30 transition-all">🗑 Excluir</button>
+              <button onClick={e => { e.stopPropagation(); handleDeletePhoto(lightboxIdx); }} className="flex-1 py-3 rounded-2xl bg-red-500/20 border border-red-500/30 text-purple-400 font-black text-[10px] uppercase tracking-widest hover:bg-red-500/30 transition-all">🗑 Excluir</button>
               <button onClick={() => setLightboxIdx(null)} className="flex-1 py-3 rounded-2xl bg-white/5 border border-white/10 text-zinc-400 font-black text-[10px] uppercase tracking-widest hover:text-white transition-all">Fechar</button>
             </div>
           </div>
