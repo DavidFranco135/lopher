@@ -6,12 +6,13 @@ import { getAuth } from "firebase/auth";
 // Cada cliente tem seu próprio projeto Firebase configurado
 // nas variáveis de ambiente do Cloudflare Pages (ou .env local)
 const firebaseConfig = {
-  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId:             import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: "AIzaSyA0NNXzbi6NpctcPudTUswms6HkqBV_uQo",
+  authDomain: "niklaus-9c2b6.firebaseapp.com",
+  projectId: "niklaus-9c2b6",
+  storageBucket: "niklaus-9c2b6.firebasestorage.app",
+  messagingSenderId: "608119762863",
+  appId: "1:608119762863:web:8d022ec10741e9d0b8895a",
+  measurementId: "G-CH1ZFCXDDF"
 };
 
 // Inicializar Firebase
