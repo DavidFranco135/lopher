@@ -193,7 +193,7 @@ const Partners: React.FC = () => {
 
   const themeCard = theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : 'cartao-vidro border-white/5';
   const txt = theme === 'light' ? 'text-zinc-900' : 'text-white';
-  const inp = `w-full border p-4 rounded-xl outline-none font-bold text-xs transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-blue-500' : 'bg-white/5 border-white/10 text-white focus:border-[#8B1F1C]'}`;
+  const inp = `w-full border p-4 rounded-xl outline-none font-bold text-xs transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-blue-500' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]'}`;
 
   const tabs = [
     { id: 'parceiros', label: 'Parceiros', icon: QrCode },
@@ -258,7 +258,7 @@ const Partners: React.FC = () => {
           {/* Métricas */}
           <div className="grid grid-cols-3 gap-4">
             {[
-              { label: 'Total Parceiros', value: stats.total, color: '#8B1F1C' },
+              { label: 'Total Parceiros', value: stats.total, color: '#C58A4A' },
               { label: 'Ativos', value: stats.ativos, color: '#10b981' },
               { label: 'Total Indicações', value: stats.totalReferrals, color: '#3b82f6' },
             ].map((s, i) => (
@@ -278,7 +278,7 @@ const Partners: React.FC = () => {
               </div>
             )}
             {enriched.map(p => (
-              <div key={p.id} className={`rounded-[2rem] p-6 border hover:border-[#8B1F1C]/40 transition-all group ${themeCard}`}>
+              <div key={p.id} className={`rounded-[2rem] p-6 border hover:border-[#C58A4A]/40 transition-all group ${themeCard}`}>
                 {/* Imagem / Logo */}
                 {(p.image || p.logo) && (
                   <div className="w-full h-28 rounded-2xl overflow-hidden mb-4 bg-zinc-900">
@@ -291,7 +291,7 @@ const Partners: React.FC = () => {
                   <div className="flex-1 min-w-0">
                     <p className={`font-black text-lg truncate ${txt}`}>{p.businessName || p.name}</p>
                     {p.category && (
-                      <span className="text-[8px] font-black uppercase tracking-widest text-[#8B1F1C] bg-[#8B1F1C]/10 px-2 py-0.5 rounded-full">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-[#C58A4A] bg-[#C58A4A]/10 px-2 py-0.5 rounded-full">
                         {p.category}
                       </span>
                     )}
@@ -329,7 +329,7 @@ const Partners: React.FC = () => {
                 <div className="grid grid-cols-3 gap-2 mb-4">
                   <div className={`p-3 rounded-xl text-center ${theme === 'light' ? 'bg-zinc-50 border border-zinc-200' : 'bg-white/5 border border-white/5'}`}>
                     <p className="text-[7px] font-black uppercase text-zinc-500">Desconto</p>
-                    <p className="text-sm font-black text-[#8B1F1C]">{p.discount}%</p>
+                    <p className="text-sm font-black text-[#C58A4A]">{p.discount}%</p>
                   </div>
                   <div className={`p-3 rounded-xl text-center ${theme === 'light' ? 'bg-zinc-50 border border-zinc-200' : 'bg-white/5 border border-white/5'}`}>
                     <p className="text-[7px] font-black uppercase text-zinc-500">Benefícios</p>
@@ -356,7 +356,7 @@ const Partners: React.FC = () => {
                   </div>
                   <button
                     onClick={() => setShowQrModal(p)}
-                    className="p-3 bg-[#8B1F1C] text-black rounded-xl hover:scale-105 transition-all"
+                    className="p-3 bg-[#C58A4A] text-black rounded-xl hover:scale-105 transition-all"
                   >
                     <QrCode size={16} />
                   </button>
@@ -364,7 +364,7 @@ const Partners: React.FC = () => {
 
                 {p.monthlyFee && p.monthlyFee > 0 ? (
                   <p className="text-[9px] text-zinc-500 font-black mt-3 text-right">
-                    Mensalidade: <span className="text-[#8B1F1C]">R$ {p.monthlyFee.toFixed(2)}</span>
+                    Mensalidade: <span className="text-[#C58A4A]">R$ {p.monthlyFee.toFixed(2)}</span>
                   </p>
                 ) : null}
               </div>
@@ -380,9 +380,9 @@ const Partners: React.FC = () => {
           {/* Cards de resumo */}
           <div className="grid grid-cols-3 gap-4">
             <div className={`rounded-[2rem] p-6 border ${themeCard}`}>
-              <DollarSign size={20} className="text-[#8B1F1C] mb-3"/>
+              <DollarSign size={20} className="text-[#C58A4A] mb-3"/>
               <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Total Mensal</p>
-              <p className="text-2xl font-black text-[#8B1F1C] font-display italic">R$ {totalMensalidades.toFixed(2)}</p>
+              <p className="text-2xl font-black text-[#C58A4A] font-display italic">R$ {totalMensalidades.toFixed(2)}</p>
             </div>
             <div className={`rounded-[2rem] p-6 border ${themeCard}`}>
               <Check size={20} className="text-emerald-500 mb-3"/>
@@ -390,9 +390,9 @@ const Partners: React.FC = () => {
               <p className="text-2xl font-black text-emerald-500 font-display italic">R$ {totalPagos.toFixed(2)}</p>
             </div>
             <div className={`rounded-[2rem] p-6 border ${themeCard} ${totalEmAberto > 0 ? 'border-red-500/30' : ''}`}>
-              <AlertCircle size={20} className={`mb-3 ${totalEmAberto > 0 ? 'text-red-400' : 'text-zinc-500'}`}/>
+              <AlertCircle size={20} className={`mb-3 ${totalEmAberto > 0 ? 'text-purple-400' : 'text-zinc-500'}`}/>
               <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Em Aberto</p>
-              <p className={`text-2xl font-black font-display italic ${totalEmAberto > 0 ? 'text-red-400' : 'text-zinc-500'}`}>R$ {totalEmAberto.toFixed(2)}</p>
+              <p className={`text-2xl font-black font-display italic ${totalEmAberto > 0 ? 'text-purple-400' : 'text-zinc-500'}`}>R$ {totalEmAberto.toFixed(2)}</p>
             </div>
           </div>
 
@@ -417,7 +417,7 @@ const Partners: React.FC = () => {
                         {p.logo ? (
                           <img src={p.logo} className="w-12 h-12 rounded-2xl object-cover border border-white/10" alt=""/>
                         ) : (
-                          <div className="w-12 h-12 rounded-2xl bg-[#8B1F1C]/10 flex items-center justify-center text-[#8B1F1C] font-black text-lg">
+                          <div className="w-12 h-12 rounded-2xl bg-[#C58A4A]/10 flex items-center justify-center text-[#C58A4A] font-black text-lg">
                             {(p.businessName || p.name || '?').charAt(0)}
                           </div>
                         )}
@@ -430,8 +430,8 @@ const Partners: React.FC = () => {
                         </div>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className="text-xl font-black text-[#8B1F1C]">R$ {(p.monthlyFee || 0).toFixed(2)}</p>
-                        <p className={`text-[8px] font-black uppercase tracking-widest mt-1 ${isPago ? 'text-emerald-500' : 'text-red-400'}`}>
+                        <p className="text-xl font-black text-[#C58A4A]">R$ {(p.monthlyFee || 0).toFixed(2)}</p>
+                        <p className={`text-[8px] font-black uppercase tracking-widest mt-1 ${isPago ? 'text-emerald-500' : 'text-purple-400'}`}>
                           {isPago ? '✅ Pago' : '⚠️ Em Aberto'}
                         </p>
                         {isPago && p.lastPaymentDate && (
@@ -451,7 +451,7 @@ const Partners: React.FC = () => {
                             <div className="grid grid-cols-4 gap-2">
                               {(['PIX','DINHEIRO','DEBITO','CREDITO']).map(m => (
                                 <button key={m} onClick={() => setCobrancaPayMethod(m)}
-                                  className={`py-2 rounded-xl text-[8px] font-black uppercase border-2 transition-all ${cobrancaPayMethod === m ? 'border-[#8B1F1C] bg-[#8B1F1C]/20 text-[#8B1F1C]' : theme === 'light' ? 'border-zinc-200 bg-zinc-50 text-zinc-400' : 'border-white/10 bg-white/5 text-zinc-500'}`}>
+                                  className={`py-2 rounded-xl text-[8px] font-black uppercase border-2 transition-all ${cobrancaPayMethod === m ? 'border-[#C58A4A] bg-[#C58A4A]/20 text-[#C58A4A]' : theme === 'light' ? 'border-zinc-200 bg-zinc-50 text-zinc-400' : 'border-white/10 bg-white/5 text-zinc-500'}`}>
                                   {m === 'DINHEIRO' ? '💵' : m === 'PIX' ? '📱 PIX' : m === 'DEBITO' ? '💳 Déb' : '💳 Cré'}
                                 </button>
                               ))}
@@ -485,7 +485,7 @@ const Partners: React.FC = () => {
                           </div>
                         ) : (
                           <button onClick={() => { setCobrancaPayingId(p.id); setCobrancaPayMethod('PIX'); }}
-                            className="w-full py-3 rounded-xl font-black text-[9px] uppercase bg-[#8B1F1C] text-black hover:bg-[#E5A86A] transition-all">
+                            className="w-full py-3 rounded-xl font-black text-[9px] uppercase bg-[#C58A4A] text-black hover:bg-[#E5A86A] transition-all">
                             💰 Registrar Pagamento da Mensalidade
                           </button>
                         )}
@@ -497,7 +497,7 @@ const Partners: React.FC = () => {
                       <div className="mt-4 pt-4 border-t border-emerald-500/10 flex justify-end">
                         <button
                           onClick={() => { if (window.confirm('Estornar pagamento deste mês?')) { (store.updatePartner)(p.id, { lastPaymentMonth: '', lastPaymentDate: '', lastPaymentMethod: '' }); } }}
-                          className="text-[8px] font-black text-zinc-500 hover:text-red-400 transition-colors uppercase tracking-widest"
+                          className="text-[8px] font-black text-zinc-500 hover:text-purple-400 transition-colors uppercase tracking-widest"
                         >
                           Estornar
                         </button>
@@ -517,7 +517,7 @@ const Partners: React.FC = () => {
           {/* Métricas */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { label: 'Total Gerados', value: benefitStats.total, icon: Gift, color: '#8B1F1C' },
+              { label: 'Total Gerados', value: benefitStats.total, icon: Gift, color: '#C58A4A' },
               { label: 'Disponíveis', value: benefitStats.disponiveis, icon: CheckCircle2, color: '#10b981' },
               { label: 'Utilizados', value: benefitStats.usados, icon: Award, color: '#3b82f6' },
               { label: 'Expirados', value: benefitStats.expirados, icon: AlertCircle, color: '#ef4444' },
@@ -533,7 +533,7 @@ const Partners: React.FC = () => {
           {/* Uso por parceiro */}
           <div className={`rounded-[2rem] p-8 border ${themeCard}`}>
             <h3 className={`text-lg font-black font-display italic mb-6 flex items-center gap-3 ${txt}`}>
-              <BarChart3 size={20} className="text-[#8B1F1C]" /> Benefícios Usados por Parceiro
+              <BarChart3 size={20} className="text-[#C58A4A]" /> Benefícios Usados por Parceiro
             </h3>
             {benefitsByPartner.length === 0 ? (
               <p className="text-[10px] text-zinc-500 italic text-center py-8">Nenhum benefício utilizado ainda.</p>
@@ -545,7 +545,7 @@ const Partners: React.FC = () => {
                     <div key={key}>
                       <div className="flex items-center justify-between mb-1">
                         <span className={`text-xs font-bold ${txt}`}>{data.name}</span>
-                        <span className="text-xs font-black text-[#8B1F1C]">{data.count} usos</span>
+                        <span className="text-xs font-black text-[#C58A4A]">{data.count} usos</span>
                       </div>
                       <div className={`h-2 rounded-full ${theme === 'light' ? 'bg-zinc-100' : 'bg-white/10'}`}>
                         <div
@@ -589,7 +589,7 @@ const Partners: React.FC = () => {
                           <p className="text-[9px] text-zinc-500">{b.clientPhone}</p>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-xs font-bold text-[#8B1F1C]">{b.partnerName || '—'}</p>
+                          <p className="text-xs font-bold text-[#C58A4A]">{b.partnerName || '—'}</p>
                         </td>
                         <td className="px-6 py-4">
                           <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[8px] font-black uppercase border ${
@@ -634,9 +634,9 @@ const Partners: React.FC = () => {
       {/* ─── Modal QR Code do Parceiro (referral) ─── */}
       {showQrModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/95 backdrop-blur-xl animate-in zoom-in-95">
-          <div className={`w-full max-w-sm rounded-[3rem] p-10 space-y-8 border text-center shadow-2xl ${theme === 'light' ? 'bg-white border-zinc-200' : 'cartao-vidro border-[#8B1F1C]/20'}`}>
+          <div className={`w-full max-w-sm rounded-[3rem] p-10 space-y-8 border text-center shadow-2xl ${theme === 'light' ? 'bg-white border-zinc-200' : 'cartao-vidro border-[#C58A4A]/20'}`}>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-[#8B1F1C] mb-2">QR Code do Parceiro</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#C58A4A] mb-2">QR Code do Parceiro</p>
               <h2 className={`text-2xl font-black font-display italic ${txt}`}>
                 {showQrModal.businessName || showQrModal.name}
               </h2>
@@ -687,7 +687,7 @@ const Partners: React.FC = () => {
       {/* ─── Modal Formulário de Parceiro ─── */}
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/95 backdrop-blur-xl animate-in zoom-in-95">
-          <div className={`w-full max-w-lg rounded-[3rem] p-10 space-y-6 border shadow-2xl overflow-y-auto max-h-[90vh] scrollbar-hide ${theme === 'light' ? 'bg-white border-zinc-200' : 'cartao-vidro border-[#8B1F1C]/20'}`}>
+          <div className={`w-full max-w-lg rounded-[3rem] p-10 space-y-6 border shadow-2xl overflow-y-auto max-h-[90vh] scrollbar-hide ${theme === 'light' ? 'bg-white border-zinc-200' : 'cartao-vidro border-[#C58A4A]/20'}`}>
             <div className="flex justify-between items-center">
               <h2 className={`text-2xl font-black font-display italic ${txt}`}>
                 {editingId ? 'Editar Parceiro' : 'Novo Parceiro'}
@@ -736,7 +736,7 @@ const Partners: React.FC = () => {
                 <select
                   value={formData.category}
                   onChange={e => setFormData({ ...formData, category: e.target.value })}
-                  className={`w-full border p-4 rounded-xl outline-none font-bold text-xs transition-all appearance-none cursor-pointer ${theme === 'light' ? 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-blue-500' : 'bg-zinc-900 border-white/10 text-white focus:border-[#8B1F1C]'}`}
+                  className={`w-full border p-4 rounded-xl outline-none font-bold text-xs transition-all appearance-none cursor-pointer ${theme === 'light' ? 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-blue-500' : 'bg-zinc-900 border-white/10 text-white focus:border-[#C58A4A]'}`}
                   style={{ colorScheme: theme === 'dark' ? 'dark' : 'light' }}
                 >
                   {PARTNER_CATEGORIES.map(c => (
