@@ -104,7 +104,7 @@ const BenefitValidator: React.FC<BenefitValidatorProps> = ({ token, onBack }) =>
         {/* ── ESTADO: LOADING ── */}
         {state === 'loading' && (
           <div className="flex flex-col items-center gap-4 py-8">
-            <Loader2 size={40} className="text-[#C58A4A] animate-spin" />
+            <Loader2 size={40} className="text-white animate-spin" />
             <p className={`text-sm font-bold ${txt}`}>Verificando QR Code...</p>
           </div>
         )}
@@ -134,9 +134,9 @@ const BenefitValidator: React.FC<BenefitValidatorProps> = ({ token, onBack }) =>
               {/* Benefício */}
               <div className={`p-5 rounded-2xl border ${isDark ? 'border-[#C58A4A]/20 bg-[#C58A4A]/5' : 'border-amber-300 bg-amber-50'}`}>
                 <div className="flex items-center gap-3">
-                  <Gift size={24} className="text-[#C58A4A]" />
+                  <Gift size={24} className="text-white" />
                   <div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-[#C58A4A]">Benefício</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-white">Benefício</p>
                     <p className={`font-black text-sm ${txt}`}>
                       Desconto especial para cliente da barbearia
                     </p>
@@ -231,7 +231,7 @@ const BenefitValidator: React.FC<BenefitValidatorProps> = ({ token, onBack }) =>
         {state === 'expired' && (
           <div className="flex flex-col items-center gap-6 text-center">
             <div className="w-20 h-20 rounded-full bg-amber-500/20 flex items-center justify-center">
-              <AlertCircle size={40} className="text-amber-500" />
+              <AlertCircle size={40} className="text-white" />
             </div>
             <div>
               <h3 className={`text-xl font-black font-display italic ${txt}`}>QR Code Expirado</h3>
