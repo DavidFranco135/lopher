@@ -178,7 +178,7 @@ const Schedule: React.FC = () => {
                     <p className="text-[9px] text-zinc-500 font-bold uppercase">{slots.length} bloqueios</p>
                   </div>
                   <button onClick={() => { setBlockForm({ ...blockForm, professionalId: prof.id }); setShowBlockModal(true); }}
-                    className="ml-auto p-2.5 bg-[#C58A4A]/10 text-[#C58A4A] hover:bg-[#C58A4A] hover:text-black rounded-xl transition-all">
+                    className="ml-auto p-2.5 bg-[#C58A4A]/10 text-white hover:bg-[#C58A4A] hover:text-black rounded-xl transition-all">
                     <Plus size={16} />
                   </button>
                 </div>
@@ -218,7 +218,7 @@ const Schedule: React.FC = () => {
                   <div key={camp.id} className={`rounded-2xl p-5 border ${bg}`}>
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <MessageSquare size={20} className="text-[#C58A4A] shrink-0" />
+                        <MessageSquare size={20} className="text-white shrink-0" />
                         <div>
                           <p className={`font-black text-sm ${txt}`}>{camp.name}</p>
                           <p className="text-[9px] text-zinc-500 font-bold uppercase">
@@ -244,7 +244,7 @@ const Schedule: React.FC = () => {
           )}
 
           <div className={`rounded-[2rem] p-6 border ${bg} flex items-center gap-4`}>
-            <AlertTriangle className="text-amber-500 shrink-0" size={24} />
+            <AlertTriangle className="text-white shrink-0" size={24} />
             <div>
               <p className={`font-black ${txt}`}>{inactiveClients.length} clientes sem visita há mais de 30 dias</p>
               <p className="text-[10px] text-zinc-500 font-bold uppercase">Clique em "WhatsApp" para enviar mensagem personalizada</p>
@@ -255,11 +255,11 @@ const Schedule: React.FC = () => {
             <div key={client.id} className={`rounded-[2rem] p-5 border ${bg}`}>
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg ${client.daysAgo > 60 ? 'bg-red-500/10 text-red-500' : 'bg-amber-500/10 text-amber-500'}`}>{client.name.charAt(0)}</div>
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg ${client.daysAgo > 60 ? 'bg-red-500/10 text-red-500' : 'bg-amber-500/10 text-white'}`}>{client.name.charAt(0)}</div>
                   <div>
                     <p className={`font-black ${txt}`}>{client.name}</p>
                     <p className="text-[9px] text-zinc-500 font-bold">{client.phone}</p>
-                    <p className={`text-[9px] font-black uppercase mt-0.5 ${client.daysAgo > 60 ? 'text-red-500' : 'text-amber-500'}`}>{client.daysAgo} dias sem visita</p>
+                    <p className={`text-[9px] font-black uppercase mt-0.5 ${client.daysAgo > 60 ? 'text-red-500' : 'text-white'}`}>{client.daysAgo} dias sem visita</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
