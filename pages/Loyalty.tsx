@@ -173,7 +173,7 @@ const Loyalty: React.FC = () => {
             <div key={client.id} className={`rounded-[2rem] p-6 border border-dashed cursor-pointer hover:border-[#C58A4A]/50 transition-all group ${theme === 'light' ? 'bg-zinc-50 border-zinc-300' : 'border-white/10 bg-white/[0.01]'}`}
               onClick={() => handleCreateCard(client.id)}>
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-[#C58A4A]/20 flex items-center justify-center font-black text-[#C58A4A] text-lg">
+                <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-[#C58A4A]/20 flex items-center justify-center font-black text-white text-lg">
                   {client.name.charAt(0)}
                 </div>
                 <div>
@@ -181,7 +181,7 @@ const Loyalty: React.FC = () => {
                   <p className="text-[9px] text-zinc-500 font-bold uppercase">{client.phone}</p>
                 </div>
               </div>
-              <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest text-center py-3 group-hover:text-[#C58A4A] transition-colors">
+              <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest text-center py-3 group-hover:text-white transition-colors">
                 + Criar Cartão Fidelidade
               </p>
             </div>
@@ -199,7 +199,7 @@ const Loyalty: React.FC = () => {
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#C58A4A]/10 flex items-center justify-center font-black text-[#C58A4A] text-lg">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C58A4A]/10 flex items-center justify-center font-black text-white text-lg">
                     {card.client?.name?.charAt(0) || '?'}
                   </div>
                   <div>
@@ -271,7 +271,7 @@ const Loyalty: React.FC = () => {
             <div className="grid grid-cols-3 gap-3">
               <div className={`p-4 rounded-2xl text-center ${theme === 'light' ? 'bg-zinc-50 border border-zinc-200' : 'bg-white/5 border border-white/5'}`}>
                 <p className="text-[8px] font-black uppercase text-zinc-500 mb-1">Selos</p>
-                <p className="text-xl font-black text-[#C58A4A]">{selectedCard.stamps || 0}<span className="text-xs">/{stampsForFreeCut}</span></p>
+                <p className="text-xl font-black text-white">{selectedCard.stamps || 0}<span className="text-xs">/{stampsForFreeCut}</span></p>
               </div>
               <div className={`p-4 rounded-2xl text-center ${theme === 'light' ? 'bg-zinc-50 border border-zinc-200' : 'bg-white/5 border border-white/5'}`}>
                 <p className="text-[8px] font-black uppercase text-zinc-500 mb-1">Créditos</p>
