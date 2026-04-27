@@ -98,7 +98,7 @@ const FilaEspera: React.FC = () => {
   const card = isDark ? 'bg-[#0f0f0f] border border-white/10' : 'bg-white border border-zinc-200 shadow-lg';
   const txt = isDark ? 'text-white' : 'text-zinc-900';
   const sub = isDark ? 'text-zinc-500' : 'text-zinc-500';
-  const inp = `w-full border p-4 rounded-2xl text-sm font-bold outline-none transition-all ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-zinc-600 focus:border-[#C58A4A]' : 'bg-zinc-50 border-zinc-300 text-zinc-900 placeholder:text-zinc-400 focus:border-[#3b0f7a]'}`;
+  const inp = `w-full border p-4 rounded-2xl text-sm font-bold outline-none transition-all ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-zinc-600 focus:border-[#C58A4A]' : 'bg-zinc-50 border-zinc-300 text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500'}`;
 
   return (
     <div className={`min-h-screen flex flex-col items-center justify-center p-6 ${bg}`}>
@@ -187,7 +187,7 @@ const FilaEspera: React.FC = () => {
               </p>
               {waitQueue.filter((w: any) => w.status === 'AGUARDANDO').map((w: any, i: number) => (
                 <div key={w.id} className="flex items-center gap-2 py-1">
-                  <span className="text-[#C58A4A] font-black text-xs w-4">{i + 1}.</span>
+                  <span className="text-white font-black text-xs w-4">{i + 1}.</span>
                   <span className={`text-xs font-bold ${txt}`}>{w.name}</span>
                   <span className={`text-[9px] ml-auto ${sub}`}>{w.profName !== 'Qualquer barbeiro' ? w.profName : ''}</span>
                 </div>
