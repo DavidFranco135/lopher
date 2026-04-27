@@ -151,7 +151,8 @@ const App: React.FC = () => {
   if (user && user.role === 'CLIENTE' && isPublicView) {
     return (
       <div className={`relative min-h-screen theme-transition ${theme === 'light' ? 'bg-[#F8F9FA]' : 'bg-[#050505]'}`}>
-        <PublicBooking initialView="CLIENT_DASHBOARD" />
+        <div className="fixed bottom-8 left-8 z-[100] flex gap-3">
+          <PublicBooking initialView="CLIENT_DASHBOARD" />
       </div>
     );
   }
@@ -161,7 +162,7 @@ const App: React.FC = () => {
     return (
       <div className={`relative min-h-screen theme-transition ${theme === 'light' ? 'bg-[#F8F9FA]' : 'bg-[#050505]'}`}>
         <div className="fixed bottom-8 left-8 z-[100] flex gap-3">
-          <button onClick={() => { localStorage.removeItem('nj_client_session'); localStorage.removeItem('brb_user'); logout(); setIsPublicView(false); }} className={`p-4 rounded-2xl border shadow-2xl transition-all ${theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600 hover:text-zinc-900' : 'bg-zinc-900 border-white/10 text-white hover:bg-zinc-800'}`}>
+<button onClick={() => { localStorage.removeItem('nj_client_session'); localStorage.removeItem('brb_user'); logout(); setIsPublicView(false); }} className={`p-4 rounded-2xl border shadow-2xl transition-all ${theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600 hover:text-zinc-900' : 'bg-zinc-900 border-white/10 text-white hover:bg-zinc-800'}`}>
             <LogOut size={24} />
           </button>
         </div>
@@ -209,7 +210,7 @@ const App: React.FC = () => {
               <button onClick={handleLogin} className="w-full gradiente-ouro text-black py-7 rounded-[2.5rem] font-black uppercase tracking-[0.2em] text-xs shadow-2xl hover:scale-[1.03] active:scale-[0.97] transition-all">ACESSAR</button>
               <div className="text-center space-y-2">
                 <button onClick={() => setShowForgotAdm(true)} className={`text-[9px] font-black uppercase tracking-widest hover:underline block w-full ${theme === 'light' ? 'text-zinc-400 hover:text-zinc-600' : 'text-zinc-600 hover:text-zinc-400'}`}>🔑 Esqueci minha senha</button>
-                <button onClick={() => setIsRegistering(true)} className={`text-[10px] font-black uppercase tracking-widest hover:underline ${theme === 'light' ? 'text-white hover:text-blue-700' : 'text-[#C58A4A]'}`}>Ainda não tem conta? Cadastre-se</button>
+                <button onClick={() => setIsRegistering(true)} className={`text-[10px] font-black uppercase tracking-widest hover:underline ${theme === 'light' ? 'text-white hover:text-white' : 'text-white'}`}>Ainda não tem conta? Cadastre-se</button>
               </div>
             </div>
           ) : (
@@ -227,7 +228,7 @@ const App: React.FC = () => {
             </div>
           )}
 
-          <button onClick={() => setIsPublicView(true)} className={`w-full text-[10px] font-black uppercase tracking-[0.3em] transition-all ${theme === 'light' ? 'text-zinc-600 hover:text-white' : 'opacity-40 hover:opacity-100 hover:text-[#C58A4A]'}`}>Visualizar Site (Site Público)</button>
+          <button onClick={() => setIsPublicView(true)} className={`w-full text-[10px] font-black uppercase tracking-[0.3em] transition-all ${theme === 'light' ? 'text-zinc-600 hover:text-white' : 'opacity-40 hover:opacity-100 hover:text-white'}`}>Visualizar Site (Site Público)</button>
 
       {/* ── MODAL ESQUECI SENHA ADM ── */}
       {showForgotAdm && (
