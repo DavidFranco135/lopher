@@ -109,7 +109,7 @@ const Products: React.FC = () => {
             <p className="text-[10px] font-black uppercase tracking-widest text-red-400 mb-2">⚠️ Estoque Baixo — Produtos precisam de reposição</p>
             <div className="flex flex-wrap gap-2">
               {products.filter((p: any) => p.stock !== null && p.stock !== undefined && p.minStock !== null && p.minStock !== undefined && p.stock <= p.minStock).map((p: any) => (
-                <span key={p.id} className={`text-[10px] font-black px-3 py-1 rounded-full border ${p.stock === 0 ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'}`}>
+                <span key={p.id} className={`text-[10px] font-black px-3 py-1 rounded-full border ${p.stock === 0 ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-amber-500/20 text-white border-amber-500/30'}`}>
                   {p.name}: {p.stock === 0 ? 'ESGOTADO' : `${p.stock} restantes`}
                 </span>
               ))}
@@ -150,7 +150,7 @@ const Products: React.FC = () => {
                     <p className={`font-black text-base leading-tight ${isDark ? 'text-white' : 'text-zinc-900'}`}>{p.name}</p>
                     <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full mt-1 inline-block ${isDark ? 'bg-white/5 text-zinc-500' : 'bg-zinc-100 text-zinc-500'}`}>{p.category || 'Produto'}</span>
                   </div>
-                  <p className="text-lg font-black text-[#C58A4A] whitespace-nowrap">R$ {Number(p.price).toFixed(2)}</p>
+                  <p className="text-lg font-black text-white whitespace-nowrap">R$ {Number(p.price).toFixed(2)}</p>
                 </div>
                 {p.description && (
                   <p className={`text-xs leading-relaxed line-clamp-2 ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>{p.description}</p>
@@ -160,10 +160,10 @@ const Products: React.FC = () => {
                 {p.stock !== null && p.stock !== undefined && (
                   <div className={`rounded-xl p-3 border ${p.stock === 0 ? (isDark ? 'bg-red-500/10 border-red-500/20' : 'bg-red-50 border-red-200') : p.stock <= (p.minStock || 0) ? (isDark ? 'bg-amber-500/10 border-amber-500/20' : 'bg-amber-50 border-amber-200') : (isDark ? 'bg-white/5 border-white/10' : 'bg-zinc-50 border-zinc-200')}`}>
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-1 ${p.stock === 0 ? 'text-red-400' : p.stock <= (p.minStock || 0) ? 'text-amber-400' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                      <span className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-1 ${p.stock === 0 ? 'text-red-400' : p.stock <= (p.minStock || 0) ? 'text-white' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
                         <ShoppingCart size={10}/> Estoque
                       </span>
-                      <span className={`text-sm font-black ${p.stock === 0 ? 'text-red-400' : p.stock <= (p.minStock || 0) ? 'text-amber-400' : isDark ? 'text-white' : 'text-zinc-900'}`}>
+                      <span className={`text-sm font-black ${p.stock === 0 ? 'text-red-400' : p.stock <= (p.minStock || 0) ? 'text-white' : isDark ? 'text-white' : 'text-zinc-900'}`}>
                         {p.stock} {p.stock === 0 ? '— ESGOTADO' : p.stock <= (p.minStock || 0) ? '— BAIXO' : 'un.'}
                       </span>
                     </div>
