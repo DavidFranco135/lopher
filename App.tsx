@@ -151,11 +151,6 @@ const App: React.FC = () => {
   if (user && user.role === 'CLIENTE' && isPublicView) {
     return (
       <div className={`relative min-h-screen theme-transition ${theme === 'light' ? 'bg-[#F8F9FA]' : 'bg-[#050505]'}`}>
-        <div className="fixed bottom-8 left-8 z-[100] flex gap-3">
-          <button onClick={toggleTheme} className={`p-4 rounded-2xl border shadow-2xl transition-all ${theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600 hover:text-zinc-900' : 'bg-[#C58A4A] text-black border-transparent'}`}>
-            {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
-          </button>
-        </div>
         <PublicBooking initialView="CLIENT_DASHBOARD" />
       </div>
     );
@@ -166,9 +161,6 @@ const App: React.FC = () => {
     return (
       <div className={`relative min-h-screen theme-transition ${theme === 'light' ? 'bg-[#F8F9FA]' : 'bg-[#050505]'}`}>
         <div className="fixed bottom-8 left-8 z-[100] flex gap-3">
-          <button onClick={toggleTheme} className={`p-4 rounded-2xl border shadow-2xl transition-all ${theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600 hover:text-zinc-900' : 'bg-[#66360f] text-black border-transparent'}`}>
-            {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
-          </button>
           <button onClick={() => { localStorage.removeItem('nj_client_session'); localStorage.removeItem('brb_user'); logout(); setIsPublicView(false); }} className={`p-4 rounded-2xl border shadow-2xl transition-all ${theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600 hover:text-zinc-900' : 'bg-zinc-900 border-white/10 text-white hover:bg-zinc-800'}`}>
             <LogOut size={24} />
           </button>
@@ -187,9 +179,7 @@ const App: React.FC = () => {
            <div className={`absolute inset-0 bg-gradient-to-t ${theme === 'light' ? 'from-[#F8F9FA] via-transparent to-[#F8F9FA]' : 'from-[#050505] via-transparent to-[#050505]'}`}></div>
         </div>
 
-        <button onClick={toggleTheme} className={`absolute top-10 right-10 p-4 rounded-2xl border transition-all z-20 ${theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600 shadow-lg hover:text-zinc-900' : 'bg-white/5 border-white/10 text-zinc-400'}`}>
-          {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
-        </button>
+
 
         <div className={`w-full max-w-lg rounded-[4rem] p-12 md:p-20 space-y-12 animate-in fade-in zoom-in duration-1000 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] relative z-10 ${theme === 'light' ? 'bg-white border border-zinc-200' : 'cartao-vidro border-white/5'}`}>
           <div className={`absolute top-0 inset-x-0 h-1.5 gradiente-ouro rounded-t-[4rem]`}></div>
