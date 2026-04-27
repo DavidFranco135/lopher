@@ -100,7 +100,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, allo
                         : 'text-zinc-500 hover:bg-white/5 hover:text-white'
                   }`}
                 >
-                  <Icon size={22} className={`flex-shrink-0 ${isActive ? 'text-black' : theme === 'light' ? 'text-zinc-700 group-hover:text-zinc-900' : 'text-zinc-500 group-hover:text-[#C58A4A]'} transition-colors`} />
+                  <Icon size={22} className={`flex-shrink-0 ${isActive ? 'text-black' : theme === 'light' ? 'text-zinc-700 group-hover:text-zinc-900' : 'text-zinc-500 group-hover:text-white'} transition-colors`} />
                   {!isCollapsed && <span className={`font-black text-[11px] uppercase tracking-widest ${isActive ? 'text-black' : theme === 'light' ? 'text-zinc-700 group-hover:text-zinc-900' : 'text-zinc-500 group-hover:text-white'}`}>{item.label}</span>}
                 </button>
               );
@@ -129,10 +129,12 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, allo
 
           <div className="flex items-center gap-3">
             {/* Botão de tema */}
-{/* Botão de tema ocultado */}
+            <button onClick={toggleTheme} className={`p-3 rounded-2xl border transition-all ${theme === 'light' ? 'bg-amber-50 border-amber-200 text-white hover:bg-amber-100 hover:border-amber-300' : 'bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800 hover:border-zinc-700'}`}>
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
             
             <div className="relative">
-              <button onClick={() => setShowNotifs(!showNotifs)} className={`p-3 rounded-2xl border transition-all relative ${theme === 'light' ? 'bg-zinc-100 border-zinc-200 text-zinc-700 hover:bg-zinc-200 hover:border-zinc-300' : 'bg-white/5 border-white/10 text-zinc-400 hover:text-[#C58A4A]'}`}>
+              <button onClick={() => setShowNotifs(!showNotifs)} className={`p-3 rounded-2xl border transition-all relative ${theme === 'light' ? 'bg-zinc-100 border-zinc-200 text-zinc-700 hover:bg-zinc-200 hover:border-zinc-300' : 'bg-white/5 border-white/10 text-zinc-400 hover:text-white'}`}>
                 <Bell size={18} />
                 {notifications.filter(n => !n.read).length > 0 && (
                   <span className={`absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 ${theme === 'light' ? 'border-white' : 'border-[#0A0A0A]'}`}></span>
@@ -151,7 +153,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, allo
                        {notifications.length === 0 && <p className={`p-10 text-center text-xs italic ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-500'}`}>Nada por aqui.</p>}
                        {notifications.map(n => (
                          <div key={n.id} onClick={() => { markNotificationAsRead(n.id); setShowNotifs(false); setActiveTab('appointments'); }} className={`p-6 border-b cursor-pointer transition-all ${theme === 'light' ? 'border-zinc-200 hover:bg-zinc-50' : 'border-white/5 hover:bg-white/5'} ${!n.read ? 'bg-[#C58A4A]/5 border-l-4 border-l-[#C58A4A]' : ''}`}>
-                            <p className="text-xs font-black text-[#C58A4A]">{n.title}</p>
+                            <p className="text-xs font-black text-white">{n.title}</p>
                             <p className={`text-[11px] mt-1 leading-relaxed ${theme === 'light' ? 'text-zinc-700' : 'text-zinc-400'}`}>{n.message}</p>
                             <p className={`text-[9px] mt-2 font-bold ${theme === 'light' ? 'text-zinc-500' : 'text-zinc-500'}`}>{n.time}</p>
                          </div>
