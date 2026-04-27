@@ -345,7 +345,7 @@ const Appointments: React.FC = () => {
       const phone = app.clientPhone || '';
       if (phone) {
         const texto = encodeURIComponent(
-          `Olá ${app.clientName}! 😔\n\nSeu agendamento de *${app.serviceName}* no dia *${app.date.split('-').reverse().join('/')}* às *${app.startTime}* foi cancelado por ausência.\n\nNo próximo agendamento, será necessário realizar o pagamento antecipado.\n\nAtenciosamente,\n*Barbearia Novo Jeito* ✂️`
+          `Olá ${app.clientName}! 😔\n\nSeu agendamento de *${app.serviceName}* no dia *${app.date.split('-').reverse().join('/')}* às *${app.startTime}* foi cancelado por ausência.\n\nNo próximo agendamento, será necessário realizar o pagamento antecipado.\n\nAtenciosamente,\n*Barbearia LOPHER* ✂️`
         );
         window.open(`https://wa.me/55${phone.replace(/\D/g,'')}?text=${texto}`, '_blank');
       }
