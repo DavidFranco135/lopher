@@ -1,5 +1,5 @@
 // ============================================================
-// src/features.ts — Feature Flags da Barbearia Novo Jeito
+// src/features.ts — Feature Flags da Barbearia 
 // ============================================================
 // Controla quais funcionalidades estão habilitadas no build.
 //
