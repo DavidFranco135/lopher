@@ -137,7 +137,7 @@ const ClubeBeneficios: React.FC<ClubeBeneficiosProps> = ({ clientId, onClose }) 
               </button>
             )}
             <div>
-              <p className="text-[9px] font-black uppercase tracking-widest text-[#C58A4A]">Clube de Benefícios 🎁</p>
+              <p className="text-[9px] font-black uppercase tracking-widest text-white">Clube de Benefícios 🎁</p>
               <h2 className={`text-xl font-black font-display italic ${txt}`}>
                 {step === 'benefits' && 'Meus Benefícios'}
                 {step === 'partners' && 'Escolha um Parceiro'}
@@ -216,7 +216,7 @@ const ClubeBeneficios: React.FC<ClubeBeneficiosProps> = ({ clientId, onClose }) 
                               {isExpired && <AlertCircle size={20} className="text-zinc-500" />}
                             </div>
                             <div>
-                              <p className={`font-black text-sm ${isAvailable || isQrGerado ? 'text-[#C58A4A]' : isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
+                              <p className={`font-black text-sm ${isAvailable || isQrGerado ? 'text-white' : isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
                                 {isAvailable && 'Benefício Disponível'}
                                 {isQrGerado && `QR Gerado — ${benefit.partnerName}`}
                                 {isUsed && `Usado em ${benefit.usedByPartnerName || 'Parceiro'}`}
@@ -247,7 +247,7 @@ const ClubeBeneficios: React.FC<ClubeBeneficiosProps> = ({ clientId, onClose }) 
                         {(isAvailable || isQrGerado) && (
                           <div className={`mt-4 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest ${
                             isQrGerado
-                              ? 'bg-amber-500/20 text-amber-500'
+                              ? 'bg-amber-500/20 text-white'
                               : 'bg-[#C58A4A] text-black'
                           }`}>
                             <QrCode size={14} />
@@ -280,13 +280,13 @@ const ClubeBeneficios: React.FC<ClubeBeneficiosProps> = ({ clientId, onClose }) 
                           </div>
                         )}
                         <p className={`text-[10px] font-black truncate ${txt}`}>{p.businessName || p.name}</p>
-                        <p className="text-[9px] text-[#C58A4A] font-black mt-0.5">
+                        <p className="text-[9px] text-white font-black mt-0.5">
                           {clientVipDiscount > 0
                             ? `${Math.min(100, p.discount + clientVipDiscount)}% OFF`
                             : `${p.discount}% OFF`}
                         </p>
                         {clientVipDiscount > 0 && (
-                          <p className="text-[8px] text-amber-400 font-black">👑 +{clientVipDiscount}% VIP</p>
+                          <p className="text-[8px] text-white font-black">👑 +{clientVipDiscount}% VIP</p>
                         )}
                       </div>
                     ))}
@@ -301,9 +301,9 @@ const ClubeBeneficios: React.FC<ClubeBeneficiosProps> = ({ clientId, onClose }) 
             <>
               {selectedBenefit && (
                 <div className={`p-4 rounded-2xl border border-[#C58A4A]/30 bg-[#C58A4A]/5 flex items-center gap-3`}>
-                  <Gift size={20} className="text-[#C58A4A] flex-shrink-0" />
+                  <Gift size={20} className="text-white flex-shrink-0" />
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-[#C58A4A]">Benefício Selecionado</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white">Benefício Selecionado</p>
                     <p className={`text-xs font-bold ${txt}`}>
                       Válido até {new Date(selectedBenefit.expiryDate).toLocaleDateString('pt-BR')}
                     </p>
@@ -359,7 +359,7 @@ const ClubeBeneficios: React.FC<ClubeBeneficiosProps> = ({ clientId, onClose }) 
                             : `${p.discount}% OFF`}
                         </span>
                         {clientVipDiscount > 0 && (
-                          <span className="px-3 py-1 rounded-full text-[9px] font-black text-amber-400 bg-amber-400/10 border border-amber-400/20">
+                          <span className="px-3 py-1 rounded-full text-[9px] font-black text-white bg-amber-400/10 border border-amber-400/20">
                             👑 +{clientVipDiscount}% bônus VIP
                           </span>
                         )}
@@ -404,14 +404,14 @@ const ClubeBeneficios: React.FC<ClubeBeneficiosProps> = ({ clientId, onClose }) 
                   <div className={`w-full p-5 rounded-2xl border flex items-center gap-4 ${isDark ? 'border-[#C58A4A]/30 bg-[#C58A4A]/5' : 'border-amber-300 bg-amber-50'}`}>
                     <div className="text-2xl">{CATEGORY_ICONS[selectedPartner.category || 'Outro'] || '🏪'}</div>
                     <div className="text-left">
-                      <p className="font-black text-[#C58A4A] text-sm">{selectedPartner.businessName || selectedPartner.name}</p>
+                      <p className="font-black text-white text-sm">{selectedPartner.businessName || selectedPartner.name}</p>
                       <p className={`text-[10px] font-bold ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
                         {clientVipDiscount > 0
                           ? `${Math.min(100, selectedPartner.discount + clientVipDiscount)}% de desconto (${selectedPartner.discount}% parceiro + ${clientVipDiscount}% VIP)`
                           : `${selectedPartner.discount}% de desconto`} · Apresente o QR na recepção
                       </p>
                       {clientVipDiscount > 0 && (
-                        <p className="text-[9px] font-black text-amber-400 mt-1">👑 Bônus VIP incluído</p>
+                        <p className="text-[9px] font-black text-white mt-1">👑 Bônus VIP incluído</p>
                       )}
                     </div>
                   </div>
