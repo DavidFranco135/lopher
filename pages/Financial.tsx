@@ -152,7 +152,7 @@ const Financial: React.FC = () => {
       {/* ── Filtros de Período ── */}
       <div className={`${cardClass} rounded-[2rem] p-6`}>
         <div className="flex items-center gap-3 mb-4">
-          <Filter size={14} className="text-[#C58A4A]" />
+          <Filter size={14} className="text-[#8B1F1C]" />
           <span className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>Filtrar por Período</span>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -162,8 +162,8 @@ const Financial: React.FC = () => {
               onClick={() => setFilterPeriod(p.key)}
               className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${
                 filterPeriod === p.key
-                  ? 'bg-[#C58A4A] text-black border-transparent'
-                  : isDark ? 'bg-white/5 text-zinc-500 border-white/5 hover:border-[#C58A4A]/30' : 'bg-zinc-100 text-zinc-500 border-zinc-200 hover:border-[#C58A4A]/30'
+                  ? 'bg-[#8B1F1C] text-black border-transparent'
+                  : isDark ? 'bg-white/5 text-zinc-500 border-white/5 hover:border-[#8B1F1C]/30' : 'bg-zinc-100 text-zinc-500 border-zinc-200 hover:border-[#8B1F1C]/30'
               }`}
             >
               {p.label}
@@ -207,11 +207,11 @@ const Financial: React.FC = () => {
 
         <div
           onClick={() => setFilterType('TUDO')}
-          className={`${cardClass} rounded-[2rem] p-8 border-[#C58A4A]/20 cursor-pointer hover:border-[#C58A4A]/40 transition-all`}
+          className={`${cardClass} rounded-[2rem] p-8 border-[#8B1F1C]/20 cursor-pointer hover:border-[#8B1F1C]/40 transition-all`}
         >
-          <div className="w-12 h-12 bg-[#C58A4A]/10 text-[#C58A4A] rounded-2xl flex items-center justify-center mb-6"><TrendingUp size={24} /></div>
+          <div className="w-12 h-12 bg-[#8B1F1C]/10 text-[#8B1F1C] rounded-2xl flex items-center justify-center mb-6"><TrendingUp size={24} /></div>
           <h3 className={`text-[10px] uppercase font-black tracking-widest ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>Lucro do Período</h3>
-          <p className={`text-3xl font-black mt-2 font-display italic ${metrics.lucro >= 0 ? 'text-[#C58A4A]' : 'text-red-500'}`}>
+          <p className={`text-3xl font-black mt-2 font-display italic ${metrics.lucro >= 0 ? 'text-[#8B1F1C]' : 'text-red-500'}`}>
             R$ {metrics.lucro.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </p>
         </div>
@@ -250,7 +250,7 @@ const Financial: React.FC = () => {
       {/* ── Repasse de Comissões ── */}
       <div className={`${cardClass} rounded-[2rem] p-8`}>
         <div className="flex items-center gap-3 mb-8">
-          <UserCheck className="text-[#C58A4A]" />
+          <UserCheck className="text-[#8B1F1C]" />
           <h3 className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-white' : 'text-zinc-900'}`}>Repasse de Comissões — {PERIODS.find(p => p.key === filterPeriod)?.label}</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -262,7 +262,7 @@ const Financial: React.FC = () => {
                   <span>Gerado Total:</span>
                   <span className={isDark ? 'text-white' : 'text-zinc-900'}>R$ {stat.total.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-[10px] uppercase font-black text-[#C58A4A]">
+                <div className="flex justify-between text-[10px] uppercase font-black text-[#8B1F1C]">
                   <span>Comissão:</span>
                   <span>R$ {stat.commission.toFixed(2)}</span>
                 </div>
@@ -281,7 +281,7 @@ const Financial: React.FC = () => {
       {/* ── Ranking de Barbeiros ── */}
       <div className={`${cardClass} rounded-[2rem] p-8`}>
         <div className="flex items-center gap-3 mb-8">
-          <Trophy className="text-[#C58A4A]" />
+          <Trophy className="text-[#8B1F1C]" />
           <h3 className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-white' : 'text-zinc-900'}`}>Ranking de Barbeiros</h3>
         </div>
         <div className="space-y-4">
@@ -300,7 +300,7 @@ const Financial: React.FC = () => {
                 <div className="flex items-center gap-2 mt-2">
                   <div className={`flex-1 h-2 rounded-full ${isDark ? 'bg-white/10' : 'bg-zinc-200'}`}>
                     <div
-                      className="h-full bg-[#C58A4A] rounded-full transition-all duration-700"
+                      className="h-full bg-[#8B1F1C] rounded-full transition-all duration-700"
                       style={{ width: barberStats[0]?.total > 0 ? `${(stat.total / barberStats[0].total) * 100}%` : '0%' }}
                     />
                   </div>
@@ -309,7 +309,7 @@ const Financial: React.FC = () => {
               </div>
               <div className="text-right flex-shrink-0">
                 <p className={`font-black text-sm ${isDark ? 'text-white' : 'text-zinc-900'}`}>R$ {stat.total.toFixed(2)}</p>
-                <p className="text-[8px] font-black text-[#C58A4A] uppercase mt-0.5">R$ {stat.commission.toFixed(2)} comissão</p>
+                <p className="text-[8px] font-black text-[#8B1F1C] uppercase mt-0.5">R$ {stat.commission.toFixed(2)} comissão</p>
               </div>
             </div>
           ))}
@@ -377,7 +377,7 @@ const Financial: React.FC = () => {
                   filterType === t
                     ? t === 'RECEITA' ? 'bg-emerald-500 text-white border-transparent'
                     : t === 'DESPESA' ? 'bg-red-500 text-white border-transparent'
-                    : 'bg-[#C58A4A] text-black border-transparent'
+                    : 'bg-[#8B1F1C] text-black border-transparent'
                     : isDark ? 'bg-white/5 text-zinc-500 border-white/5' : 'bg-zinc-100 text-zinc-500 border-zinc-200'
                 }`}
               >
@@ -424,7 +424,7 @@ const Financial: React.FC = () => {
       {/* ── Modal Lançamento ── */}
       {showAddModal && (
         <div className={`fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-xl animate-in zoom-in-95 ${isDark ? 'bg-black/95' : 'bg-black/70'}`}>
-          <div className={`w-full max-w-md rounded-[2.5rem] shadow-2xl flex flex-col max-h-[90vh] ${isDark ? 'cartao-vidro border-[#C58A4A]/20' : 'bg-white border border-zinc-200'}`}>
+          <div className={`w-full max-w-md rounded-[2.5rem] shadow-2xl flex flex-col max-h-[90vh] ${isDark ? 'cartao-vidro border-[#8B1F1C]/20' : 'bg-white border border-zinc-200'}`}>
             <div className="p-8 pb-4 shrink-0">
               <h2 className={`text-2xl font-black font-display italic ${isDark ? 'text-white' : 'text-zinc-900'}`}>Novo Lançamento</h2>
             </div>
@@ -497,11 +497,11 @@ const Financial: React.FC = () => {
         };
         return (
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-in zoom-in-95" onClick={e2 => { if (e2.target === e2.currentTarget) setSelectedEntry(null); }}>
-            <div className={`w-full max-w-md rounded-[2.5rem] shadow-2xl border flex flex-col max-h-[90vh] ${isDark ? 'cartao-vidro border-[#C58A4A]/20' : 'bg-white border-zinc-200'}`}>
+            <div className={`w-full max-w-md rounded-[2.5rem] shadow-2xl border flex flex-col max-h-[90vh] ${isDark ? 'cartao-vidro border-[#8B1F1C]/20' : 'bg-white border-zinc-200'}`}>
               {/* Header */}
               <div className="p-8 pb-4 flex items-start justify-between shrink-0">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-[#C58A4A] mb-1">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-[#8B1F1C] mb-1">
                     Detalhes do Lançamento
                   </p>
                   <h2 className={`text-xl font-black font-display italic leading-tight ${isDark ? 'text-white' : 'text-zinc-900'}`}>
@@ -561,16 +561,16 @@ const Financial: React.FC = () => {
                     <p className={`text-[9px] font-black uppercase tracking-widest px-1 ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>
                       📅 Agendamento Vinculado
                     </p>
-                    <div className={`p-4 rounded-2xl space-y-3 border ${isDark ? 'bg-[#C58A4A]/5 border-[#C58A4A]/20' : 'bg-amber-50 border-amber-200'}`}>
+                    <div className={`p-4 rounded-2xl space-y-3 border ${isDark ? 'bg-[#8B1F1C]/5 border-[#8B1F1C]/20' : 'bg-amber-50 border-amber-200'}`}>
                       {/* Client */}
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-[#C58A4A]/10 flex items-center justify-center shrink-0">
-                          <User size={16} className="text-[#C58A4A]"/>
+                        <div className="w-9 h-9 rounded-xl bg-[#8B1F1C]/10 flex items-center justify-center shrink-0">
+                          <User size={16} className="text-[#8B1F1C]"/>
                         </div>
                         <div>
                           <p className={`text-xs font-black ${isDark ? 'text-white' : 'text-zinc-900'}`}>{linkedApp.clientName}</p>
                           {linkedClient?.phone && (
-                            <a href={`https://wa.me/55${linkedClient.phone.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" className="text-[9px] font-bold text-[#C58A4A] hover:underline">
+                            <a href={`https://wa.me/55${linkedClient.phone.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" className="text-[9px] font-bold text-[#8B1F1C] hover:underline">
                               📞 {linkedClient.phone}
                             </a>
                           )}
@@ -578,8 +578,8 @@ const Financial: React.FC = () => {
                       </div>
                       {/* Service */}
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-[#C58A4A]/10 flex items-center justify-center shrink-0">
-                          <Scissors size={16} className="text-[#C58A4A]"/>
+                        <div className="w-9 h-9 rounded-xl bg-[#8B1F1C]/10 flex items-center justify-center shrink-0">
+                          <Scissors size={16} className="text-[#8B1F1C]"/>
                         </div>
                         <div>
                           <p className={`text-xs font-black ${isDark ? 'text-white' : 'text-zinc-900'}`}>{linkedApp.serviceName}</p>
@@ -589,8 +589,8 @@ const Financial: React.FC = () => {
                       {/* Professional */}
                       {linkedProf && (
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-[#C58A4A]/10 flex items-center justify-center shrink-0">
-                            <User size={16} className="text-[#C58A4A]"/>
+                          <div className="w-9 h-9 rounded-xl bg-[#8B1F1C]/10 flex items-center justify-center shrink-0">
+                            <User size={16} className="text-[#8B1F1C]"/>
                           </div>
                           <div>
                             <p className={`text-[9px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Barbeiro</p>
@@ -600,8 +600,8 @@ const Financial: React.FC = () => {
                       )}
                       {/* Date/Time */}
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-[#C58A4A]/10 flex items-center justify-center shrink-0">
-                          <Clock size={16} className="text-[#C58A4A]"/>
+                        <div className="w-9 h-9 rounded-xl bg-[#8B1F1C]/10 flex items-center justify-center shrink-0">
+                          <Clock size={16} className="text-[#8B1F1C]"/>
                         </div>
                         <div>
                           <p className={`text-[9px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Data e Horário</p>
@@ -626,16 +626,16 @@ const Financial: React.FC = () => {
                           {linkedApp.additionals.map((ad: any) => (
                             <div key={ad.id} className="flex items-center justify-between">
                               <span className={`text-[10px] font-bold ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{ad.qty}x {ad.name}</span>
-                              <span className="text-[10px] font-black text-[#C58A4A]">R$ {(ad.price * ad.qty).toFixed(2)}</span>
+                              <span className="text-[10px] font-black text-[#8B1F1C]">R$ {(ad.price * ad.qty).toFixed(2)}</span>
                             </div>
                           ))}
                         </div>
                       )}
                       {/* Total */}
                       {linkedApp.totalPrice && (
-                        <div className={`flex items-center justify-between pt-2 border-t ${isDark ? 'border-[#C58A4A]/20' : 'border-amber-200'}`}>
+                        <div className={`flex items-center justify-between pt-2 border-t ${isDark ? 'border-[#8B1F1C]/20' : 'border-amber-200'}`}>
                           <span className={`text-[9px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>Total Cobrado</span>
-                          <span className="text-sm font-black text-[#C58A4A]">R$ {Number(linkedApp.totalPrice).toFixed(2)}</span>
+                          <span className="text-sm font-black text-[#8B1F1C]">R$ {Number(linkedApp.totalPrice).toFixed(2)}</span>
                         </div>
                       )}
                       {/* Status */}
