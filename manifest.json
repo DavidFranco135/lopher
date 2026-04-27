@@ -1,7 +1,7 @@
 {
-  "name": "Barbearia Novo Jeito",
-  "short_name": "Novo Jeito",
-  "description": "Sistema Premium de agendamento Novo Jeito",
+  "name": "Barbearia LOPHER",
+  "short_name": "LOPHER",
+  "description": "Sistema Premium de agendamento LOPHER",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#050505",
