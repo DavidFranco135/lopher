@@ -5,6 +5,7 @@ import {
   LoyaltyCard, Subscription, Partner, BlockedSlot, InactivityCampaign,
   ClientBenefit  // ── NOVO ──
 } from './types';
+import { CONFIG_LOJA, MOCK_SERVICOS, MOCK_PROFISSIONAIS } from './constants';
 import { db } from './firebase';
 import {
   collection,
@@ -149,6 +150,48 @@ function reminderKey(type: string, id: string, date: string): string {
   return `wpp_reminder_${type}_${id}_${date}`;
 }
 
+// ── Seed automático — popula o Firestore no primeiro acesso ──
+// Roda uma única vez quando o projeto Firebase está vazio.
+// Cria: config/main, serviços e profissionais padrão.
+async function seedInitialData(): Promise<void> {
+  try {
+    // 1. Verifica se config/main já existe
+    const configSnap = await getDoc(doc(db, COLLECTIONS.CONFIG, 'main'));
+    if (!configSnap.exists()) {
+      // Salva configuração padrão
+      const sanitize = (obj: any): any => JSON.parse(JSON.stringify(obj));
+      await setDoc(doc(db, COLLECTIONS.CONFIG, 'main'), sanitize(CONFIG_LOJA));
+      console.log('[Seed] ✅ config/main criado');
+    }
+
+    // 2. Verifica se serviços estão vazios
+    const servSnap = await getDocs(collection(db, COLLECTIONS.SERVICES));
+    if (servSnap.empty) {
+      await Promise.all(
+        MOCK_SERVICOS.map(({ id: _id, ...s }) =>
+          addDoc(collection(db, COLLECTIONS.SERVICES), s)
+        )
+      );
+      console.log('[Seed] ✅ Serviços padrão criados');
+    }
+
+    // 3. Verifica se profissionais estão vazios
+    const profSnap = await getDocs(collection(db, COLLECTIONS.PROFESSIONALS));
+    if (profSnap.empty) {
+      await Promise.all(
+        MOCK_PROFISSIONAIS.map(({ id: _id, ...p }) =>
+          addDoc(collection(db, COLLECTIONS.PROFESSIONALS), p)
+        )
+      );
+      console.log('[Seed] ✅ Profissionais padrão criados');
+    }
+
+  } catch (err) {
+    // Seed falha silenciosamente — não quebra o app
+    console.warn('[Seed] Não foi possível inicializar dados padrão:', err);
+  }
+}
+
 export function BarberProvider({ children }: { children?: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -191,6 +234,9 @@ export function BarberProvider({ children }: { children?: ReactNode }) {
   }, [user]);
 
   useEffect(() => {
+    // ── Primeiro acesso: popula Firestore se estiver vazio ────
+    seedInitialData();
+
     const unsubscribers = [
       onSnapshot(collection(db, COLLECTIONS.CLIENTS), snap => setClients(snap.docs.map(d => ({ id: d.id, ...d.data() } as Client)))),
       onSnapshot(collection(db, COLLECTIONS.PROFESSIONALS), snap => setProfessionals(snap.docs.map(d => ({ id: d.id, ...d.data() } as Professional)))),
