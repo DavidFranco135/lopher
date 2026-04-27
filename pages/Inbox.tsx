@@ -163,7 +163,7 @@ const Inbox: React.FC = () => {
           </div>
         )}
         {filteredConvs.map(conv => (
-          <div key={conv.id} className={`relative border-b group/conv ${divider} ${selectedConv?.id === conv.id ? (isDark ? 'bg-[#8B1F1C]/10 border-l-4 border-l-[#8B1F1C]' : 'bg-amber-50 border-l-4 border-l-[#8B1F1C]') : ''}`}>
+          <div key={conv.id} className={`relative border-b group/conv ${divider} ${selectedConv?.id === conv.id ? (isDark ? 'bg-[#C58A4A]/10 border-l-4 border-l-[#C58A4A]' : 'bg-amber-50 border-l-4 border-l-[#C58A4A]') : ''}`}>
             <button
               onClick={() => openConv(conv)}
               onTouchStart={e => { (e.currentTarget as any)._touchStartY = e.touches[0].clientY; }}
@@ -177,7 +177,7 @@ const Inbox: React.FC = () => {
                 }
               }}
               className={`w-full text-left px-4 py-4 flex items-center gap-3 transition-all ${isDark ? 'hover:bg-white/5' : 'hover:bg-zinc-50'}`}>
-              <div className={`w-11 h-11 rounded-full flex items-center justify-center text-base font-black shrink-0 relative ${isDark ? 'bg-[#8B1F1C]/20 text-[#8B1F1C]' : 'bg-amber-100 text-amber-700'}`}>
+              <div className={`w-11 h-11 rounded-full flex items-center justify-center text-base font-black shrink-0 relative ${isDark ? 'bg-[#C58A4A]/20 text-[#C58A4A]' : 'bg-amber-100 text-amber-700'}`}>
                 {resolveClientName(conv)?.charAt(0)?.toUpperCase() || '?'}
                 {isRegistered(conv) && (
                   <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-black flex items-center justify-center">
@@ -192,13 +192,13 @@ const Inbox: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between gap-1 mt-0.5">
                   <p className={`text-[11px] truncate ${sub}`}>{conv.lastMessage}</p>
-                  {conv.unread && <span className="w-2.5 h-2.5 rounded-full bg-[#8B1F1C] shrink-0" />}
+                  {conv.unread && <span className="w-2.5 h-2.5 rounded-full bg-[#C58A4A] shrink-0" />}
                 </div>
               </div>
             </button>
             <button
               onClick={e => { e.stopPropagation(); setConfirmDelete(conv.id); }}
-              className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg opacity-0 group-hover/conv:opacity-100 transition-all ${isDark ? 'bg-red-500/20 text-red-400 hover:bg-red-500/40' : 'bg-red-50 text-red-400 hover:bg-red-100'}`}
+              className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg opacity-0 group-hover/conv:opacity-100 transition-all ${isDark ? 'bg-red-500/20 text-purple-400 hover:bg-red-500/40' : 'bg-red-50 text-purple-400 hover:bg-purple-100'}`}
             >
               <Trash2 size={13} />
             </button>
@@ -222,12 +222,12 @@ const Inbox: React.FC = () => {
               <button onClick={() => setMobileView('list')} onTouchEnd={e => { e.preventDefault(); setMobileView('list'); }} className={`md:hidden p-2 rounded-xl ${isDark ? 'bg-white/5 text-zinc-400' : 'bg-zinc-100 text-zinc-500'}`}>
                 <ArrowLeft size={18} />
               </button>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-base shrink-0 ${isDark ? 'bg-[#8B1F1C]/20 text-[#8B1F1C]' : 'bg-amber-100 text-amber-700'}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-base shrink-0 ${isDark ? 'bg-[#C58A4A]/20 text-[#C58A4A]' : 'bg-amber-100 text-amber-700'}`}>
                 {resolveClientName(selectedConv)?.charAt(0)?.toUpperCase()}
               </div>
               <div>
                 <p className={`font-black text-sm ${txt}`}>{resolveClientName(selectedConv)}</p>
-                <a href={`https://wa.me/${selectedConv.clientPhone}`} target="_blank" rel="noreferrer" className={`text-[10px] flex items-center gap-1 hover:text-[#8B1F1C] transition-all ${sub}`}>
+                <a href={`https://wa.me/${selectedConv.clientPhone}`} target="_blank" rel="noreferrer" className={`text-[10px] flex items-center gap-1 hover:text-[#C58A4A] transition-all ${sub}`}>
                   <Phone size={10} /> {selectedConv.clientPhone}
                 </a>
               </div>
@@ -245,7 +245,7 @@ const Inbox: React.FC = () => {
             )}
             {messages.map(msg => (
               <div key={msg.id} className={`flex ${msg.from === 'admin' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[82%] rounded-2xl overflow-hidden ${msg.from === 'admin' ? 'bg-[#8B1F1C] text-black rounded-br-sm' : isDark ? 'bg-white/10 text-white rounded-bl-sm' : 'bg-zinc-100 text-zinc-900 rounded-bl-sm'}`}>
+                <div className={`max-w-[82%] rounded-2xl overflow-hidden ${msg.from === 'admin' ? 'bg-[#C58A4A] text-black rounded-br-sm' : isDark ? 'bg-white/10 text-white rounded-bl-sm' : 'bg-zinc-100 text-zinc-900 rounded-bl-sm'}`}>
                   {/* Imagem */}
                   {msg.mediaUrl && (msg.type === 'image' || msg.type === 'sticker') && (
                     <img
@@ -301,7 +301,7 @@ const Inbox: React.FC = () => {
                 onChange={e => setReplyText(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
                 placeholder="Digite sua resposta..."
-                className={`flex-1 resize-none rounded-2xl p-3 text-sm font-medium outline-none border transition-all ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-zinc-600 focus:border-[#8B1F1C]/50' : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#8B1F1C]'}`}
+                className={`flex-1 resize-none rounded-2xl p-3 text-sm font-medium outline-none border transition-all ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-zinc-600 focus:border-[#C58A4A]/50' : 'bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#C58A4A]'}`}
               />
               <button onClick={handleSend} onTouchEnd={e => { e.preventDefault(); handleSend(); }} disabled={!replyText.trim() || sending}
                 className="w-11 h-11 rounded-2xl gradiente-ouro text-black flex items-center justify-center shadow-lg disabled:opacity-40 hover:scale-105 active:scale-95 transition-all shrink-0">
@@ -361,7 +361,7 @@ const Inbox: React.FC = () => {
           <div className={`w-full max-w-xs rounded-[2rem] p-7 space-y-5 ${isDark ? 'cartao-vidro border-white/10' : 'bg-white border border-zinc-200'}`} onClick={e => e.stopPropagation()}>
             <div className="text-center space-y-2">
               <div className="w-14 h-14 rounded-full bg-red-500/20 flex items-center justify-center mx-auto">
-                <Trash2 size={24} className="text-red-400" />
+                <Trash2 size={24} className="text-purple-400" />
               </div>
               <h3 className={`font-black text-lg ${txt}`}>Apagar conversa?</h3>
               <p className={`text-[11px] ${sub}`}>Todas as mensagens serão apagadas permanentemente.</p>
