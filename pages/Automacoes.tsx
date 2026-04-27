@@ -7,7 +7,7 @@ import {
 import { useBarberStore } from '../store';
 
 // ─────────────────────────────────────────────────────────────
-// Automações de Marketing — Barbearia LOPHER
+// Automações de Marketing — Barbearia lopher
 // 7 módulos: horários vagos, promoção dias fracos, aniversário,
 // indicação premiada, manutenção do corte, ranking barbeiros,
 // cashback automático
@@ -156,14 +156,14 @@ const Automacoes: React.FC = () => {
           <div className="text-left">
             <div className="flex items-center gap-2">
               <p className={`font-black text-sm ${txt}`}>{title}</p>
-              {badge && <span className="text-[9px] font-black px-2 py-0.5 bg-[#C58A4A]/20 text-[#C58A4A] rounded-lg uppercase">{badge}</span>}
+              {badge && <span className="text-[9px] font-black px-2 py-0.5 bg-[#24094f]/20 text-[#24094f] rounded-lg uppercase">{badge}</span>}
             </div>
             <p className={`text-[10px] font-bold uppercase tracking-widest ${sub}`}>{subtitle}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           {feedback?.mod === id && (
-            <span className={`text-[10px] font-black px-3 py-1.5 rounded-xl ${feedback.ok ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-purple-400'}`}>
+            <span className={`text-[10px] font-black px-3 py-1.5 rounded-xl ${feedback.ok ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-400'}`}>
               {feedback.msg}
             </span>
           )}
@@ -178,7 +178,7 @@ const Automacoes: React.FC = () => {
             <button
               onClick={onAction}
               disabled={loading === id}
-              className="flex items-center gap-2 gradiente-ouro text-black px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:scale-105 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 gradiente-ouro text-white px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:scale-105 transition-all disabled:opacity-50"
             >
               {loading === id ? (
                 <span className="animate-spin">⟳</span>
@@ -210,9 +210,9 @@ const Automacoes: React.FC = () => {
         {/* ── Stats rápidas ── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Cancelados hoje', value: stats.canceladosHoje, icon: AlertCircle, color: 'text-purple-400' },
+            { label: 'Cancelados hoje', value: stats.canceladosHoje, icon: AlertCircle, color: 'text-red-400' },
             { label: 'Aniversariantes', value: stats.aniversariantesHoje, icon: Gift, color: 'text-pink-400' },
-            { label: 'Precisam de corte', value: stats.inativosMaitenence, icon: Clock, color: 'text-amber-400' },
+            { label: 'Precisam de corte', value: stats.inativosMaitenence, icon: Clock, color: 'text-purple-300' },
             { label: 'Cortes no mês', value: stats.totalCortesMes, icon: TrendingUp, color: 'text-emerald-400' },
           ].map(({ label, value, icon: Icon, color }) => (
             <div key={label} className={`rounded-2xl border p-4 ${card}`}>
@@ -380,7 +380,7 @@ const Automacoes: React.FC = () => {
         <ModCard
           id={6} icon={Trophy} title="Ranking de Barbeiros"
           subtitle="Desempenho mensal da equipe"
-          cor="bg-amber-500"
+          cor="bg-purple-950/200"
         >
           <p className={`text-sm ${sub} mb-2`}>
             Ranking automático baseado nos atendimentos concluídos no mês atual. Motiva a equipe e identifica os melhores performers.
@@ -397,7 +397,7 @@ const Automacoes: React.FC = () => {
                   <div className="flex items-center gap-3 mt-1">
                     <div className={`h-1.5 rounded-full flex-1 ${isDark ? 'bg-white/10' : 'bg-zinc-200'}`}>
                       <div
-                        className="h-full bg-gradient-to-r from-[#C58A4A] to-[#e6a85c] rounded-full transition-all"
+                        className="h-full bg-gradient-to-r from-[#24094f] to-[#e6a85c] rounded-full transition-all"
                         style={{ width: `${ranking[0]?.cortes > 0 ? (prof.cortes / ranking[0].cortes) * 100 : 0}%` }}
                       />
                     </div>
@@ -411,9 +411,9 @@ const Automacoes: React.FC = () => {
             ))}
           </div>
           {ranking.length > 0 && (
-            <div className={`flex items-center gap-2 p-3 rounded-xl ${isDark ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-amber-50 border border-amber-200'}`}>
-              <BarChart2 size={14} className="text-amber-500" />
-              <p className={`text-[10px] font-black uppercase ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
+            <div className={`flex items-center gap-2 p-3 rounded-xl ${isDark ? 'bg-purple-950/200/10 border border-amber-500/20' : 'bg-purple-950/20 border border-purple-800'}`}>
+              <BarChart2 size={14} className="text-purple-300" />
+              <p className={`text-[10px] font-black uppercase ${isDark ? 'text-purple-300' : 'text-purple-300'}`}>
                 Mês atual · Total: {stats.totalCortesMes} cortes concluídos
               </p>
             </div>
@@ -453,10 +453,10 @@ const Automacoes: React.FC = () => {
         </ModCard>
 
         {/* ── Nota sobre Cloud Functions ── */}
-        <div className={`rounded-2xl border p-5 flex gap-4 items-start ${isDark ? 'border-[#C58A4A]/20 bg-[#C58A4A]/5' : 'border-amber-200 bg-amber-50'}`}>
-          <Zap size={18} className="text-[#C58A4A] mt-0.5 shrink-0" />
+        <div className={`rounded-2xl border p-5 flex gap-4 items-start ${isDark ? 'border-[#24094f]/20 bg-[#24094f]/5' : 'border-purple-800 bg-purple-950/20'}`}>
+          <Zap size={18} className="text-[#24094f] mt-0.5 shrink-0" />
           <div>
-            <p className={`text-[10px] font-black uppercase tracking-widest text-[#C58A4A] mb-1`}>Deploy de Cloud Functions necessário</p>
+            <p className={`text-[10px] font-black uppercase tracking-widest text-[#24094f] mb-1`}>Deploy de Cloud Functions necessário</p>
             <p className={`text-xs ${sub}`}>
               Os módulos 1, 2, 3 e 5 precisam de novas Cloud Functions e templates WhatsApp configurados no Meta Business Manager para funcionar de forma totalmente automática. Os módulos 6 e 7 funcionam direto nesta tela.
             </p>
