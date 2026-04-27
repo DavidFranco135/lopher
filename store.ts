@@ -405,8 +405,8 @@ export function BarberProvider({ children }: { children?: ReactNode }) {
     }
     // Senha padrão caso config/main ainda não exista
     adminPass = adminPass || '654326';
-    if (id === 'novojeitoadm@gmail.com' && pass === adminPass) {
-      const adminName = config.adminName || 'Novo Jeito';
+    if (id === 'lopheradm@gmail.com' && pass === adminPass) {
+      const adminName = config.adminName || 'LOPHER';
       const adminAvatar = config.logo || 'https://i.pravatar.cc/150';
       setUser({ id: 'admin', name: adminName, email: id, role: 'ADMIN', avatar: adminAvatar });
       // ── Primeiro acesso: popula Firestore se estiver vazio ──
@@ -1184,7 +1184,7 @@ export function BarberProvider({ children }: { children?: ReactNode }) {
             billingType: 'UNDEFINED',
             value: totalPrice,
             dueDate: new Date().toISOString().split('T')[0],
-            description: `Barbearia Novo Jeito — ${appt.serviceName}`,
+            description: `Barbearia LOPHER — ${appt.serviceName}`,
             externalReference: `booking_${id}`,
           });
           if (charge?.id) {
@@ -1398,7 +1398,7 @@ export function BarberProvider({ children }: { children?: ReactNode }) {
             value:             data.price,
             nextDueDate:       new Date().toISOString().split('T')[0],
             cycle,
-            description:       `${data.planName} — Barbearia Novo Jeito`,
+            description:       `${data.planName} — Barbearia LOPHER`,
             externalReference: `sub_${docRef.id}`,
           });
 
