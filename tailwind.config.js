@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        'ouro': '#66360f',
+        'ouro': '#8B1F1C', 'azul-marca': '#1E4A6E',
       }
     },
   },
