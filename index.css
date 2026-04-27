@@ -10,7 +10,8 @@
 }
 
 :root {
-  --primario-ouro: #C58A4A;
+  --primario-ouro: #24094f;
+  --primario-roxo-claro: #3b0f7a;
   --fundo: #050505;
   --texto: #f9fafb;
   --texto-secundario: #9ca3af;
@@ -43,11 +44,11 @@ body {
 }
 
 .gradiente-ouro {
-  background: linear-gradient(135deg, #C58A4A 0%, #C58A4A 50%, #C58A4A 100%);
+  background: linear-gradient(135deg, #3b0f7a 0%, #24094f 100%);
 }
 
 .gradiente-texto-ouro {
-  background: linear-gradient(135deg, #C58A4A 0%, #C58A4A 50%, #C58A4A 100%);
+  background: linear-gradient(135deg, #3b0f7a 0%, #24094f 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
