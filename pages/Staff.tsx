@@ -111,7 +111,7 @@ const Staff: React.FC = () => {
   };
 
   const roleLabel = (r: string) =>
-    r === 'BARBEIRO' ? { label: 'Barbeiro', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' }
+    r === 'BARBEIRO' ? { label: 'Barbeiro', color: 'text-purple-300 bg-purple-950/200/10 border-amber-500/20' }
     : r === 'RECEPCAO' ? { label: 'Recepção', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' }
     : { label: 'Admin', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
 
@@ -130,17 +130,17 @@ const Staff: React.FC = () => {
         </div>
         <button
           onClick={openNew}
-          className="flex items-center gap-2 gradiente-ouro text-black px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl"
+          className="flex items-center gap-2 gradiente-ouro text-white px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl"
         >
           <UserPlus size={16}/> NOVO COLABORADOR
         </button>
       </div>
 
       {/* Info banner */}
-      <div className={`rounded-2xl p-5 border flex items-start gap-4 ${isDark ? 'bg-amber-500/5 border-amber-500/20' : 'bg-amber-50 border-amber-200'}`}>
-        <Shield size={20} className="text-amber-500 shrink-0 mt-0.5"/>
+      <div className={`rounded-2xl p-5 border flex items-start gap-4 ${isDark ? 'bg-purple-950/200/5 border-amber-500/20' : 'bg-purple-950/20 border-purple-800'}`}>
+        <Shield size={20} className="text-purple-300 shrink-0 mt-0.5"/>
         <div>
-          <p className={`text-sm font-black ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>Como funciona</p>
+          <p className={`text-sm font-black ${isDark ? 'text-purple-300' : 'text-purple-300'}`}>Como funciona</p>
           <p className={`text-xs mt-0.5 ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
             Cada colaborador acessa o sistema com e-mail e senha próprios. Você controla quais páginas ficam visíveis para cada um.
             O modo <strong>Barbeiro</strong> libera agenda e atendimentos. O modo <strong>Recepção</strong> inclui caixa e membros.
@@ -168,7 +168,7 @@ const Staff: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C58A4A] to-[#8B5E2E] flex items-center justify-center text-black font-black text-2xl italic shrink-0">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#24094f] to-[#8B5E2E] flex items-center justify-center text-black font-black text-2xl italic shrink-0">
                     {s.name.charAt(0)}
                   </div>
                   <div>
@@ -210,13 +210,13 @@ const Staff: React.FC = () => {
                     onClick={async () => {
                       await updateStaff(s.id, { active: !s.active });
                     }}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${s.active ? (isDark ? 'bg-red-500/10 text-purple-400 hover:bg-red-500/20' : 'bg-red-50 text-purple-400') : (isDark ? 'bg-emerald-500/10 text-emerald-400' : 'bg-emerald-50 text-emerald-500')}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${s.active ? (isDark ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20' : 'bg-red-50 text-red-400') : (isDark ? 'bg-emerald-500/10 text-emerald-400' : 'bg-emerald-50 text-emerald-500')}`}
                   >
                     {s.active ? <><ToggleRight size={13}/> Desativar</> : <><ToggleLeft size={13}/> Ativar</>}
                   </button>
                   <button
                     onClick={() => { if (window.confirm(`Remover ${s.name}?`)) deleteStaff(s.id); }}
-                    className="p-3 rounded-xl bg-red-500/10 text-purple-400 hover:bg-red-500/20 transition-all"
+                    className="p-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all"
                   >
                     <Trash2 size={14}/>
                   </button>
@@ -232,7 +232,7 @@ const Staff: React.FC = () => {
       ══════════════════════════════════════════ */}
       {showModal && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl animate-in zoom-in-95">
-          <div className={`w-full max-w-xl rounded-[3rem] shadow-2xl flex flex-col max-h-[92vh] ${isDark ? 'cartao-vidro border-[#C58A4A]/10' : 'bg-white border border-zinc-200'}`}>
+          <div className={`w-full max-w-xl rounded-[3rem] shadow-2xl flex flex-col max-h-[92vh] ${isDark ? 'cartao-vidro border-[#24094f]/10' : 'bg-white border border-zinc-200'}`}>
 
             {/* Header */}
             <div className="p-8 pb-4 flex justify-between items-center shrink-0">
@@ -297,9 +297,9 @@ const Staff: React.FC = () => {
                       key={opt.key}
                       type="button"
                       onClick={() => applyPreset(opt.key as any)}
-                      className={`p-4 rounded-2xl border-2 text-left transition-all space-y-2 ${form.role === opt.key ? 'border-[#C58A4A] bg-[#C58A4A]/10' : isDark ? 'border-white/10 bg-white/5 hover:border-white/20' : 'border-zinc-200 bg-zinc-50 hover:border-zinc-300'}`}
+                      className={`p-4 rounded-2xl border-2 text-left transition-all space-y-2 ${form.role === opt.key ? 'border-[#24094f] bg-[#24094f]/10' : isDark ? 'border-white/10 bg-white/5 hover:border-white/20' : 'border-zinc-200 bg-zinc-50 hover:border-zinc-300'}`}
                     >
-                      <div className={`${form.role === opt.key ? 'text-[#C58A4A]' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>{opt.icon}</div>
+                      <div className={`${form.role === opt.key ? 'text-[#24094f]' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>{opt.icon}</div>
                       <p className={`font-black text-sm ${form.role === opt.key ? (isDark ? 'text-white' : 'text-zinc-900') : isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{opt.label}</p>
                       <p className={`text-[9px] ${isDark ? 'text-zinc-600' : 'text-zinc-400'}`}>{opt.desc}</p>
                     </button>
@@ -323,11 +323,11 @@ const Staff: React.FC = () => {
                         key={pg.key}
                         type="button"
                         onClick={() => togglePage(pg.key)}
-                        className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${on ? (isDark ? 'border-[#C58A4A]/40 bg-[#C58A4A]/10' : 'border-amber-300 bg-amber-50') : (isDark ? 'border-white/5 bg-white/[0.02] hover:bg-white/5' : 'border-zinc-200 bg-zinc-50 hover:bg-zinc-100')}`}
+                        className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${on ? (isDark ? 'border-[#24094f]/40 bg-[#24094f]/10' : 'border-purple-700 bg-purple-950/20') : (isDark ? 'border-white/5 bg-white/[0.02] hover:bg-white/5' : 'border-zinc-200 bg-zinc-50 hover:bg-zinc-100')}`}
                       >
                         <span className="text-base">{pg.icon}</span>
-                        <span className={`text-[10px] font-black flex-1 ${on ? (isDark ? 'text-[#C58A4A]' : 'text-amber-700') : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>{pg.label}</span>
-                        {on && <Check size={12} className="text-[#C58A4A] shrink-0"/>}
+                        <span className={`text-[10px] font-black flex-1 ${on ? (isDark ? 'text-[#24094f]' : 'text-purple-300') : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>{pg.label}</span>
+                        {on && <Check size={12} className="text-[#24094f] shrink-0"/>}
                       </button>
                     );
                   })}
@@ -372,7 +372,7 @@ const Staff: React.FC = () => {
               <button onClick={() => setShowModal(false)} className={`flex-1 py-5 rounded-2xl font-black text-[9px] uppercase tracking-widest ${isDark ? 'bg-white/5 text-zinc-500 hover:text-white' : 'bg-zinc-100 text-zinc-500'} transition-all`}>
                 Cancelar
               </button>
-              <button onClick={handleSave} disabled={saving} className="flex-1 gradiente-ouro text-black py-5 rounded-2xl font-black text-[9px] uppercase tracking-widest shadow-xl disabled:opacity-50">
+              <button onClick={handleSave} disabled={saving} className="flex-1 gradiente-ouro text-white py-5 rounded-2xl font-black text-[9px] uppercase tracking-widest shadow-xl disabled:opacity-50">
                 {saving ? '⟳ Salvando...' : editingId ? '✓ Atualizar' : '+ Criar Conta'}
               </button>
             </div>
