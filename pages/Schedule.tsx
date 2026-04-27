@@ -116,21 +116,21 @@ const Schedule: React.FC = () => {
   const lbl   = 'text-[10px] font-black uppercase tracking-widest text-zinc-400';
 
   // Inputs/textareas — fundo explícito para evitar herança branca do browser
-  const inp = `w-full border p-4 rounded-xl outline-none font-bold text-sm transition-all focus:border-[#C58A4A] ${
+  const inp = `w-full border p-4 rounded-xl outline-none font-bold text-sm transition-all focus:border-[#24094f] ${
     isDark
       ? 'bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-600'
       : 'bg-zinc-50 border-zinc-300 text-zinc-900 placeholder:text-zinc-400'
   }`;
 
   // Selects — appearance-none + fundo explícito para dark mode funcionar
-  const sel = `w-full border p-4 rounded-xl outline-none font-bold text-sm transition-all focus:border-[#C58A4A] cursor-pointer ${
+  const sel = `w-full border p-4 rounded-xl outline-none font-bold text-sm transition-all focus:border-[#24094f] cursor-pointer ${
     isDark
       ? 'bg-zinc-900 border-zinc-700 text-white'
       : 'bg-zinc-50 border-zinc-300 text-zinc-900'
   }`;
 
   const overlay   = 'fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl animate-in zoom-in-95';
-  const mdl       = `w-full max-w-md rounded-[3rem] p-10 space-y-7 border shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-hide ${isDark ? 'bg-[#181818] border-[#C58A4A]/30' : 'bg-white border-zinc-200'}`;
+  const mdl       = `w-full max-w-md rounded-[3rem] p-10 space-y-7 border shadow-2xl max-h-[90vh] overflow-y-auto scrollbar-hide ${isDark ? 'bg-[#181818] border-[#24094f]/30' : 'bg-white border-zinc-200'}`;
   const btnCancel = `flex-1 py-4 rounded-2xl font-black uppercase text-[9px] transition-all ${isDark ? 'bg-white/5 text-zinc-400 hover:bg-white/10' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'}`;
 
   return (
@@ -143,7 +143,7 @@ const Schedule: React.FC = () => {
         </div>
         <button
           onClick={() => activeTab === 'blocks' ? setShowBlockModal(true) : setShowCampaignModal(true)}
-          className="flex items-center gap-2 gradiente-ouro text-black px-6 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl"
+          className="flex items-center gap-2 gradiente-ouro text-white px-6 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl"
         >
           <Plus size={16} />
           {activeTab === 'blocks' ? 'Bloquear Horário' : 'Nova Campanha'}
@@ -157,7 +157,7 @@ const Schedule: React.FC = () => {
           { id: 'inactive', label: `Inativos (${inactiveClients.length})`, icon: Bell },
         ].map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-[10px] font-black uppercase transition-all ${activeTab === tab.id ? 'bg-[#C58A4A] text-black' : isDark ? 'bg-white/5 text-zinc-500' : 'bg-zinc-100 text-zinc-600'}`}
+            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-[10px] font-black uppercase transition-all ${activeTab === tab.id ? 'bg-[#24094f] text-black' : isDark ? 'bg-white/5 text-zinc-500' : 'bg-zinc-100 text-zinc-600'}`}
           >
             <tab.icon size={14} /> {tab.label}
           </button>
@@ -172,13 +172,13 @@ const Schedule: React.FC = () => {
             return (
               <div key={prof.id} className={`rounded-[2rem] p-6 border ${bg}`}>
                 <div className="flex items-center gap-4 mb-6">
-                  <img src={prof.avatar} className="w-12 h-12 rounded-2xl object-cover border border-[#C58A4A]/30" alt="" />
+                  <img src={prof.avatar} className="w-12 h-12 rounded-2xl object-cover border border-[#24094f]/30" alt="" />
                   <div>
                     <p className={`font-black ${txt}`}>{prof.name}</p>
                     <p className="text-[9px] text-zinc-500 font-bold uppercase">{slots.length} bloqueios</p>
                   </div>
                   <button onClick={() => { setBlockForm({ ...blockForm, professionalId: prof.id }); setShowBlockModal(true); }}
-                    className="ml-auto p-2.5 bg-[#C58A4A]/10 text-[#C58A4A] hover:bg-[#C58A4A] hover:text-black rounded-xl transition-all">
+                    className="ml-auto p-2.5 bg-[#24094f]/10 text-[#24094f] hover:bg-[#24094f] hover:text-black rounded-xl transition-all">
                     <Plus size={16} />
                   </button>
                 </div>
@@ -218,7 +218,7 @@ const Schedule: React.FC = () => {
                   <div key={camp.id} className={`rounded-2xl p-5 border ${bg}`}>
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <MessageSquare size={20} className="text-[#C58A4A] shrink-0" />
+                        <MessageSquare size={20} className="text-[#24094f] shrink-0" />
                         <div>
                           <p className={`font-black text-sm ${txt}`}>{camp.name}</p>
                           <p className="text-[9px] text-zinc-500 font-bold uppercase">
@@ -244,7 +244,7 @@ const Schedule: React.FC = () => {
           )}
 
           <div className={`rounded-[2rem] p-6 border ${bg} flex items-center gap-4`}>
-            <AlertTriangle className="text-amber-500 shrink-0" size={24} />
+            <AlertTriangle className="text-purple-300 shrink-0" size={24} />
             <div>
               <p className={`font-black ${txt}`}>{inactiveClients.length} clientes sem visita há mais de 30 dias</p>
               <p className="text-[10px] text-zinc-500 font-bold uppercase">Clique em "WhatsApp" para enviar mensagem personalizada</p>
@@ -255,11 +255,11 @@ const Schedule: React.FC = () => {
             <div key={client.id} className={`rounded-[2rem] p-5 border ${bg}`}>
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg ${client.daysAgo > 60 ? 'bg-red-500/10 text-red-500' : 'bg-amber-500/10 text-amber-500'}`}>{client.name.charAt(0)}</div>
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg ${client.daysAgo > 60 ? 'bg-red-500/10 text-red-500' : 'bg-purple-950/200/10 text-purple-300'}`}>{client.name.charAt(0)}</div>
                   <div>
                     <p className={`font-black ${txt}`}>{client.name}</p>
                     <p className="text-[9px] text-zinc-500 font-bold">{client.phone}</p>
-                    <p className={`text-[9px] font-black uppercase mt-0.5 ${client.daysAgo > 60 ? 'text-red-500' : 'text-amber-500'}`}>{client.daysAgo} dias sem visita</p>
+                    <p className={`text-[9px] font-black uppercase mt-0.5 ${client.daysAgo > 60 ? 'text-red-500' : 'text-purple-300'}`}>{client.daysAgo} dias sem visita</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -276,7 +276,7 @@ const Schedule: React.FC = () => {
                         key={camp.id}
                         onClick={() => handleSendCampaignToClient(client.phone, client.name, client.daysAgo, camp)}
                         title={`Enviar campanha: ${camp.name}`}
-                        className={`flex items-center gap-1.5 px-3 py-2.5 rounded-xl font-black text-[9px] uppercase hover:scale-105 transition-all border ${isDark ? 'bg-white/5 border-white/10 text-zinc-300 hover:bg-[#C58A4A]/20 hover:border-[#C58A4A]/40' : 'bg-zinc-100 border-zinc-200 text-zinc-700 hover:bg-amber-50 hover:border-amber-300'}`}
+                        className={`flex items-center gap-1.5 px-3 py-2.5 rounded-xl font-black text-[9px] uppercase hover:scale-105 transition-all border ${isDark ? 'bg-white/5 border-white/10 text-zinc-300 hover:bg-[#24094f]/20 hover:border-[#24094f]/40' : 'bg-zinc-100 border-zinc-200 text-zinc-700 hover:bg-purple-950/20 hover:border-purple-700'}`}
                       >
                         <MessageSquare size={11} /> {camp.name}
                       </button>
@@ -314,7 +314,7 @@ const Schedule: React.FC = () => {
               </div>
 
               <label className={`flex items-center gap-3 cursor-pointer ${txt}`}>
-                <input type="checkbox" checked={blockForm.recurring} onChange={e => setBlockForm({ ...blockForm, recurring: e.target.checked })} className="w-5 h-5 rounded accent-[#C58A4A]" />
+                <input type="checkbox" checked={blockForm.recurring} onChange={e => setBlockForm({ ...blockForm, recurring: e.target.checked })} className="w-5 h-5 rounded accent-[#24094f]" />
                 <span className="text-sm font-black">Bloqueio Recorrente (toda semana)</span>
               </label>
 
@@ -330,7 +330,7 @@ const Schedule: React.FC = () => {
                             : [...blockForm.recurringDays, i];
                           setBlockForm({ ...blockForm, recurringDays: days });
                         }}
-                        className={`px-3 py-2 rounded-lg text-[9px] font-black uppercase ${blockForm.recurringDays.includes(i) ? 'bg-[#C58A4A] text-black' : isDark ? 'bg-white/10 text-zinc-400' : 'bg-zinc-100 text-zinc-600'}`}
+                        className={`px-3 py-2 rounded-lg text-[9px] font-black uppercase ${blockForm.recurringDays.includes(i) ? 'bg-[#24094f] text-black' : isDark ? 'bg-white/10 text-zinc-400' : 'bg-zinc-100 text-zinc-600'}`}
                       >{day}</button>
                     ))}
                   </div>
@@ -405,7 +405,7 @@ const Schedule: React.FC = () => {
             </div>
             <div className="flex gap-3">
               <button onClick={() => setShowCampaignModal(false)} className={btnCancel}>Cancelar</button>
-              <button onClick={handleSaveCampaign} className="flex-1 gradiente-ouro text-black py-4 rounded-2xl font-black uppercase text-[9px]">Criar Campanha</button>
+              <button onClick={handleSaveCampaign} className="flex-1 gradiente-ouro text-white py-4 rounded-2xl font-black uppercase text-[9px]">Criar Campanha</button>
             </div>
           </div>
         </div>
