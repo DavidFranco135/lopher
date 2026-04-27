@@ -53,7 +53,7 @@ const Suggestions: React.FC = () => {
             >
               <div className="flex items-start justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#C58A4A]/10 flex items-center justify-center text-[#C58A4A]">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C58A4A]/10 flex items-center justify-center text-white">
                     <User size={24}/>
                   </div>
                   <div>
@@ -111,8 +111,8 @@ const Suggestions: React.FC = () => {
                 </div>
                 {sug.response && (
                   <div className="flex items-center gap-2 px-2">
-                    <CheckCircle2 size={12} className="text-[#C58A4A]" />
-                    <span className="text-[9px] font-black text-[#C58A4A] uppercase tracking-widest">
+                    <CheckCircle2 size={12} className="text-white" />
+                    <span className="text-[9px] font-black text-white uppercase tracking-widest">
                       Respondido {sug.responseDate && `em ${sug.responseDate}`}
                     </span>
                   </div>
@@ -127,7 +127,7 @@ const Suggestions: React.FC = () => {
                 }`}>
                   <Calendar size={12}/> Recebida em: {sug.date}
                 </span>
-                <div className="w-8 h-8 rounded-lg bg-[#C58A4A]/5 flex items-center justify-center text-[#C58A4A]/30">
+                <div className="w-8 h-8 rounded-lg bg-[#C58A4A]/5 flex items-center justify-center text-white/30">
                   <MessageSquare size={14}/>
                 </div>
               </div>
