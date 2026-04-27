@@ -1,12 +1,12 @@
 import { Service, Professional, Client, Appointment, ShopConfig, VipPlan } from './types';
 
 export const CORES = {
-  primaria: '#8B1F1C',
-  secundaria: '#1E4A6E',
+  primaria: '#C58A4A',
+  secundaria: '#C5A059',
   fundo: '#050505',
   cartao: '#0F0F0F',
   texto: '#FDFDFD',
-  acento: '#A0302C',
+  acento: '#E5C76B',
 };
 
 // Fix: Added missing 'aboutTitle' and 'aboutText' properties to satisfy ShopConfig interface
@@ -19,7 +19,7 @@ export const CONFIG_LOJA: ShopConfig = {
   city: "São Gonçalo",
   state: "RJ",
   whatsapp: "5521998276713",
-  instagram: "@lopherofocial",
+  instagram: "@lopheroficial",
   logo: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=200&h=200&auto=format&fit=crop",
   coverImage: "https://images.unsplash.com/photo-1512690196252-741ef294f260?q=80&w=2000",
   loginBackground: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=2000",
