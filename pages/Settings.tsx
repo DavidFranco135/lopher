@@ -209,7 +209,7 @@ const Settings: React.FC = () => {
 
           {/* 1. Perfil Master */}
           <div className={card}>
-            <h3 className={h3}><UserIcon size={22} className="text-[#C58A4A]" /> Perfil Master</h3>
+            <h3 className={h3}><UserIcon size={22} className="text-white" /> Perfil Master</h3>
             <div className="flex flex-col sm:flex-row items-center gap-8">
               <div className="relative group w-36 h-36 shrink-0">
                 <img src={userData.avatar} className="w-full h-full rounded-[2.5rem] object-cover border-4 border-[#C58A4A]/30 shadow-2xl" alt="Avatar" />
@@ -229,7 +229,7 @@ const Settings: React.FC = () => {
 
           {/* 2. Identidade */}
           <div className={card}>
-            <h3 className={h3}><Store size={22} className="text-[#C58A4A]" /> Identidade do Barber Pub</h3>
+            <h3 className={h3}><Store size={22} className="text-white" /> Identidade do Barber Pub</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className={lbl}>Nome da Casa</label>
@@ -253,7 +253,7 @@ const Settings: React.FC = () => {
 
           {/* 3. Contato & Localização */}
           <div className={card}>
-            <h3 className={h3}><MapPin size={22} className="text-[#C58A4A]" /> Contato & Localização</h3>
+            <h3 className={h3}><MapPin size={22} className="text-white" /> Contato & Localização</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className={lbl}>WhatsApp Business</label>
@@ -304,7 +304,7 @@ const Settings: React.FC = () => {
 
           {/* 4. Imagens da Página Pública */}
           <div className={card}>
-            <h3 className={h3}><ImageIcon size={22} className="text-[#C58A4A]" /> Imagens da Página Pública</h3>
+            <h3 className={h3}><ImageIcon size={22} className="text-white" /> Imagens da Página Pública</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ImgCard label="Foto Capa (Header)" field="coverImage" src={formData.coverImage} />
               <ImgCard label="Fundo da Tela de Login" field="loginBackground" src={formData.loginBackground} />
@@ -316,7 +316,7 @@ const Settings: React.FC = () => {
           {/* 5. Galeria "Nosso Ambiente" */}
           <div className={card}>
             <div className="flex items-center justify-between">
-              <h3 className={h3}><Image size={22} className="text-[#C58A4A]" /> Galeria — Nosso Ambiente</h3>
+              <h3 className={h3}><Image size={22} className="text-white" /> Galeria — Nosso Ambiente</h3>
               <label className={`flex items-center gap-2 gradiente-ouro text-black px-5 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest cursor-pointer shadow-lg hover:scale-105 transition-all ${loading ? 'opacity-50 pointer-events-none' : ''}`}>
                 <Plus size={14} /> {loading ? 'Enviando...' : 'Adicionar Foto'}
                 <input type="file" accept="image/*" className="hidden" onChange={handleGalleryUpload} disabled={loading} />
@@ -349,7 +349,7 @@ const Settings: React.FC = () => {
 
           {/* 5b. Galeria de Fotos de Cortes */}
           <div className={card}>
-            <h3 className={h3}><Camera size={22} className="text-[#C58A4A]" /> Galeria de Fotos de Cortes</h3>
+            <h3 className={h3}><Camera size={22} className="text-white" /> Galeria de Fotos de Cortes</h3>
             <p className={`text-[10px] mt-1 mb-5 ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Exibida na página pública. Clientes clicam e abrem em tela cheia com descrição.</p>
             <input
               type="text"
@@ -358,7 +358,7 @@ const Settings: React.FC = () => {
               onChange={e => setCutGalleryDesc(e.target.value)}
               className={`w-full border p-4 rounded-xl text-sm font-bold outline-none mb-3 ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-zinc-600' : 'bg-zinc-50 border-zinc-300 text-zinc-900 placeholder:text-zinc-400'}`}
             />
-            <label className={`flex items-center justify-center gap-2 w-full py-4 rounded-xl border-2 border-dashed cursor-pointer transition-all font-black text-[10px] uppercase tracking-widest mb-6 ${cutGalleryLoading ? 'opacity-50 pointer-events-none border-zinc-600 text-zinc-500' : 'border-[#C58A4A]/40 text-[#C58A4A] hover:border-[#C58A4A] hover:bg-[#C58A4A]/5'}`}>
+            <label className={`flex items-center justify-center gap-2 w-full py-4 rounded-xl border-2 border-dashed cursor-pointer transition-all font-black text-[10px] uppercase tracking-widest mb-6 ${cutGalleryLoading ? 'opacity-50 pointer-events-none border-zinc-600 text-zinc-500' : 'border-[#C58A4A]/40 text-white hover:border-[#C58A4A] hover:bg-[#C58A4A]/5'}`}>
               <Camera size={14}/> {cutGalleryLoading ? 'Enviando...' : 'Adicionar Foto de Corte'}
               <input type="file" accept="image/*" className="hidden" disabled={cutGalleryLoading} onChange={async (e) => {
                 const file = e.target.files?.[0];
@@ -414,7 +414,7 @@ const Settings: React.FC = () => {
 
           {/* 6. Programa de Fidelidade */}
           <div className={card}>
-            <h3 className={h3}><Star size={22} className="text-[#C58A4A]" /> Programa de Fidelidade</h3>
+            <h3 className={h3}><Star size={22} className="text-white" /> Programa de Fidelidade</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className={lbl}>Selos para Corte Grátis</label>
@@ -529,7 +529,7 @@ const Settings: React.FC = () => {
           {/* 7. Planos VIP */}
           <div className={card}>
             <div className="flex items-center justify-between">
-              <h3 className={h3}><Crown size={22} className="text-[#C58A4A]" /> Planos VIP</h3>
+              <h3 className={h3}><Crown size={22} className="text-white" /> Planos VIP</h3>
               <button type="button"
                 onClick={() => { setEditingPlan(null); setNewPlan({ name: '', price: 0, period: 'MENSAL', benefits: [''], status: 'ATIVO', customDays: 30, featured: false }); setShowVipPlanModal(true); }}
                 className="flex items-center gap-2 gradiente-ouro text-black px-5 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:scale-105 transition-all">
@@ -547,12 +547,12 @@ const Settings: React.FC = () => {
                       <div className="flex items-center gap-3 mb-2">
                         <div className="flex items-center gap-2">
                           <h4 className={`text-lg font-black ${isDark ? 'text-white' : 'text-zinc-900'}`}>{plan.name}</h4>
-                          {(plan as any).featured && <span className="text-[9px] font-black text-[#C58A4A] bg-[#C58A4A]/10 border border-[#C58A4A]/30 px-2 py-0.5 rounded-full">⭐ DESTAQUE</span>}
-                          {(plan as any).maxCuts && <span className="text-[9px] font-black text-white bg-blue-500/10 border border-[#3b0f7a]/20 px-2 py-0.5 rounded-full">✂️ {(plan as any).maxCuts} cortes • {(plan as any).vipCommissionPct || 0}% comissão</span>}
+                          {(plan as any).featured && <span className="text-[9px] font-black text-white bg-[#C58A4A]/10 border border-[#C58A4A]/30 px-2 py-0.5 rounded-full">⭐ DESTAQUE</span>}
+                          {(plan as any).maxCuts && <span className="text-[9px] font-black text-white bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full">✂️ {(plan as any).maxCuts} cortes • {(plan as any).vipCommissionPct || 0}% comissão</span>}
                         </div>
                         <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase ${plan.status === 'ATIVO' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}`}>{plan.status}</span>
                       </div>
-                      <p className={`text-2xl font-black mb-2 ${isDark ? 'text-[#C58A4A]' : 'text-white'}`}>
+                      <p className={`text-2xl font-black mb-2 ${isDark ? 'text-white' : 'text-white'}`}>
                         R$ {plan.price.toFixed(2)} <span className="text-sm font-bold">/{plan.period === 'MENSAL' ? 'mês' : plan.period === 'ANUAL' ? 'ano' : plan.period === 'SEMANAL' ? 'semana' : `${plan.customDays || '?'}d`}</span>
                       </p>
                       <div className="space-y-1">
@@ -576,7 +576,7 @@ const Settings: React.FC = () => {
           {/* 8. Gestão de Barbeiros */}
           <div className={card}>
             <div className="flex items-center justify-between">
-              <h3 className={h3}><UserIcon size={22} className="text-[#C58A4A]" /> Gestão de Barbeiros</h3>
+              <h3 className={h3}><UserIcon size={22} className="text-white" /> Gestão de Barbeiros</h3>
               <button type="button"
                 onClick={async () => {
                   if (confirm('Reiniciar todos os contadores de curtidas?')) {
@@ -615,31 +615,31 @@ const Settings: React.FC = () => {
             <h3 className={`text-lg font-black font-display italic ${isDark ? 'text-white' : 'text-zinc-900'}`}>Preview Rápido</h3>
             <div className="space-y-3 text-sm">
               <div className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-white/5' : 'bg-zinc-50'}`}>
-                <Phone size={14} className="text-[#C58A4A] shrink-0" />
+                <Phone size={14} className="text-white shrink-0" />
                 <span className={`text-xs font-bold truncate ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{formData.whatsapp || 'WhatsApp não definido'}</span>
               </div>
               <div className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-white/5' : 'bg-zinc-50'}`}>
-                <Instagram size={14} className="text-[#C58A4A] shrink-0" />
+                <Instagram size={14} className="text-white shrink-0" />
                 <span className={`text-xs font-bold truncate ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{formData.instagram || 'Instagram não definido'}</span>
               </div>
               <div className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-white/5' : 'bg-zinc-50'}`}>
-                <MapPin size={14} className="text-[#C58A4A] shrink-0" />
+                <MapPin size={14} className="text-white shrink-0" />
                 <span className={`text-xs font-bold truncate ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{formData.address || 'Endereço não definido'}</span>
               </div>
               <div className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-white/5' : 'bg-zinc-50'}`}>
-                <Clock size={14} className="text-[#C58A4A] shrink-0" />
+                <Clock size={14} className="text-white shrink-0" />
                 <span className={`text-xs font-bold ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{formData.openingTime || '08:00'} – {formData.closingTime || '20:00'}</span>
               </div>
               <div className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-white/5' : 'bg-zinc-50'}`}>
-                <Image size={14} className="text-[#C58A4A] shrink-0" />
+                <Image size={14} className="text-white shrink-0" />
                 <span className={`text-xs font-bold ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{(formData.gallery || []).length} foto(s) na galeria</span>
               </div>
               <div className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-white/5' : 'bg-zinc-50'}`}>
-                <Crown size={14} className="text-[#C58A4A] shrink-0" />
+                <Crown size={14} className="text-white shrink-0" />
                 <span className={`text-xs font-bold ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{(formData.vipPlans || []).filter(p => p.status === 'ATIVO').length} plano(s) VIP ativo(s)</span>
               </div>
               <div className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-white/5' : 'bg-zinc-50'}`}>
-                <Star size={14} className="text-[#C58A4A] shrink-0" />
+                <Star size={14} className="text-white shrink-0" />
                 <span className={`text-xs font-bold ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{(formData as any).stampsForFreeCut ?? 10} selos · {(formData as any).cashbackPercent ?? 5}% cashback</span>
               </div>
             </div>
@@ -672,7 +672,7 @@ const Settings: React.FC = () => {
                 <div key={plan.id} className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? 'bg-white/3 border-white/5' : 'bg-zinc-50 border-zinc-200'}`}>
                   <div className="flex items-center gap-3 min-w-0">
                     <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${plan.featured ? 'gradiente-ouro' : isDark ? 'bg-white/10' : 'bg-zinc-200'}`}>
-                      <Crown size={14} className={plan.featured ? 'text-black' : 'text-[#C58A4A]'}/>
+                      <Crown size={14} className={plan.featured ? 'text-black' : 'text-white'}/>
                     </div>
                     <div className="min-w-0">
                       <p className={`font-black text-sm truncate ${isDark ? 'text-white' : 'text-zinc-900'}`}>{plan.name}</p>
@@ -681,7 +681,7 @@ const Settings: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <span className={`text-[8px] font-black px-2 py-1 rounded-full ${plan.status === 'ATIVO' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>{plan.status}</span>
-                    <button type="button" onClick={() => handleEditPlan(plan)} className="p-2 rounded-xl bg-[#C58A4A]/10 text-[#C58A4A] hover:bg-[#C58A4A]/20 transition-all"><Edit3 size={13}/></button>
+                    <button type="button" onClick={() => handleEditPlan(plan)} className="p-2 rounded-xl bg-[#C58A4A]/10 text-white hover:bg-[#C58A4A]/20 transition-all"><Edit3 size={13}/></button>
                     <button type="button" onClick={() => handleDeletePlan(plan.id)} className="p-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all"><Trash2 size={13}/></button>
                   </div>
                 </div>
@@ -758,11 +758,11 @@ const Settings: React.FC = () => {
                       <p className={`text-[9px] font-bold ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>{card.clientPhone}</p>
                     </div>
                     <button type="button" onClick={() => { setEditingCard(card); setEditStamps(String(card.stamps||0)); setEditCredits(String(card.credits||0)); setEditFreeCuts(String(card.freeCutsPending||0)); setLoyaltySaveMsg(null); }}
-                      className="p-2 rounded-xl bg-[#C58A4A]/10 text-[#C58A4A] hover:bg-[#C58A4A]/20 transition-all"><Edit3 size={13}/></button>
+                      className="p-2 rounded-xl bg-[#C58A4A]/10 text-white hover:bg-[#C58A4A]/20 transition-all"><Edit3 size={13}/></button>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-center">
                     <div className={`p-2 rounded-xl ${isDark ? 'bg-white/5' : 'bg-white border border-zinc-100'}`}>
-                      <p className="text-[#C58A4A] font-black text-lg">{card.stamps||0}</p>
+                      <p className="text-white font-black text-lg">{card.stamps||0}</p>
                       <p className={`text-[8px] font-black uppercase ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Selos</p>
                     </div>
                     <div className={`p-2 rounded-xl ${isDark ? 'bg-white/5' : 'bg-white border border-zinc-100'}`}>
@@ -770,7 +770,7 @@ const Settings: React.FC = () => {
                       <p className={`text-[8px] font-black uppercase ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Créditos</p>
                     </div>
                     <div className={`p-2 rounded-xl ${isDark ? 'bg-white/5' : 'bg-white border border-zinc-100'}`}>
-                      <p className="text-amber-400 font-black text-lg">{card.freeCutsPending||0}</p>
+                      <p className="text-white font-black text-lg">{card.freeCutsPending||0}</p>
                       <p className={`text-[8px] font-black uppercase ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Grátis</p>
                     </div>
                   </div>
@@ -884,7 +884,7 @@ const Settings: React.FC = () => {
                 } catch (e: any) { setReprocessMsg({ ok: false, txt: `Erro: ${e.message}` }); }
                 setReprocessing(false);
               }}
-              className="w-full py-4 rounded-2xl font-black text-[10px] uppercase border transition-all bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20 disabled:opacity-50">
+              className="w-full py-4 rounded-2xl font-black text-[10px] uppercase border transition-all bg-amber-500/10 border-amber-500/30 text-white hover:bg-amber-500/20 disabled:opacity-50">
               {reprocessing ? '⏳ Processando...' : '🔄 Reprocessar Selos Agora'}
             </button>
           </div>
@@ -1055,7 +1055,7 @@ const Settings: React.FC = () => {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className={`font-black text-sm ${isDark ? 'text-white' : 'text-zinc-900'}`}>
-                      🔑 Senha alterada por <span className="text-[#C58A4A]">{log.changedBy}</span>
+                      🔑 Senha alterada por <span className="text-white">{log.changedBy}</span>
                     </p>
                     <p className={`text-[9px] mt-1 font-bold ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>
                       {new Date(log.timestamp).toLocaleString('pt-BR')}
@@ -1064,7 +1064,7 @@ const Settings: React.FC = () => {
                       IP: {log.ip} • {log.device?.substring(0, 60)}...
                     </p>
                   </div>
-                  <span className="text-[8px] font-black text-amber-400 bg-amber-500/10 px-2 py-1 rounded-full shrink-0">AUDITADO</span>
+                  <span className="text-[8px] font-black text-white bg-amber-500/10 px-2 py-1 rounded-full shrink-0">AUDITADO</span>
                 </div>
               </div>
             ))}
@@ -1137,7 +1137,7 @@ const Settings: React.FC = () => {
                   <label className={lbl}>👥 Membros do Plano</label>
                   <button type="button"
                     onClick={() => setNewPlan({ ...newPlan, members: [...((newPlan as any).members || []), { label: '', cuts: 4 }] } as any)}
-                    className="text-[9px] font-black text-[#C58A4A] hover:underline uppercase tracking-widest"
+                    className="text-[9px] font-black text-white hover:underline uppercase tracking-widest"
                   >+ Adicionar Membro</button>
                 </div>
                 {((newPlan as any).members || []).length === 0 ? (
@@ -1174,7 +1174,7 @@ const Settings: React.FC = () => {
                           className="p-1.5 text-red-400 hover:bg-red-500/10 rounded-lg transition-all">✕</button>
                       </div>
                     ))}
-                    <p className="text-[10px] font-black text-[#C58A4A] text-right">
+                    <p className="text-[10px] font-black text-white text-right">
                       Total: {((newPlan as any).members || []).reduce((s: number, m: any) => s + (m.cuts || 0), 0)} cortes incluídos no plano
                     </p>
                   </div>
@@ -1203,7 +1203,7 @@ const Settings: React.FC = () => {
               {/* Preview do cálculo */}
               {(newPlan.price || 0) > 0 && (newPlan.maxCuts || 0) > 0 && (
                 <div className={`p-4 rounded-2xl border text-[11px] space-y-1 ${isDark ? 'bg-[#C58A4A]/5 border-[#C58A4A]/20' : 'bg-amber-50 border-amber-200'}`}>
-                  <p className="font-black text-[#C58A4A]">💡 Preview do cálculo</p>
+                  <p className="font-black text-white">💡 Preview do cálculo</p>
                   <p className={isDark ? 'text-zinc-300' : 'text-zinc-700'}>
                     Valor por corte: <strong>R$ {((newPlan.price || 0) / (newPlan.maxCuts || 1)).toFixed(2)}</strong>
                   </p>
@@ -1223,7 +1223,7 @@ const Settings: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <span className="text-lg">⭐</span>
                   <div className="text-left">
-                    <p className={`font-black text-[11px] uppercase tracking-widest ${newPlan.featured ? 'text-[#C58A4A]' : isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>Plano em Destaque</p>
+                    <p className={`font-black text-[11px] uppercase tracking-widest ${newPlan.featured ? 'text-white' : isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>Plano em Destaque</p>
                     <p className={`text-[9px] ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Aparece com borda dourada no portal do cliente</p>
                   </div>
                 </div>
@@ -1234,7 +1234,7 @@ const Settings: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className={lbl}>Benefícios</label>
-                  <button type="button" onClick={addBenefit} className="text-[#C58A4A] text-xs font-black flex items-center gap-1 hover:opacity-80">
+                  <button type="button" onClick={addBenefit} className="text-white text-xs font-black flex items-center gap-1 hover:opacity-80">
                     <Plus size={13} /> Adicionar
                   </button>
                 </div>
