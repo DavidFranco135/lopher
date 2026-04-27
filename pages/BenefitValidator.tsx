@@ -104,7 +104,7 @@ const BenefitValidator: React.FC<BenefitValidatorProps> = ({ token, onBack }) =>
         {/* ── ESTADO: LOADING ── */}
         {state === 'loading' && (
           <div className="flex flex-col items-center gap-4 py-8">
-            <Loader2 size={40} className="text-[#C58A4A] animate-spin" />
+            <Loader2 size={40} className="text-[#8B1F1C] animate-spin" />
             <p className={`text-sm font-bold ${txt}`}>Verificando QR Code...</p>
           </div>
         )}
@@ -132,11 +132,11 @@ const BenefitValidator: React.FC<BenefitValidatorProps> = ({ token, onBack }) =>
               </div>
 
               {/* Benefício */}
-              <div className={`p-5 rounded-2xl border ${isDark ? 'border-[#C58A4A]/20 bg-[#C58A4A]/5' : 'border-amber-300 bg-amber-50'}`}>
+              <div className={`p-5 rounded-2xl border ${isDark ? 'border-[#8B1F1C]/20 bg-[#8B1F1C]/5' : 'border-amber-300 bg-amber-50'}`}>
                 <div className="flex items-center gap-3">
-                  <Gift size={24} className="text-[#C58A4A]" />
+                  <Gift size={24} className="text-[#8B1F1C]" />
                   <div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-[#C58A4A]">Benefício</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-[#8B1F1C]">Benefício</p>
                     <p className={`font-black text-sm ${txt}`}>
                       Desconto especial para cliente da barbearia
                     </p>
