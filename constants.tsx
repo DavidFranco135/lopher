@@ -1,12 +1,12 @@
 import { Service, Professional, Client, Appointment, ShopConfig, VipPlan } from './types';
 
 export const CORES = {
-  primaria: '#C58A4A',
-  secundaria: '#C5A059',
+  primaria: '#24094f',
+  secundaria: '#1E4A6E',
   fundo: '#050505',
   cartao: '#0F0F0F',
   texto: '#FDFDFD',
-  acento: '#E5C76B',
+  acento: '#3b0f7a',
 };
 
 // Fix: Added missing 'aboutTitle' and 'aboutText' properties to satisfy ShopConfig interface
@@ -18,7 +18,7 @@ export const CONFIG_LOJA: ShopConfig = {
   address: "Rua Feliciano Sodré, 123",
   city: "São Gonçalo",
   state: "RJ",
-  whatsapp: "5521998276713",
+  whatsapp: "5521973708141",
   instagram: "@lopheroficial",
   logo: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=200&h=200&auto=format&fit=crop",
   coverImage: "https://images.unsplash.com/photo-1512690196252-741ef294f260?q=80&w=2000",
