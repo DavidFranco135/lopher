@@ -177,7 +177,7 @@ const Inbox: React.FC = () => {
                 }
               }}
               className={`w-full text-left px-4 py-4 flex items-center gap-3 transition-all ${isDark ? 'hover:bg-white/5' : 'hover:bg-zinc-50'}`}>
-              <div className={`w-11 h-11 rounded-full flex items-center justify-center text-base font-black shrink-0 relative ${isDark ? 'bg-[#C58A4A]/20 text-[#C58A4A]' : 'bg-amber-100 text-amber-700'}`}>
+              <div className={`w-11 h-11 rounded-full flex items-center justify-center text-base font-black shrink-0 relative ${isDark ? 'bg-[#C58A4A]/20 text-white' : 'bg-amber-100 text-white'}`}>
                 {resolveClientName(conv)?.charAt(0)?.toUpperCase() || '?'}
                 {isRegistered(conv) && (
                   <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-black flex items-center justify-center">
@@ -222,12 +222,12 @@ const Inbox: React.FC = () => {
               <button onClick={() => setMobileView('list')} onTouchEnd={e => { e.preventDefault(); setMobileView('list'); }} className={`md:hidden p-2 rounded-xl ${isDark ? 'bg-white/5 text-zinc-400' : 'bg-zinc-100 text-zinc-500'}`}>
                 <ArrowLeft size={18} />
               </button>
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-base shrink-0 ${isDark ? 'bg-[#C58A4A]/20 text-[#C58A4A]' : 'bg-amber-100 text-amber-700'}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-base shrink-0 ${isDark ? 'bg-[#C58A4A]/20 text-white' : 'bg-amber-100 text-white'}`}>
                 {resolveClientName(selectedConv)?.charAt(0)?.toUpperCase()}
               </div>
               <div>
                 <p className={`font-black text-sm ${txt}`}>{resolveClientName(selectedConv)}</p>
-                <a href={`https://wa.me/${selectedConv.clientPhone}`} target="_blank" rel="noreferrer" className={`text-[10px] flex items-center gap-1 hover:text-[#C58A4A] transition-all ${sub}`}>
+                <a href={`https://wa.me/${selectedConv.clientPhone}`} target="_blank" rel="noreferrer" className={`text-[10px] flex items-center gap-1 hover:text-white transition-all ${sub}`}>
                   <Phone size={10} /> {selectedConv.clientPhone}
                 </a>
               </div>
