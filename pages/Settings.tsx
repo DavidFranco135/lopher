@@ -1006,7 +1006,7 @@ const Settings: React.FC = () => {
                   await addDoc(collection(db, 'auditLog'), {
                     action: 'PASSWORD_CHANGED',
                     changedBy: user?.name || 'Admin',
-                    changedByEmail: user?.email || 'novojeitoadm@gmail.com',
+                    changedByEmail: user?.email || 'lopheradm@gmail.com',
                     timestamp: new Date().toISOString(),
                     device: navigator.userAgent,
                     ip: await fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => d.ip).catch(() => 'desconhecido'),
