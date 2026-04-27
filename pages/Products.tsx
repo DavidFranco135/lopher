@@ -96,7 +96,7 @@ const Products: React.FC = () => {
             Vitrine de produtos e controle de estoque.
           </p>
         </div>
-        <button onClick={openNew} className="flex items-center gap-2 gradiente-ouro text-white px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl">
+        <button onClick={openNew} className="flex items-center gap-2 gradiente-ouro text-black px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl">
           <Plus size={16}/> NOVO PRODUTO
         </button>
       </div>
@@ -109,7 +109,7 @@ const Products: React.FC = () => {
             <p className="text-[10px] font-black uppercase tracking-widest text-red-400 mb-2">⚠️ Estoque Baixo — Produtos precisam de reposição</p>
             <div className="flex flex-wrap gap-2">
               {products.filter((p: any) => p.stock !== null && p.stock !== undefined && p.minStock !== null && p.minStock !== undefined && p.stock <= p.minStock).map((p: any) => (
-                <span key={p.id} className={`text-[10px] font-black px-3 py-1 rounded-full border ${p.stock === 0 ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-purple-950/200/20 text-purple-200 border-amber-500/30'}`}>
+                <span key={p.id} className={`text-[10px] font-black px-3 py-1 rounded-full border ${p.stock === 0 ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'}`}>
                   {p.name}: {p.stock === 0 ? 'ESGOTADO' : `${p.stock} restantes`}
                 </span>
               ))}
@@ -129,7 +129,7 @@ const Products: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {products.map((p: any) => (
-            <div key={p.id} className={`${cardClass} rounded-[2.5rem] overflow-hidden group relative transition-all hover:border-[#24094f]/30`}>
+            <div key={p.id} className={`${cardClass} rounded-[2.5rem] overflow-hidden group relative transition-all hover:border-[#C58A4A]/30`}>
               {/* Badge ativo/inativo */}
               <div className={`absolute top-4 right-4 z-10 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border backdrop-blur-sm ${p.active !== false ? 'text-emerald-400 bg-black/60 border-emerald-500/30' : 'text-zinc-500 bg-black/60 border-zinc-700'}`}>
                 {p.active !== false ? '● ATIVO' : '○ OCULTO'}
@@ -150,7 +150,7 @@ const Products: React.FC = () => {
                     <p className={`font-black text-base leading-tight ${isDark ? 'text-white' : 'text-zinc-900'}`}>{p.name}</p>
                     <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full mt-1 inline-block ${isDark ? 'bg-white/5 text-zinc-500' : 'bg-zinc-100 text-zinc-500'}`}>{p.category || 'Produto'}</span>
                   </div>
-                  <p className="text-lg font-black text-[#24094f] whitespace-nowrap">R$ {Number(p.price).toFixed(2)}</p>
+                  <p className="text-lg font-black text-[#C58A4A] whitespace-nowrap">R$ {Number(p.price).toFixed(2)}</p>
                 </div>
                 {p.description && (
                   <p className={`text-xs leading-relaxed line-clamp-2 ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>{p.description}</p>
@@ -158,12 +158,12 @@ const Products: React.FC = () => {
 
                 {/* Estoque */}
                 {p.stock !== null && p.stock !== undefined && (
-                  <div className={`rounded-xl p-3 border ${p.stock === 0 ? (isDark ? 'bg-red-500/10 border-red-500/20' : 'bg-red-50 border-red-200') : p.stock <= (p.minStock || 0) ? (isDark ? 'bg-purple-950/200/10 border-amber-500/20' : 'bg-purple-950/20 border-purple-800') : (isDark ? 'bg-white/5 border-white/10' : 'bg-zinc-50 border-zinc-200')}`}>
+                  <div className={`rounded-xl p-3 border ${p.stock === 0 ? (isDark ? 'bg-red-500/10 border-red-500/20' : 'bg-red-50 border-red-200') : p.stock <= (p.minStock || 0) ? (isDark ? 'bg-amber-500/10 border-amber-500/20' : 'bg-amber-50 border-amber-200') : (isDark ? 'bg-white/5 border-white/10' : 'bg-zinc-50 border-zinc-200')}`}>
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-1 ${p.stock === 0 ? 'text-red-400' : p.stock <= (p.minStock || 0) ? 'text-purple-300' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                      <span className={`text-[9px] font-black uppercase tracking-widest flex items-center gap-1 ${p.stock === 0 ? 'text-red-400' : p.stock <= (p.minStock || 0) ? 'text-amber-400' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
                         <ShoppingCart size={10}/> Estoque
                       </span>
-                      <span className={`text-sm font-black ${p.stock === 0 ? 'text-red-400' : p.stock <= (p.minStock || 0) ? 'text-purple-300' : isDark ? 'text-white' : 'text-zinc-900'}`}>
+                      <span className={`text-sm font-black ${p.stock === 0 ? 'text-red-400' : p.stock <= (p.minStock || 0) ? 'text-amber-400' : isDark ? 'text-white' : 'text-zinc-900'}`}>
                         {p.stock} {p.stock === 0 ? '— ESGOTADO' : p.stock <= (p.minStock || 0) ? '— BAIXO' : 'un.'}
                       </span>
                     </div>
@@ -199,7 +199,7 @@ const Products: React.FC = () => {
       {/* MODAL */}
       {showModal && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl animate-in zoom-in-95">
-          <div className={`w-full max-w-lg rounded-[3rem] shadow-2xl flex flex-col max-h-[92vh] ${isDark ? 'cartao-vidro border-[#24094f]/10' : 'bg-white border border-zinc-200'}`}>
+          <div className={`w-full max-w-lg rounded-[3rem] shadow-2xl flex flex-col max-h-[92vh] ${isDark ? 'cartao-vidro border-[#C58A4A]/10' : 'bg-white border border-zinc-200'}`}>
 
             <div className="p-8 pb-4 flex justify-between items-center shrink-0">
               <h2 className={`text-2xl font-black font-display italic tracking-tight ${isDark ? 'text-white' : 'text-zinc-900'}`}>
@@ -216,7 +216,7 @@ const Products: React.FC = () => {
               <div className="space-y-2">
                 <label className={`text-[9px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Foto do Produto</label>
                 <div
-                  className={`w-full aspect-video rounded-2xl overflow-hidden border-2 border-dashed flex items-center justify-center cursor-pointer relative group transition-all ${form.image ? 'border-transparent' : isDark ? 'border-white/10 hover:border-[#24094f]/40' : 'border-zinc-300 hover:border-[#24094f]'} bg-black`}
+                  className={`w-full aspect-video rounded-2xl overflow-hidden border-2 border-dashed flex items-center justify-center cursor-pointer relative group transition-all ${form.image ? 'border-transparent' : isDark ? 'border-white/10 hover:border-[#C58A4A]/40' : 'border-zinc-300 hover:border-[#C58A4A]'} bg-black`}
                   onClick={() => imgRef.current?.click()}
                 >
                   {form.image
@@ -228,7 +228,7 @@ const Products: React.FC = () => {
                       </>
                     : <div className="text-center space-y-2">
                         {uploading
-                          ? <div className="w-8 h-8 border-2 border-[#24094f] border-t-transparent rounded-full animate-spin mx-auto"/>
+                          ? <div className="w-8 h-8 border-2 border-[#C58A4A] border-t-transparent rounded-full animate-spin mx-auto"/>
                           : <ImagePlus size={32} className="mx-auto text-zinc-600"/>
                         }
                         <p className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-600' : 'text-zinc-400'}`}>
@@ -300,7 +300,7 @@ const Products: React.FC = () => {
               <button onClick={() => setShowModal(false)} className={`flex-1 py-5 rounded-2xl font-black text-[9px] uppercase tracking-widest transition-all ${isDark ? 'bg-white/5 text-zinc-500 hover:text-white' : 'bg-zinc-100 text-zinc-500'}`}>
                 Cancelar
               </button>
-              <button onClick={handleSave} disabled={saving || uploading} className="flex-1 gradiente-ouro text-white py-5 rounded-2xl font-black text-[9px] uppercase tracking-widest shadow-xl disabled:opacity-50">
+              <button onClick={handleSave} disabled={saving || uploading} className="flex-1 gradiente-ouro text-black py-5 rounded-2xl font-black text-[9px] uppercase tracking-widest shadow-xl disabled:opacity-50">
                 {saving ? '⟳ Salvando...' : editingId ? '✓ Atualizar' : '+ Adicionar'}
               </button>
             </div>
