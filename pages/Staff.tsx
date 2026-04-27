@@ -111,8 +111,8 @@ const Staff: React.FC = () => {
   };
 
   const roleLabel = (r: string) =>
-    r === 'BARBEIRO' ? { label: 'Barbeiro', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' }
-    : r === 'RECEPCAO' ? { label: 'Recepção', color: 'text-white bg-blue-500/10 border-[#3b0f7a]/20' }
+    r === 'BARBEIRO' ? { label: 'Barbeiro', color: 'text-white bg-amber-500/10 border-amber-500/20' }
+    : r === 'RECEPCAO' ? { label: 'Recepção', color: 'text-white bg-blue-500/10 border-blue-500/20' }
     : { label: 'Admin', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
 
   return (
@@ -138,9 +138,9 @@ const Staff: React.FC = () => {
 
       {/* Info banner */}
       <div className={`rounded-2xl p-5 border flex items-start gap-4 ${isDark ? 'bg-amber-500/5 border-amber-500/20' : 'bg-amber-50 border-amber-200'}`}>
-        <Shield size={20} className="text-amber-500 shrink-0 mt-0.5"/>
+        <Shield size={20} className="text-white shrink-0 mt-0.5"/>
         <div>
-          <p className={`text-sm font-black ${isDark ? 'text-amber-400' : 'text-amber-700'}`}>Como funciona</p>
+          <p className={`text-sm font-black ${isDark ? 'text-white' : 'text-white'}`}>Como funciona</p>
           <p className={`text-xs mt-0.5 ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
             Cada colaborador acessa o sistema com e-mail e senha próprios. Você controla quais páginas ficam visíveis para cada um.
             O modo <strong>Barbeiro</strong> libera agenda e atendimentos. O modo <strong>Recepção</strong> inclui caixa e membros.
@@ -299,7 +299,7 @@ const Staff: React.FC = () => {
                       onClick={() => applyPreset(opt.key as any)}
                       className={`p-4 rounded-2xl border-2 text-left transition-all space-y-2 ${form.role === opt.key ? 'border-[#C58A4A] bg-[#C58A4A]/10' : isDark ? 'border-white/10 bg-white/5 hover:border-white/20' : 'border-zinc-200 bg-zinc-50 hover:border-zinc-300'}`}
                     >
-                      <div className={`${form.role === opt.key ? 'text-[#C58A4A]' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>{opt.icon}</div>
+                      <div className={`${form.role === opt.key ? 'text-white' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>{opt.icon}</div>
                       <p className={`font-black text-sm ${form.role === opt.key ? (isDark ? 'text-white' : 'text-zinc-900') : isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{opt.label}</p>
                       <p className={`text-[9px] ${isDark ? 'text-zinc-600' : 'text-zinc-400'}`}>{opt.desc}</p>
                     </button>
@@ -326,8 +326,8 @@ const Staff: React.FC = () => {
                         className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${on ? (isDark ? 'border-[#C58A4A]/40 bg-[#C58A4A]/10' : 'border-amber-300 bg-amber-50') : (isDark ? 'border-white/5 bg-white/[0.02] hover:bg-white/5' : 'border-zinc-200 bg-zinc-50 hover:bg-zinc-100')}`}
                       >
                         <span className="text-base">{pg.icon}</span>
-                        <span className={`text-[10px] font-black flex-1 ${on ? (isDark ? 'text-[#C58A4A]' : 'text-amber-700') : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>{pg.label}</span>
-                        {on && <Check size={12} className="text-[#C58A4A] shrink-0"/>}
+                        <span className={`text-[10px] font-black flex-1 ${on ? (isDark ? 'text-white' : 'text-white') : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>{pg.label}</span>
+                        {on && <Check size={12} className="text-white shrink-0"/>}
                       </button>
                     );
                   })}
