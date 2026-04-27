@@ -104,7 +104,7 @@ const BenefitValidator: React.FC<BenefitValidatorProps> = ({ token, onBack }) =>
         {/* ── ESTADO: LOADING ── */}
         {state === 'loading' && (
           <div className="flex flex-col items-center gap-4 py-8">
-            <Loader2 size={40} className="text-[#C58A4A] animate-spin" />
+            <Loader2 size={40} className="text-[#24094f] animate-spin" />
             <p className={`text-sm font-bold ${txt}`}>Verificando QR Code...</p>
           </div>
         )}
@@ -132,11 +132,11 @@ const BenefitValidator: React.FC<BenefitValidatorProps> = ({ token, onBack }) =>
               </div>
 
               {/* Benefício */}
-              <div className={`p-5 rounded-2xl border ${isDark ? 'border-[#C58A4A]/20 bg-[#C58A4A]/5' : 'border-amber-300 bg-amber-50'}`}>
+              <div className={`p-5 rounded-2xl border ${isDark ? 'border-[#24094f]/20 bg-[#24094f]/5' : 'border-purple-700 bg-purple-950/20'}`}>
                 <div className="flex items-center gap-3">
-                  <Gift size={24} className="text-[#C58A4A]" />
+                  <Gift size={24} className="text-[#24094f]" />
                   <div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-[#C58A4A]">Benefício</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-[#24094f]">Benefício</p>
                     <p className={`font-black text-sm ${txt}`}>
                       Desconto especial para cliente da barbearia
                     </p>
@@ -162,7 +162,7 @@ const BenefitValidator: React.FC<BenefitValidatorProps> = ({ token, onBack }) =>
             <button
               onClick={handleConfirm}
               disabled={confirming}
-              className="w-full gradiente-ouro text-black py-6 rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60"
+              className="w-full gradiente-ouro text-white py-6 rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60"
             >
               {confirming ? (
                 <span className="flex items-center justify-center gap-2">
@@ -230,8 +230,8 @@ const BenefitValidator: React.FC<BenefitValidatorProps> = ({ token, onBack }) =>
         {/* ── ESTADO: EXPIRADO ── */}
         {state === 'expired' && (
           <div className="flex flex-col items-center gap-6 text-center">
-            <div className="w-20 h-20 rounded-full bg-amber-500/20 flex items-center justify-center">
-              <AlertCircle size={40} className="text-amber-500" />
+            <div className="w-20 h-20 rounded-full bg-purple-950/200/20 flex items-center justify-center">
+              <AlertCircle size={40} className="text-purple-300" />
             </div>
             <div>
               <h3 className={`text-xl font-black font-display italic ${txt}`}>QR Code Expirado</h3>
