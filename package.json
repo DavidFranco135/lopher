@@ -6,7 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+
+    "build:basico":   "cp .env.basico .env   && vite build --outDir dist-basico",
+    "build:completo": "cp .env.completo .env && vite build --outDir dist-completo",
+
+    "preview:basico":   "vite preview --outDir dist-basico",
+    "preview:completo": "vite preview --outDir dist-completo"
   },
   "dependencies": {
     "react": "^19.2.4",
