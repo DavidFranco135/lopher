@@ -1,0 +1,1435 @@
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { 
+  ChevronLeft, ChevronRight, Plus, Clock, Check, X, CreditCard,
+  Calendar, Scissors, LayoutGrid, List, UserPlus, DollarSign, RefreshCw, Filter, CalendarRange, Phone, Mail, User, Banknote, UserX, Camera, ImagePlus, Trash2, Search, Crown
+} from 'lucide-react';
+
+const IMGBB_KEY = 'da736db48f154b9108b23a36d4393848';
+import { useBarberStore } from '../store';
+import { Appointment, Client } from '../types';
+
+const NOTIFICATION_SOUND_URL = 'https://raw.githubusercontent.com/DavidFranco135/iphone/main/iphone.mp3';
+
+// ─── Helpers de data — sem new Date(string) para evitar bug UTC/fuso ──────
+const getTodayString = (): string => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+const formatDateLabel = (dateStr: string): string => {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+};
+const shiftDate = (dateStr: string, delta: number): string => {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const d = new Date(year, month - 1, day + delta);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+const formatMonthLabel = (monthStr: string): string => {
+  const [year, month] = monthStr.split('-').map(Number);
+  return new Date(year, month - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+};
+
+// ─── Áudio: variáveis globais fora do componente ──────────────────────────
+let audioCtx: AudioContext | null = null;
+let audioBuffer: AudioBuffer | null = null;
+let audioBufferLoading = false;
+let audioReady = false;
+let notifDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+const getAudioContext = (): AudioContext => {
+  if (!audioCtx || audioCtx.state === 'closed') {
+    audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return audioCtx;
+};
+
+const preloadAudio = async (): Promise<void> => {
+  if (audioReady || audioBufferLoading) return;
+  audioBufferLoading = true;
+  try {
+    const ctx = getAudioContext();
+    if (ctx.state === 'suspended') await ctx.resume();
+    const response = await fetch(NOTIFICATION_SOUND_URL);
+    const arrayBuffer = await response.arrayBuffer();
+    audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+    audioReady = true;
+  } catch (_) { audioBufferLoading = false; }
+};
+
+const playNotificationSound = async (): Promise<void> => {
+  if (!audioReady || !audioBuffer) return;
+  try {
+    const ctx = getAudioContext();
+    if (ctx.state === 'suspended') await ctx.resume();
+    const source = ctx.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(ctx.destination);
+    source.start(0);
+  } catch (_) {}
+};
+
+// ─── Coordenação entre abas via localStorage ─────────────────────────────
+// Problema: admin em 2 abas (ou cliente + admin) → Firestore dispara onSnapshot
+// em TODAS ao mesmo tempo → som toca múltiplas vezes.
+// Solução: a primeira aba a escrever o timestamp "vence" e toca o som.
+// As demais checam que já foi tocado e ficam em silêncio.
+const SOUND_LS_KEY = 'brb_last_notif_ts';
+
+const scheduleNotificationSound = (): void => {
+  if (notifDebounceTimer) clearTimeout(notifDebounceTimer);
+  notifDebounceTimer = setTimeout(() => {
+    const now = Date.now();
+    const lastTs = parseInt(localStorage.getItem(SOUND_LS_KEY) || '0', 10);
+    // Se outra aba já tocou nos últimos 6 s, esta fica em silêncio
+    if (now - lastTs < 6000) {
+      notifDebounceTimer = null;
+      return;
+    }
+    // Esta aba venceu — registra e toca
+    localStorage.setItem(SOUND_LS_KEY, String(now));
+    playNotificationSound();
+    notifDebounceTimer = null;
+  }, 400);
+};
+
+const Appointments: React.FC = () => {
+  const { 
+    appointments, professionals, services, clients, user, notifications,
+    addAppointment, markNoShow, markFiadoPago, updateAppointmentStatus, updateAppointment, deleteAppointment, addClient, updateClient, rescheduleAppointment, finalizeAppointment, theme,
+    waitQueue: waitQueueStore, addToWaitQueue, removeFromWaitQueue,
+    subscriptions, config,
+  } = useBarberStore() as any;
+  const isDark = theme !== 'light';
+
+  // ── Referência ao momento em que o componente montou.
+  // Só notificações com timestamp POSTERIOR ao mount são consideradas "novas".
+  const mountTimeRef = useRef<number>(Date.now());
+  const prevNotifCountRef = useRef<number | null>(null);
+
+  // ── Pré-carrega áudio ao montar (admin já navegou até aqui, contexto permitido)
+  useEffect(() => { preloadAudio(); }, []);
+
+  // ── Data correta no fuso local, atualiza na virada de meia-noite
+  useEffect(() => {
+    const tick = () => setCurrentDate(getTodayString());
+    tick();
+    const interval = setInterval(tick, 60_000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // ── Som: apenas para ADMIN, apenas para agendamentos públicos (do cliente).
+  //
+  // POR QUÊ RASTREAR NOTIFICAÇÕES e não appointments.length?
+  //  1. Notificações type='appointment' só são criadas quando isPublic=true,
+  //     ou seja, apenas quando o CLIENTE agenda — o admin criando pelo painel NÃO dispara.
+  //  2. Usar mountTimeRef evita o falso-positivo da carga inicial: notificações
+  //     já existentes no Firestore têm timestamp anterior ao mount e são ignoradas,
+  //     enquanto notificações realmente novas têm timestamp posterior e disparam o som.
+  //  3. Isso elimina o duplo toque causado pela race condition entre o mount do
+  //     componente (prevRef = 0) e a chegada assíncrona dos agendamentos existentes.
+  useEffect(() => {
+    if (user?.role !== 'ADMIN') return;
+
+    const appointmentNotifs = notifications.filter(n => n.type === 'appointment');
+
+    // Inicialização: registra a contagem atual sem tocar som
+    if (prevNotifCountRef.current === null) {
+      prevNotifCountRef.current = appointmentNotifs.length;
+      return;
+    }
+
+    // Só toca se chegou uma notificação NOVA (posterior ao mount deste componente)
+    if (appointmentNotifs.length > prevNotifCountRef.current) {
+      const hasRecentNotif = appointmentNotifs.some(
+        n => new Date(n.time).getTime() > mountTimeRef.current
+      );
+      if (hasRecentNotif) {
+        scheduleNotificationSound();
+      }
+    }
+
+    prevNotifCountRef.current = appointmentNotifs.length;
+  }, [notifications, user]);
+  
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [compactView, setCompactView] = useState(false);
+  const [currentDate, setCurrentDate] = useState<string>(getTodayString);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showRescheduleModal, setShowRescheduleModal] = useState<Appointment | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState<Appointment | null>(null);
+  const [editDetailService, setEditDetailService] = useState(false);
+  const [editDetailPrice, setEditDetailPrice] = useState('');
+  const [rescheduleData, setRescheduleData] = useState({ date: '', time: '' });
+  const [showQuickClient, setShowQuickClient] = useState(false);
+  const [modoAvulso, setModoAvulso] = useState(false);
+  const [avulsoNome, setAvulsoNome] = useState('');
+  const [clientSearch, setClientSearch] = useState('');
+  const [newApp, setNewApp] = useState({ clientId: '', serviceId: '', professionalId: '', startTime: '09:00' });
+  const [quickClient, setQuickClient] = useState({
+    name: '', phone: '', email: '', password: '',
+    cpfCnpj: '', birthdate: '', gender: '',
+    address: '', neighborhood: '', city: '',
+    profession: '', instagram: '', howFound: '',
+  });
+  // ── Modal Finalização ──────────────────────────────────────
+  const [finModal, setFinModal] = useState<any>(null);
+  const [finAdditionals, setFinAdditionals] = useState<{id:string;name:string;price:number;qty:number}[]>([]);
+  const [finPayMethod, setFinPayMethod] = useState<'PIX'|'DEBITO'|'CREDITO'|'FIADO'|'DINHEIRO'|'PLANO_VIP'>('PIX');
+  const [finNewItem, setFinNewItem] = useState({ name: '', price: '' });
+  // ── Fotos do corte ─────────────────────────────────────────
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+
+  const compressImage = (file: File, maxWidth = 1200, quality = 0.82): Promise<Blob> =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = e => { img.src = e.target?.result as string; };
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(blob => blob ? resolve(blob) : reject('Falha'), 'image/jpeg', quality);
+      };
+      img.onerror = reject;
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const handleUploadCutPhoto = async (clientId: string, file: File) => {
+    if (!clientId) return;
+    setPhotoUploading(true);
+    try {
+      const compressed = await compressImage(file);
+      const formData = new FormData();
+      formData.append('image', compressed, 'photo.jpg');
+      const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: formData });
+      const data = await res.json();
+      const url: string = data?.data?.url;
+      if (!url) throw new Error('Upload falhou');
+      const client = clients.find((c: any) => c.id === clientId || c.phone === showDetailModal?.clientPhone);
+      const existing: string[] = client?.photos || [];
+      await updateClient(clientId, { photos: [url, ...existing] });
+    } catch {
+      alert('Erro ao enviar foto. Verifique sua conexão e tente novamente.');
+    } finally {
+      setPhotoUploading(false);
+    }
+  };
+
+  const handleDeleteCutPhoto = async (clientId: string, photoUrl: string) => {
+    if (!window.confirm('Remover esta foto?')) return;
+    const client = clients.find((c: any) => c.id === clientId);
+    if (!client) return;
+    await updateClient(clientId, { photos: (client.photos || []).filter((p: string) => p !== photoUrl) });
+  };
+
+  const [finLoading, setFinLoading] = useState(false);
+  const [finResult, setFinResult] = useState<{pixCode?:string;pixQrCode?:string;paymentLink?:string}|null>(null);
+
+  // ── Handlers do modal de finalização ──────────────────────
+  const openFinModal = (app: any) => {
+    setFinModal(app);
+    setFinAdditionals([]);
+    setFinPayMethod('PIX');
+    setFinNewItem({ name: '', price: '' });
+    setFinResult(null);
+    setEditedServicePrice('');
+  };
+
+  // ── Desconto VIP do cliente sendo finalizado ──────────────────────────
+  const clientVipSub = useMemo(() => {
+    if (!finModal?.clientId) return null;
+    const sub = (subscriptions || []).find((s: any) =>
+      s.clientId === finModal.clientId && s.status === 'ATIVA'
+    );
+    if (!sub) return null;
+    const plan = ((config as any)?.vipPlans || []).find((p: any) => p.id === sub.planId);
+    return plan ? { sub, plan } : null;
+  }, [finModal, subscriptions, config]);
+
+  const clientVipDiscount = useMemo(() => {
+    return clientVipSub?.plan?.discount || 0;
+  }, [clientVipSub]);
+
+  // Auto-seleciona PLANO_VIP se cliente é assinante com cortes disponíveis
+  React.useEffect(() => {
+    if (clientVipSub && finModal) {
+      const { sub, plan } = clientVipSub;
+      const cutsUsed = sub.cutsThisPeriod || 0;
+      const maxCuts = plan.maxCuts || 0;
+      if (maxCuts === 0 || cutsUsed < maxCuts) {
+        setFinPayMethod('PLANO_VIP');
+      }
+    }
+  }, [finModal?.id, clientVipSub]);
+
+  const handleFinalize = async () => {
+    if (!finModal) return;
+    setFinLoading(true);
+    try {
+      // Se o barbeiro alterou o preço do serviço, usa o novo valor
+      const finalAdditionals = editedServicePrice !== '' && parseFloat(editedServicePrice) !== finModal.price
+        ? [{ id: '_svc_edit', name: `${finModal.serviceName} (ajuste)`, price: parseFloat(editedServicePrice) - finModal.price, qty: 1 }, ...finAdditionals]
+        : finAdditionals;
+      const result = await (finalizeAppointment as any)(finModal.id, finalAdditionals, finPayMethod);
+      setFinResult(result || { _method: finPayMethod });
+    } catch(e) {
+      console.error('Finalize error:', e);
+      setFinResult({ _method: finPayMethod });
+    } finally { setFinLoading(false); }
+  };
+
+  const addFinItem = () => {
+    if (!finNewItem.name || !finNewItem.price) return;
+    const rawPrice = parseFloat(finNewItem.price) || 0;
+    // Aplica desconto VIP no produto se cliente tiver plano ativo
+    const discountedPrice = clientVipDiscount > 0
+      ? parseFloat((rawPrice * (1 - clientVipDiscount / 100)).toFixed(2))
+      : rawPrice;
+    const itemName = clientVipDiscount > 0
+      ? `${finNewItem.name} (${clientVipDiscount}% VIP)`
+      : finNewItem.name;
+    setFinAdditionals(prev => [...prev, {
+      id: Date.now().toString(),
+      name: itemName,
+      price: discountedPrice,
+      qty: 1,
+    }]);
+    setFinNewItem({ name: '', price: '' });
+  };
+
+  const [editedServicePrice, setEditedServicePrice] = useState<string>('');
+  const serviceBasePrice = editedServicePrice !== '' ? (parseFloat(editedServicePrice) || 0) : (finModal?.price || 0);
+  const finTotal = serviceBasePrice + finAdditionals.reduce((s,a) => s + a.price * a.qty, 0);
+  const [filterPeriod, setFilterPeriod] = useState<'day' | 'month' | 'all' | 'fiados'>('day');
+  const [fiadoPayMethod, setFiadoPayMethod] = useState<string>('DINHEIRO');
+  const [fiadoPayingId, setFiadoPayingId] = useState<string | null>(null);
+  // ── Lista de Espera (avulsos) ──────────────────────────────
+  const [waitList, setWaitList] = useState<{id:string;name:string;profId:string;since:string}[]>([]);
+  const [waitName, setWaitName] = useState('');
+  const [waitProfId, setWaitProfId] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; });
+
+  const hoursNormal = useMemo(() => Array.from({ length: 14 }, (_, i) => `${(i + 8).toString().padStart(2, '0')}:00`), []);
+  const hoursCompact = useMemo(() => Array.from({ length: 15 }, (_, i) => `${(i + 7).toString().padStart(2, '0')}:00`), []);
+  const hours = compactView ? hoursCompact : hoursNormal;
+  const appointmentsToday = useMemo(() => appointments.filter(a => a.date === currentDate), [appointments, currentDate]);
+  
+  const appointmentsFiltered = useMemo(() => {
+    if (filterPeriod === 'fiados') return appointments.filter(a => a.status === 'FIADO');
+    if (filterPeriod === 'day') return appointments.filter(a => a.date === currentDate);
+    if (filterPeriod === 'month') return appointments.filter(a => a.date.startsWith(selectedMonth));
+    return appointments;
+  }, [appointments, currentDate, selectedMonth, filterPeriod]);
+
+  const fiadosCount = useMemo(() => appointments.filter(a => a.status === 'FIADO').length, [appointments]);
+  const fiadosTotal = useMemo(() => appointments.filter(a => a.status === 'FIADO').reduce((s, a) => s + ((a as any).totalPrice ?? a.price ?? 0), 0), [appointments]);
+
+  const handleQuickClient = async () => {
+    if(!quickClient.name || !quickClient.phone) return alert("Preencha nome e telefone");
+    const client = await addClient({ ...quickClient });
+    setNewApp({...newApp, clientId: client.id});
+    setShowQuickClient(false);
+    setQuickClient({ name: '', phone: '', email: '', password: '', cpfCnpj: '', birthdate: '', gender: '', address: '', neighborhood: '', city: '', profession: '', instagram: '', howFound: '' });
+  };
+
+  // ── Cancelar por ausência: lista negra + WhatsApp ─────────────
+  const handleNoShowCancel = async (app: Appointment) => {
+    const msg = `Cancelar agendamento de ${app.clientName} por ausência?\n\n⚠️ O cliente será adicionado à lista negra e precisará pagar antecipadamente nos próximos agendamentos.\n\nUma mensagem WhatsApp será enviada ao cliente.`;
+    if (!window.confirm(msg)) return;
+    try {
+      await markNoShow(app.id);
+      const phone = app.clientPhone || '';
+      if (phone) {
+        const texto = encodeURIComponent(
+          `Olá ${app.clientName}! 😔\n\nSeu agendamento de *${app.serviceName}* no dia *${app.date.split('-').reverse().join('/')}* às *${app.startTime}* foi cancelado por ausência.\n\nNo próximo agendamento, será necessário realizar o pagamento antecipado.\n\nAtenciosamente,\n*Barbearia Novo Jeito* ✂️`
+        );
+        window.open(`https://wa.me/55${phone.replace(/\D/g,'')}?text=${texto}`, '_blank');
+      }
+    } catch (e) {
+      alert('Erro ao processar cancelamento.');
+    }
+  };
+
+  // NOVA FUNÇÃO: Criar agendamento ao clicar em um horário vazio
+  const handleClickEmptySlot = (professionalId: string, timeSlot: string) => {
+    setNewApp({
+      ...newApp,
+      professionalId: professionalId,
+      startTime: timeSlot
+    });
+    setShowAddModal(true);
+  };
+
+  const handleCreateAppointment = async () => {
+    try {
+      const service = services.find(s => s.id === newApp.serviceId);
+      if (!service) return;
+      if (!newApp.professionalId) return alert('Selecione o barbeiro.');
+      if (modoAvulso && !avulsoNome.trim()) return alert('Digite o nome do cliente avulso.');
+      if (!modoAvulso && !newApp.clientId) return alert('Selecione o cliente.');
+      const [h, m] = newApp.startTime.split(':').map(Number);
+      const totalMinutes = h * 60 + m + service.durationMinutes;
+      const endTime = `${Math.floor(totalMinutes / 60).toString().padStart(2, '0')}:${(totalMinutes % 60).toString().padStart(2, '0')}`;
+      const clientName = modoAvulso ? avulsoNome.trim() : (clients.find(c => c.id === newApp.clientId)?.name || '');
+      const clientPhone = modoAvulso ? '' : (clients.find(c => c.id === newApp.clientId)?.phone || '');
+      const clientId = modoAvulso ? '' : newApp.clientId;
+      await addAppointment({ ...newApp, clientId, clientName, clientPhone, serviceName: service.name, professionalName: professionals.find(p => p.id === newApp.professionalId)?.name || '', date: currentDate, endTime, price: service.price });
+      setShowAddModal(false);
+    } catch (err) { alert("Erro ao agendar."); }
+  };
+
+  const handleReschedule = () => {
+    if (showRescheduleModal && rescheduleData.date && rescheduleData.time) {
+      const service = services.find(s => s.id === showRescheduleModal.serviceId);
+      const [h, m] = rescheduleData.time.split(':').map(Number);
+      const endTime = `${Math.floor((h * 60 + m + (service?.durationMinutes || 30)) / 60).toString().padStart(2, '0')}:${((h * 60 + m + (service?.durationMinutes || 30)) % 60).toString().padStart(2, '0')}`;
+      rescheduleAppointment(showRescheduleModal.id, rescheduleData.date, rescheduleData.time, endTime);
+      setShowRescheduleModal(null);
+    }
+  };
+
+  return (
+
+    <div className="h-full flex flex-col space-y-4 animate-in fade-in pb-10">
+
+      {/* Modo compacto: só grade + botão para sair */}
+      {compactView && (
+        <div className="flex items-center justify-end px-2 pt-1">
+          <button
+            onClick={() => { setCompactView(false); document.exitFullscreen?.(); }}
+            className="px-4 py-2 rounded-lg text-[9px] font-black uppercase bg-purple-600 text-white flex items-center gap-2 shadow-lg"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            Sair do Compacto
+          </button>
+        </div>
+      )}
+
+      {/* Header normal — oculto no compacto */}
+      {!compactView && (
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className={`text-2xl font-black font-display italic ${theme === 'light' ? 'text-zinc-900' : 'text-white'}`}>Agenda Digital</h1>
+          <div className="flex gap-2 mt-2">
+             <button onClick={() => setViewMode('grid')} className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-[#C58A4A] text-black' : 'bg-white/5 text-zinc-500'}`}><LayoutGrid size={16}/></button>
+             <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-[#C58A4A] text-black' : 'bg-white/5 text-zinc-500'}`}><List size={16}/></button>
+             {viewMode === 'grid' && (
+               <button 
+                 onClick={() => {
+                   setCompactView(!compactView);
+                   if (!compactView) {
+                     document.documentElement.requestFullscreen?.();
+                   } else {
+                     document.exitFullscreen?.();
+                   }
+                 }} 
+                 className={`px-3 py-2 rounded-lg text-[9px] font-black uppercase ${compactView ? 'bg-purple-600 text-white' : 'bg-white/5 text-zinc-500'}`}
+               >
+                 Compacto
+               </button>
+             )}
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          {/* Linha de filtros — cabe tudo na tela mobile */}
+          <div className="flex items-center gap-1 flex-wrap">
+            <button 
+              onClick={() => setFilterPeriod('day')} 
+              className={`px-2.5 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${filterPeriod === 'day' ? 'bg-[#C58A4A] text-black' : theme === 'light' ? 'bg-zinc-100 text-zinc-600' : 'bg-white/5 text-zinc-500'}`}
+            >Dia</button>
+            <button 
+              onClick={() => setFilterPeriod('month')} 
+              className={`px-2.5 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${filterPeriod === 'month' ? 'bg-[#C58A4A] text-black' : theme === 'light' ? 'bg-zinc-100 text-zinc-600' : 'bg-white/5 text-zinc-500'}`}
+            >Mês</button>
+            <button 
+              onClick={() => setFilterPeriod('all')} 
+              className={`px-2.5 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${filterPeriod === 'all' ? 'bg-[#C58A4A] text-black' : theme === 'light' ? 'bg-zinc-100 text-zinc-600' : 'bg-white/5 text-zinc-500'}`}
+            >Todos</button>
+            <button 
+              onClick={() => { setFilterPeriod('fiados'); setViewMode('list'); }} 
+              className={`px-2.5 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all flex items-center gap-1 ${filterPeriod === 'fiados' ? 'bg-orange-500 text-black' : theme === 'light' ? 'bg-zinc-100 text-zinc-600' : 'bg-white/5 text-zinc-500'}`}
+            >
+              📒
+              {fiadosCount > 0 && <span className={`text-[7px] font-black px-1 py-0.5 rounded-full ${filterPeriod === 'fiados' ? 'bg-black/20 text-black' : 'bg-orange-500 text-black'}`}>{fiadosCount}</span>}
+            </button>
+            <button 
+              onClick={() => { setFilterPeriod('espera' as any); setViewMode('list'); }} 
+              className={`px-2.5 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all flex items-center gap-1 ${(filterPeriod as any) === 'espera' ? 'bg-blue-500 text-white' : theme === 'light' ? 'bg-zinc-100 text-zinc-600' : 'bg-white/5 text-zinc-500'}`}
+            >
+              ⏳
+              {((waitQueueStore || []).filter((w:any)=>w.status==='AGUARDANDO').length + waitList.length) > 0 && <span className={`text-[7px] font-black px-1 py-0.5 rounded-full ${(filterPeriod as any) === 'espera' ? 'bg-white/20 text-white' : 'bg-blue-500 text-white'}`}>{(waitQueueStore || []).filter((w:any)=>w.status==='AGUARDANDO').length + waitList.length}</span>}
+            </button>
+          </div>
+          <div className="flex items-center gap-1">
+          
+          {filterPeriod === 'day' && (
+            <div className={`flex items-center border rounded-xl p-1 ${theme === 'light' ? 'bg-zinc-50 border-zinc-200' : 'bg-white/5 border-white/10'}`}>
+              <button onClick={() => setCurrentDate(prev => shiftDate(prev, -1))} className={`p-2 transition-all ${theme === 'light' ? 'text-zinc-600 hover:text-zinc-900' : 'text-zinc-400 hover:text-white'}`}><ChevronLeft size={20} /></button>
+              <span className={`px-4 text-[10px] font-black uppercase tracking-widest ${theme === 'light' ? 'text-zinc-700' : 'text-zinc-300'}`}>{formatDateLabel(currentDate)}</span>
+              <button onClick={() => setCurrentDate(prev => shiftDate(prev, +1))} className={`p-2 transition-all ${theme === 'light' ? 'text-zinc-600 hover:text-zinc-900' : 'text-zinc-400 hover:text-white'}`}><ChevronRight size={20} /></button>
+            </div>
+          )}
+          
+          {filterPeriod === 'month' && (
+            <div className={`flex items-center border rounded-xl p-1 ${theme === 'light' ? 'bg-zinc-50 border-zinc-200' : 'bg-white/5 border-white/10'}`}>
+              <button 
+                onClick={() => { 
+                  const [year, month] = selectedMonth.split('-').map(Number);
+                  const d = new Date(year, month - 2, 1);
+                  setSelectedMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+                }} 
+                className={`p-2 transition-all ${theme === 'light' ? 'text-zinc-600 hover:text-zinc-900' : 'text-zinc-400 hover:text-white'}`}
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <span className={`px-4 text-[10px] font-black uppercase tracking-widest ${theme === 'light' ? 'text-zinc-700' : 'text-zinc-300'}`}>
+                {formatMonthLabel(selectedMonth)}
+              </span>
+              <button 
+                onClick={() => { 
+                  const [year, month] = selectedMonth.split('-').map(Number);
+                  const d = new Date(year, month, 1);
+                  setSelectedMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+                }} 
+                className={`p-2 transition-all ${theme === 'light' ? 'text-zinc-600 hover:text-zinc-900' : 'text-zinc-400 hover:text-white'}`}
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+          )}
+          </div>
+          
+          <button onClick={() => setShowAddModal(true)} className="gradiente-ouro text-black px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg">Agendar +</button>
+        </div>
+      </div>
+      )}
+
+      <div className={`flex-1 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col border ${theme === 'light' ? 'bg-white border-zinc-200' : 'cartao-vidro border-white/5'}`}>
+        {viewMode === 'grid' ? (
+          <div className="overflow-auto h-full scrollbar-hide" style={{WebkitOverflowScrolling:'touch', overflowX:'auto', overflowY:'auto'}}>
+            <div style={{minWidth: '100%', width:'100%', minHeight:'100%'}}>
+              {/* CABEÇALHO */}
+              <div className={`border-b sticky top-0 z-10 ${theme === 'light' ? 'border-zinc-200 bg-zinc-50' : 'border-white/5 bg-white/[0.02]'}`} style={{display:'grid', gridTemplateColumns: compactView ? `60px repeat(${professionals.length}, minmax(80px, 1fr))` : `80px repeat(${professionals.length}, minmax(120px, 1fr))`}}>
+                <div className={`flex items-center justify-center text-zinc-500 ${compactView ? 'p-2' : 'p-3'}`}><Clock size={compactView ? 14 : 18} /></div>
+                {professionals.map(prof => (
+                  <div key={prof.id} className={`flex items-center justify-center gap-3 border-r border-white/5 ${compactView ? 'p-2 flex-col' : 'p-3'}`}>
+                    <img src={prof.avatar} className={`rounded-lg object-cover border border-[#C58A4A] ${compactView ? 'w-6 h-6' : 'w-8 h-8'}`} alt="" />
+                    <span className={`font-black uppercase tracking-widest ${compactView ? 'text-[8px]' : 'text-[10px]'}`}>{prof.name.split(' ')[0]}</span>
+                  </div>
+                ))}
+              </div>
+              {/* LINHAS DE HORÁRIO: Altura reduzida de 100px/50px para 60px/35px */}
+              {hours.map(hour => (
+                <div key={hour} className={`border-b ${theme === 'light' ? 'border-zinc-100' : 'border-white/[0.03]'} ${compactView ? 'min-h-[32px]' : 'min-h-[64px]'}`} style={{display:'grid', gridTemplateColumns: compactView ? `60px repeat(${professionals.length}, minmax(80px, 1fr))` : `80px repeat(${professionals.length}, minmax(120px, 1fr))`}}>
+                  <div className={`flex items-center justify-center border-r ${theme === 'light' ? 'border-zinc-200 bg-zinc-50/50' : 'border-white/5 bg-white/[0.01]'}`}><span className={`font-black ${theme === 'light' ? 'text-zinc-400' : 'text-zinc-600'} ${compactView ? 'text-[9px]' : 'text-[10px]'}`}>{hour}</span></div>
+                  {professionals.map(prof => {
+                    const app = appointmentsToday.find(a => a.professionalId === prof.id && a.startTime.split(':')[0] === hour.split(':')[0] && a.status !== 'CANCELADO');
+                    return (
+                      <div 
+                        key={prof.id} 
+                        className={`border-r last:border-r-0 ${theme === 'light' ? 'border-zinc-200' : 'border-white/5'} ${compactView ? 'p-1' : 'p-1.5'} ${!app ? 'cursor-pointer hover:bg-white/5 transition-all' : ''}`}
+                        onClick={() => !app && handleClickEmptySlot(prof.id, hour)}
+                        title={!app ? `Clique para agendar às ${hour}` : ''}
+                      >
+                        {app ? (
+                          <div className={`h-full w-full rounded-2xl border flex flex-col justify-between transition-all group ${app.status === 'CONCLUIDO_PAGO' ? 'border-emerald-500/40 bg-emerald-500/10' : app.status === 'NAO_COMPARECEU' ? 'border-red-500/40 bg-red-500/10' : app.awaitingOnlinePayment ? 'border-blue-400/50 bg-blue-500/10' : 'border-[#C58A4A]/30 bg-[#C58A4A]/5'} ${compactView ? 'p-1.5 rounded-lg' : 'p-2'}`}>
+                            <div className="truncate" onClick={(e) => { e.stopPropagation(); setShowDetailModal(app); }} style={{cursor:'pointer'}}>
+                              <div className="flex items-center gap-1">
+                                <h4 className={`font-black uppercase truncate hover:text-[#C58A4A] transition-colors ${compactView ? 'text-[8px]' : 'text-[10px]'} ${app.status === 'NAO_COMPARECEU' ? 'text-red-400' : theme === 'light' ? 'text-zinc-900' : 'text-white'}`}
+                                  title="Ver detalhes"
+                                >{app.clientName}</h4>
+                                {app.status === 'CONCLUIDO_PAGO' && (
+                                  <span title="Pago" className="flex-shrink-0">
+                                    <Check size={compactView ? 8 : 10} className="text-emerald-400" />
+                                  </span>
+                                )}
+                                {app.awaitingOnlinePayment && app.status !== 'CONCLUIDO_PAGO' && (
+                                  <span title="Aguardando pagamento online" className="animate-pulse flex-shrink-0">
+                                    <CreditCard size={compactView ? 8 : 10} className="text-blue-400" />
+                                  </span>
+                                )}
+                                {!app.awaitingOnlinePayment && app.status !== 'CONCLUIDO_PAGO' && app.status !== 'CANCELADO' && app.status !== 'NAO_COMPARECEU' && (
+                                  <span title="Pagamento na barbearia" className="animate-pulse flex-shrink-0">
+                                    <Banknote size={compactView ? 8 : 10} className="text-amber-400" />
+                                  </span>
+                                )}
+                                {app.status === 'NAO_COMPARECEU' && (
+                                  <span title="Não compareceu" className="flex-shrink-0 text-[8px]">🚫</span>
+                                )}
+                                {app.status !== 'NAO_COMPARECEU' && (() => { const cl = clients.find((cl:any) => cl.id === app.clientId || cl.phone === app.clientPhone); return cl?.requirePrepayment ? <span title="Exige pagamento antecipado" className="flex-shrink-0 text-[8px]">⚠️</span> : null; })()}
+                              </div>
+                              {!compactView && (
+                                <>
+                                  <p className="text-[8px] font-black text-[#C58A4A] uppercase mt-0.5 truncate">{app.serviceName}</p>
+                                  <p className="text-[7px] text-zinc-500 font-bold mt-0.5">{app.startTime}{app.endTime ? ` – ${app.endTime}` : ''}</p>
+                                </>
+                              )}
+                              {compactView && <p className="text-[7px] text-[#C58A4A]/70 truncate">{app.serviceName}</p>}
+                            </div>
+                            <div className={`flex items-center justify-end gap-1 ${compactView ? 'mt-0.5' : 'mt-1'}`}>
+                               <button 
+                                 onClick={(e) => { e.stopPropagation(); app.status === 'CONCLUIDO_PAGO' ? updateAppointmentStatus(app.id, 'PENDENTE') : openFinModal(app); }} 
+                                 className={`rounded-lg transition-all ${app.status === 'CONCLUIDO_PAGO' ? 'bg-emerald-500 text-white' : 'bg-white/10 text-zinc-500 hover:text-white'} ${compactView ? 'p-0.5' : 'p-1'}`} 
+                                 title={app.status === 'CONCLUIDO_PAGO' ? 'Marcar como Pendente' : 'Finalizar e Pagar'}
+                               ><DollarSign size={compactView ? 9 : 11}/></button>
+                               <button onClick={(e) => { e.stopPropagation(); setShowRescheduleModal(app); }} className={`bg-white/10 text-zinc-500 hover:text-white rounded-lg transition-all ${compactView ? 'p-0.5' : 'p-1'}`} title="Reagendar"><RefreshCw size={compactView ? 9 : 11}/></button>
+                               {app.status !== 'CONCLUIDO_PAGO' && app.status !== 'NAO_COMPARECEU' && app.status !== 'CANCELADO' && (
+                                 <button onClick={(e) => { e.stopPropagation(); handleNoShowCancel(app); }} className={`rounded-lg transition-all bg-red-500/10 text-red-400 hover:bg-red-500/30 ${compactView ? 'p-0.5' : 'p-1'}`} title="🚫 Cancelar por ausência — Lista Negra"><UserX size={compactView ? 9 : 11}/></button>
+                               )}
+                               <button onClick={(e) => { e.stopPropagation(); if (window.confirm(`Excluir agendamento de ${app.clientName}?`)) deleteAppointment(app.id); }} className={`bg-white/10 text-zinc-500 hover:text-red-500 rounded-lg transition-all ${compactView ? 'p-0.5' : 'p-1'}`} title="Excluir agendamento"><X size={compactView ? 9 : 11}/></button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center opacity-0 hover:opacity-40 transition-opacity">
+                            <Plus size={compactView ? 12 : 16} className="text-[#C58A4A]" />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="p-6 space-y-3 overflow-y-auto h-full scrollbar-hide">
+
+            {/* ── ABA ESPERA (clientes avulsos) ── */}
+            {(filterPeriod as any) === 'espera' && (
+              <div className="space-y-4">
+                {/* Fila do Firestore — clientes que entraram pelo app */}
+                {(waitQueueStore || []).filter((w:any) => w.status === 'AGUARDANDO').length > 0 && (
+                  <div className="space-y-2">
+                    <p className={`text-[9px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>📱 Aguardando pelo App</p>
+                    {(waitQueueStore || []).filter((w:any) => w.status === 'AGUARDANDO').map((w:any, idx:number) => (
+                      <div key={w.id} className={`rounded-2xl border p-4 flex items-center gap-4 ${isDark ? 'bg-blue-500/5 border-blue-500/20' : 'bg-blue-50 border-blue-200'}`}>
+                        <div className="w-9 h-9 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 font-black text-sm shrink-0">{idx + 1}</div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`font-black text-sm ${isDark ? 'text-white' : 'text-zinc-900'}`}>{w.name}</p>
+                          <p className="text-[9px] text-zinc-500 font-bold">{w.profName || 'Qualquer barbeiro'} • Desde {w.since}</p>
+                        </div>
+                        <div className="flex gap-2 shrink-0">
+                          <button onClick={() => { setModoAvulso(true); setAvulsoNome(w.name); if(w.profId) setNewApp((prev:any)=>({...prev, professionalId:w.profId})); removeFromWaitQueue(w.id); setShowAddModal(true); }}
+                            className="px-3 py-2 bg-[#C58A4A] text-black rounded-xl font-black text-[9px] uppercase">✂️</button>
+                          <button onClick={() => removeFromWaitQueue(w.id)} className={`p-2 rounded-xl ${isDark ? 'bg-white/5 text-zinc-500 hover:text-red-400' : 'bg-zinc-100 text-zinc-400 hover:text-red-500'} transition-all`}>✕</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Form de entrada rápida */}
+                <div className={`rounded-2xl p-4 border space-y-3 ${isDark ? 'bg-blue-500/5 border-blue-500/20' : 'bg-blue-50 border-blue-200'}`}>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-blue-400">⏳ Adicionar à fila de espera</p>
+                  <input
+                    type="text"
+                    placeholder="Nome do cliente avulso *"
+                    value={waitName}
+                    onChange={e => setWaitName(e.target.value)}
+                    className={`w-full border p-3 rounded-xl text-sm font-bold outline-none ${isDark ? 'bg-white/5 border-white/10 text-white placeholder:text-zinc-600 focus:border-blue-400' : 'bg-white border-zinc-300 text-zinc-900 focus:border-blue-500'}`}
+                  />
+                  <select
+                    value={waitProfId}
+                    onChange={e => setWaitProfId(e.target.value)}
+                    className={`w-full border p-3 rounded-xl text-sm font-bold outline-none ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-zinc-300 text-zinc-900'}`}
+                  >
+                    <option value="">Qualquer barbeiro</option>
+                    {professionals.map((p: any) => <option key={p.id} value={p.id} className="bg-zinc-950">{p.name}</option>)}
+                  </select>
+                  <button
+                    onClick={() => {
+                      if (!waitName.trim()) return alert('Digite o nome do cliente.');
+                      setWaitList(prev => [...prev, {
+                        id: Date.now().toString(),
+                        name: waitName.trim(),
+                        profId: waitProfId,
+                        since: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                      }]);
+                      setWaitName(''); setWaitProfId('');
+                    }}
+                    className="w-full py-3 rounded-xl bg-blue-500 text-white font-black text-[10px] uppercase tracking-widest hover:bg-blue-400 transition-all"
+                  >
+                    + Entrou na fila
+                  </button>
+                </div>
+
+                {/* Lista de espera */}
+                {waitList.length === 0 ? (
+                  <div className={`text-center py-12 rounded-2xl border-2 border-dashed ${isDark ? 'border-white/10 text-zinc-600' : 'border-zinc-200 text-zinc-400'}`}>
+                    <p className="text-3xl mb-2">⏳</p>
+                    <p className="font-black uppercase text-[10px] tracking-widest">Nenhum cliente aguardando</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <p className={`text-[9px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>{waitList.length} na fila</p>
+                    {waitList.map((w, idx) => {
+                      const prof = professionals.find((p: any) => p.id === w.profId);
+                      return (
+                        <div key={w.id} className={`rounded-2xl border p-4 flex items-center gap-4 ${isDark ? 'bg-blue-500/5 border-blue-500/20' : 'bg-blue-50 border-blue-200'}`}>
+                          <div className="w-9 h-9 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 font-black text-sm shrink-0">
+                            {idx + 1}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className={`font-black text-sm truncate ${isDark ? 'text-white' : 'text-zinc-900'}`}>{w.name}</p>
+                            <p className="text-[9px] text-zinc-500 font-bold">{prof ? prof.name : 'Qualquer barbeiro'} • Desde {w.since}</p>
+                          </div>
+                          <div className="flex gap-2 shrink-0">
+                            <button
+                              onClick={() => {
+                                setModoAvulso(true);
+                                setAvulsoNome(w.name);
+                                if (w.profId) setNewApp(prev => ({...prev, professionalId: w.profId}));
+                                setWaitList(prev => prev.filter(x => x.id !== w.id));
+                                setShowAddModal(true);
+                              }}
+                              className="px-3 py-2 bg-[#C58A4A] text-black rounded-xl font-black text-[9px] uppercase hover:bg-[#E5A86A] transition-all"
+                            >
+                              ✂️ Agendar
+                            </button>
+                            <button
+                              onClick={() => setWaitList(prev => prev.filter(x => x.id !== w.id))}
+                              className={`p-2 rounded-xl ${isDark ? 'bg-white/5 text-zinc-500 hover:text-red-400' : 'bg-zinc-100 text-zinc-400 hover:text-red-500'} transition-all`}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ── ABA FIADOS ── */}
+            {filterPeriod === 'fiados' && (
+              <div className="space-y-4">
+                <div className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? 'bg-orange-500/10 border-orange-500/30' : 'bg-orange-50 border-orange-200'}`}>
+                  <div>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-orange-400">📒 Total em Fiados</p>
+                    <p className="text-2xl font-black text-orange-400 font-display italic">R$ {fiadosTotal.toFixed(2)}</p>
+                  </div>
+                  <p className={`text-[9px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>{fiadosCount} pendente{fiadosCount !== 1 ? 's' : ''}</p>
+                </div>
+                {appointmentsFiltered.length === 0 && (
+                  <div className={`text-center py-16 rounded-2xl border-2 border-dashed ${isDark ? 'border-white/10 text-zinc-600' : 'border-zinc-200 text-zinc-400'}`}>
+                    <p className="text-4xl mb-3">📒</p>
+                    <p className="font-black uppercase text-[10px] tracking-widest">Nenhum fiado pendente</p>
+                  </div>
+                )}
+                {appointmentsFiltered.map(app => (
+                  <div key={app.id} className={`rounded-2xl border p-4 ${isDark ? 'bg-orange-500/5 border-orange-500/25' : 'bg-orange-50 border-orange-200'}`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className={`text-sm font-black cursor-pointer hover:text-orange-400 transition-colors truncate ${isDark ? 'text-white' : 'text-zinc-900'}`} onClick={() => setShowDetailModal(app)}>{app.clientName}</p>
+                        <p className={`text-[9px] font-black uppercase tracking-widest mt-0.5 ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>{app.serviceName || 'Serviço'} • {app.date?.split('-').reverse().join('/')} {app.startTime}</p>
+                        <p className={`text-[9px] mt-0.5 ${isDark ? 'text-zinc-600' : 'text-zinc-400'}`}>{app.professionalName}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-lg font-black text-orange-400">R$ {((app as any).totalPrice ?? app.price ?? 0).toFixed(2)}</p>
+                      </div>
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-orange-500/20">
+                      {fiadoPayingId === app.id ? (
+                        <div className="space-y-3 animate-in fade-in">
+                          <p className={`text-[9px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>Forma de recebimento:</p>
+                          <div className="grid grid-cols-4 gap-2">
+                            {(['DINHEIRO','PIX','DEBITO','CREDITO'] as const).map(m => (
+                              <button key={m} onClick={() => setFiadoPayMethod(m)}
+                                className={`py-2 rounded-xl text-[8px] font-black uppercase tracking-widest border-2 transition-all ${fiadoPayMethod === m ? 'border-orange-500 bg-orange-500/20 text-orange-400' : isDark ? 'border-white/10 bg-white/5 text-zinc-500' : 'border-zinc-200 bg-zinc-50 text-zinc-400'}`}>
+                                {m === 'DINHEIRO' ? '💵' : m === 'PIX' ? '📱' : m === 'DEBITO' ? '💳 D' : '💳 C'}
+                              </button>
+                            ))}
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => setFiadoPayingId(null)} className={`flex-1 py-3 rounded-xl font-black text-[9px] uppercase border ${isDark ? 'bg-white/5 border-white/10 text-zinc-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500'}`}>Cancelar</button>
+                            <button onClick={async () => { await (markFiadoPago as any)(app.id, fiadoPayMethod); setFiadoPayingId(null); }}
+                              className="flex-1 py-3 rounded-xl font-black text-[9px] uppercase bg-orange-500 text-black hover:bg-orange-400 transition-all">
+                              ✅ Confirmar Recebimento
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <button onClick={() => { setFiadoPayingId(app.id); setFiadoPayMethod('DINHEIRO'); }}
+                            className="flex-1 py-3 rounded-xl font-black text-[9px] uppercase bg-orange-500 text-black hover:bg-orange-400 transition-all">
+                            💰 Marcar como Recebido
+                          </button>
+                          <button onClick={() => setShowDetailModal(app)} className={`px-4 py-3 rounded-xl font-black text-[9px] uppercase border ${isDark ? 'bg-white/5 border-white/10 text-zinc-400' : 'bg-zinc-100 border-zinc-200 text-zinc-500'}`}>Detalhes</button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* ── LISTA NORMAL ── */}
+            {filterPeriod !== 'fiados' && (
+              <>
+             {appointmentsFiltered.length === 0 && (
+               <p className={`text-center py-20 font-black uppercase text-[10px] italic ${theme === 'light' ? 'text-zinc-600' : 'text-zinc-600'}`}>
+                 Nenhum agendamento {filterPeriod === 'day' ? 'para hoje' : filterPeriod === 'month' ? 'neste mês' : 'encontrado'}.
+               </p>
+             )}
+             {appointmentsFiltered.map(app => (
+               <div key={app.id} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-[#C58A4A]/30 transition-all">
+                  <div className="flex items-center gap-4">
+                     <div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${app.status === 'CONCLUIDO_PAGO' ? 'border-emerald-500 text-emerald-500 bg-emerald-500/10' : app.awaitingOnlinePayment ? 'border-blue-400 text-blue-400 bg-blue-400/10' : 'border-amber-400 text-amber-400 bg-amber-400/10'}`}>
+                        {app.status === 'CONCLUIDO_PAGO' ? <Check size={20}/> : app.awaitingOnlinePayment ? <CreditCard size={20} className="text-blue-400 animate-pulse"/> : <Banknote size={20} className="text-amber-400 animate-pulse"/>}
+                     </div>
+                     <div>
+                        <p 
+                          className="text-xs font-black cursor-pointer hover:text-[#C58A4A] transition-colors"
+                          onClick={() => setShowDetailModal(app)}
+                          title="Ver detalhes do agendamento"
+                        >{app.clientName} • <span className="text-[#C58A4A]">{app.startTime}</span></p>
+                        <p className="text-[9px] text-zinc-500 font-black uppercase tracking-widest">{app.serviceName} com {app.professionalName}</p>
+                     </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                     <button 
+                       onClick={() => app.status === 'CONCLUIDO_PAGO' ? updateAppointmentStatus(app.id, 'PENDENTE') : openFinModal(app)} 
+                       className={`p-2 rounded-xl border transition-all ${app.status === 'CONCLUIDO_PAGO' ? 'bg-emerald-500 text-white border-transparent' : 'bg-white/5 border-white/10 text-zinc-500 hover:text-white'}`} 
+                       title={app.status === 'CONCLUIDO_PAGO' ? 'Marcar como Pendente' : 'Finalizar e Pagar'}
+                     ><DollarSign size={16}/></button>
+                     <button onClick={() => setShowRescheduleModal(app)} className="p-2 bg-white/5 border border-white/10 text-zinc-500 hover:text-white rounded-xl transition-all" title="Reagendar"><RefreshCw size={16}/></button>
+                     {app.status !== 'CONCLUIDO_PAGO' && app.status !== 'NAO_COMPARECEU' && app.status !== 'CANCELADO' && (
+                       <button onClick={() => handleNoShowCancel(app)} className="p-2 bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 rounded-xl transition-all" title="🚫 Cancelar por ausência — Lista Negra"><UserX size={16}/></button>
+                     )}
+                     <button onClick={() => { if (window.confirm(`Excluir agendamento de ${app.clientName}?`)) deleteAppointment(app.id); }} className="p-2 bg-white/5 border border-white/10 text-zinc-500 hover:text-red-500 hover:border-red-500/30 rounded-xl transition-all" title="Excluir agendamento"><X size={16}/></button>
+                  </div>
+               </div>
+             ))}
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Modais omitidos por brevidade mas restaurados conforme lógica anterior de novo cliente e novo agendamento */}
+      {showRescheduleModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/95 backdrop-blur-xl animate-in zoom-in-95">
+          <div className="cartao-vidro w-full max-w-sm rounded-[2.5rem] p-10 space-y-8 border-[#C58A4A]/30 shadow-2xl">
+             <div className="text-center space-y-2"><h2 className="text-xl font-black font-display italic">Reagendar Ritual</h2><p className="text-[10px] text-zinc-500 uppercase font-black">Escolha novo horário para {showRescheduleModal.clientName}</p></div>
+             <div className="space-y-4">
+                <input type="date" value={rescheduleData.date} onChange={e => setRescheduleData({...rescheduleData, date: e.target.value})} className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-xs font-black" />
+                <input type="time" value={rescheduleData.time} onChange={e => setRescheduleData({...rescheduleData, time: e.target.value})} className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-xs font-black" />
+             </div>
+             <div className="flex gap-3">
+                <button onClick={() => setShowRescheduleModal(null)} className="flex-1 bg-white/5 py-4 rounded-xl font-black uppercase text-[9px] text-zinc-500">Voltar</button>
+                <button onClick={handleReschedule} className="flex-1 gradiente-ouro text-black py-4 rounded-xl font-black uppercase text-[9px]">Confirmar</button>
+             </div>
+          </div>
+        </div>
+      )}
+      
+      {showAddModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/95 backdrop-blur-xl animate-in zoom-in-95">
+          <div className="cartao-vidro w-full max-w-lg rounded-[2.5rem] p-10 space-y-8 border-[#C58A4A]/20 relative">
+            <h2 className="text-2xl font-black font-display italic">Novo Agendamento</h2>
+            <div className="space-y-6">
+               <div className="space-y-4">
+                  {/* Toggle Cadastrado / Avulso */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <button type="button"
+                      onClick={() => { setModoAvulso(false); setAvulsoNome(''); }}
+                      className={`py-3 rounded-xl font-black text-[10px] uppercase tracking-widest border-2 transition-all ${!modoAvulso ? 'border-[#C58A4A] bg-[#C58A4A]/10 text-[#C58A4A]' : 'border-white/10 bg-white/5 text-zinc-500'}`}
+                    >👤 Cadastrado</button>
+                    <button type="button"
+                      onClick={() => { setModoAvulso(true); setShowQuickClient(false); setNewApp({...newApp, clientId: ''}); }}
+                      className={`py-3 rounded-xl font-black text-[10px] uppercase tracking-widest border-2 transition-all ${modoAvulso ? 'border-amber-500 bg-amber-500/10 text-amber-400' : 'border-white/10 bg-white/5 text-zinc-500'}`}
+                    >✂️ Avulso</button>
+                  </div>
+
+                  {modoAvulso ? (
+                    <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl space-y-2 animate-in slide-in-from-top-2">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-amber-400">✂️ Cliente sem cadastro</p>
+                      <input
+                        type="text"
+                        placeholder="Nome do cliente *"
+                        value={avulsoNome}
+                        onChange={e => setAvulsoNome(e.target.value)}
+                        autoFocus
+                        className="w-full bg-black/20 border border-amber-500/30 text-white p-3 rounded-xl text-xs font-bold outline-none focus:border-amber-400"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                  {/* Busca de cliente */}
+                  <div className="relative">
+                    <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#C58A4A] pointer-events-none"/>
+                    <input
+                      type="text"
+                      placeholder="Buscar por nome, telefone ou e-mail..."
+                      value={clientSearch}
+                      onChange={e => { setClientSearch(e.target.value); setNewApp({...newApp, clientId: ''}); }}
+                      className="w-full bg-white/5 border border-white/10 p-4 pl-10 rounded-xl outline-none text-xs font-black uppercase placeholder:normal-case placeholder:font-normal focus:border-[#C58A4A] transition-all"
+                    />
+                  </div>
+                  {clientSearch && (
+                    <div className={`rounded-xl border overflow-hidden max-h-40 overflow-y-auto ${isDark ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200 shadow-lg'}`}>
+                      {clients
+                        .filter((c: any) =>
+                          c.name?.toLowerCase().includes(clientSearch.toLowerCase()) ||
+                          c.phone?.includes(clientSearch) ||
+                          c.email?.toLowerCase().includes(clientSearch.toLowerCase())
+                        )
+                        .slice(0, 8)
+                        .map((c: any) => (
+                          <button key={c.id} type="button"
+                            onClick={() => { setNewApp({...newApp, clientId: c.id}); setClientSearch(c.name); }}
+                            className={`w-full text-left px-4 py-3 text-xs font-bold flex items-center justify-between transition-all border-b last:border-b-0 ${newApp.clientId === c.id ? 'bg-[#C58A4A]/20 text-[#C58A4A]' : isDark ? 'text-white hover:bg-white/5 border-white/5' : 'text-zinc-900 hover:bg-zinc-50 border-zinc-100'}`}
+                          >
+                            <span>{c.name}</span>
+                            <span className={`text-[9px] font-normal ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>{c.phone}</span>
+                          </button>
+                        ))
+                      }
+                      {clients.filter((c: any) =>
+                        c.name?.toLowerCase().includes(clientSearch.toLowerCase()) ||
+                        c.phone?.includes(clientSearch) ||
+                        c.email?.toLowerCase().includes(clientSearch.toLowerCase())
+                      ).length === 0 && (
+                        <p className={`px-4 py-3 text-xs ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Nenhum cliente encontrado</p>
+                      )}
+                    </div>
+                  )}
+                  {newApp.clientId && (
+                    <div className={`flex items-center justify-between px-3 py-2 rounded-xl ${isDark ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-emerald-50 border border-emerald-200'}`}>
+                      <span className="text-emerald-400 font-black text-[10px] uppercase tracking-widest">✅ {clients.find((c:any)=>c.id===newApp.clientId)?.name}</span>
+                      <button type="button" onClick={() => { setNewApp({...newApp, clientId: ''}); setClientSearch(''); }} className="text-zinc-500 hover:text-red-400 text-[10px]">✕</button>
+                    </div>
+                  )}
+                  <button type="button" onClick={() => setShowQuickClient(v => !v)}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-[#C58A4A]/40 text-[#C58A4A] bg-[#C58A4A]/5 hover:bg-[#C58A4A]/15 transition-all font-black text-[10px] uppercase tracking-widest">
+                    <UserPlus size={14}/> Cadastrar Novo Cliente
+                  </button>
+                  {showQuickClient && (
+                    <div className="p-4 bg-white/5 rounded-xl border border-[#C58A4A]/30 space-y-3 animate-in slide-in-from-top-2 max-h-80 overflow-y-auto">
+                      <p className="text-[9px] font-black uppercase text-[#C58A4A]">📋 Cadastro Rápido</p>
+                      {/* Obrigatórios */}
+                      <input type="text" placeholder="Nome *" value={quickClient.name} onChange={e => setQuickClient({...quickClient, name: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs" />
+                      <input type="tel" placeholder="WhatsApp *" value={quickClient.phone} onChange={e => setQuickClient({...quickClient, phone: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs" />
+                      {/* Opcionais */}
+                      <input type="email" placeholder="E-mail" value={quickClient.email} onChange={e => setQuickClient({...quickClient, email: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs" />
+                      <input type="password" placeholder="Senha (portal cliente)" value={quickClient.password} onChange={e => setQuickClient({...quickClient, password: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs" />
+                      <input type="text" placeholder="CPF/CNPJ" value={quickClient.cpfCnpj} onChange={e => setQuickClient({...quickClient, cpfCnpj: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs" />
+                      <input type="date" placeholder="Data de Nascimento" value={quickClient.birthdate} onChange={e => setQuickClient({...quickClient, birthdate: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs" />
+                      <select value={quickClient.gender} onChange={e => setQuickClient({...quickClient, gender: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs text-zinc-400">
+                        <option value="">Gênero</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Outro">Outro</option>
+                      </select>
+                      <input type="text" placeholder="Endereço" value={quickClient.address} onChange={e => setQuickClient({...quickClient, address: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs" />
+                      <input type="text" placeholder="Bairro" value={quickClient.neighborhood} onChange={e => setQuickClient({...quickClient, neighborhood: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs" />
+                      <input type="text" placeholder="Cidade" value={quickClient.city} onChange={e => setQuickClient({...quickClient, city: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs" />
+                      <input type="text" placeholder="Profissão" value={quickClient.profession} onChange={e => setQuickClient({...quickClient, profession: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs" />
+                      <input type="text" placeholder="Instagram" value={quickClient.instagram} onChange={e => setQuickClient({...quickClient, instagram: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs" />
+                      <select value={quickClient.howFound} onChange={e => setQuickClient({...quickClient, howFound: e.target.value})} className="w-full bg-black/20 border border-white/5 p-3 rounded-lg text-xs text-zinc-400">
+                        <option value="">Como nos conheceu?</option>
+                        <option value="Instagram">Instagram</option>
+                        <option value="Indicação">Indicação</option>
+                        <option value="Google">Google</option>
+                        <option value="Passou na rua">Passou na rua</option>
+                        <option value="Outro">Outro</option>
+                      </select>
+                      <div className="flex gap-2 pt-1">
+                        <button type="button" onClick={() => setShowQuickClient(false)} className="flex-1 bg-white/5 text-zinc-500 py-2 rounded-lg text-[9px] font-black uppercase hover:bg-white/10 transition-all">Fechar</button>
+                        <button type="button" onClick={handleQuickClient} className="flex-1 bg-[#C58A4A] text-black py-2 rounded-lg text-[9px] font-black uppercase">Salvar e Selecionar</button>
+                      </div>
+                    </div>
+                  )}
+                    </>
+                  )}
+                  <select required value={newApp.professionalId} onChange={e => setNewApp({...newApp, professionalId: e.target.value})} className="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs font-black uppercase">
+                    <option value="" className="bg-zinc-950">Barbeiro</option>
+                    {professionals.map(p => <option key={p.id} value={p.id} className="bg-zinc-950">{p.name}</option>)}
+                  </select>
+                  <select required value={newApp.serviceId} onChange={e => setNewApp({...newApp, serviceId: e.target.value})} className="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs font-black uppercase">
+                    <option value="" className="bg-zinc-950">Serviço</option>
+                    {services.map(s => <option key={s.id} value={s.id} className="bg-zinc-950">{s.name} • R$ {s.price}</option>)}
+                  </select>
+                  <input required type="time" value={newApp.startTime} onChange={e => setNewApp({...newApp, startTime: e.target.value})} className="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none text-xs font-black" />
+               </div>
+               <div className="flex gap-3">
+                  <button type="button" onClick={() => { setShowAddModal(false); setModoAvulso(false); setAvulsoNome(''); setClientSearch(''); }} className="flex-1 bg-white/5 py-4 rounded-xl font-black uppercase text-[10px] text-zinc-500">Cancelar</button>
+                  <button type="button" onClick={handleCreateAppointment} onTouchEnd={e => { e.preventDefault(); handleCreateAppointment(); }} className="flex-1 gradiente-ouro text-black py-4 rounded-xl font-black uppercase text-[10px]">Agendar Agora</button>
+               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── MODAL: Detalhes do Agendamento ───────────────────────────────── */}
+      {showDetailModal && (() => {
+        const app = showDetailModal;
+        const client = clients.find(c => c.name === app.clientName || c.phone === app.clientPhone);
+        const service = services.find(s => s.id === app.serviceId);
+        const professional = professionals.find(p => p.id === app.professionalId);
+        const statusLabel = app.status === 'CONCLUIDO_PAGO' ? 'Concluído e Pago' : app.status === 'CANCELADO' ? 'Cancelado' : app.status === 'NAO_COMPARECEU' ? '🚫 Não Compareceu' : app.awaitingOnlinePayment ? '💳 Pag. Online Pendente' : 'Pendente';
+        const statusColor = app.status === 'CONCLUIDO_PAGO' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : app.status === 'CANCELADO' ? 'text-red-400 bg-red-500/10 border-red-500/30' : app.status === 'NAO_COMPARECEU' ? 'text-red-400 bg-red-500/10 border-red-500/30' : app.awaitingOnlinePayment ? 'text-blue-400 bg-blue-500/10 border-blue-400/30' : 'text-[#C58A4A] bg-[#C58A4A]/10 border-[#C58A4A]/30';
+        return (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-black/95 backdrop-blur-xl animate-in zoom-in-95">
+            <div className={`w-full max-w-md rounded-[2.5rem] shadow-2xl border flex flex-col max-h-[90vh] ${theme === 'light' ? 'bg-white border-zinc-200' : 'cartao-vidro border-[#C58A4A]/20'}`}>
+              {/* Header — fixo */}
+              <div className="p-8 pb-0 flex items-start justify-between">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-[#C58A4A] mb-1">Detalhes do Agendamento</p>
+                  <h2 className={`text-2xl font-black font-display italic ${theme === 'light' ? 'text-zinc-900' : 'text-white'}`}>{app.clientName}</h2>
+                </div>
+                <button onClick={() => setShowDetailModal(null)} className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-all"><X size={20} className="text-zinc-400"/></button>
+              </div>
+
+              {/* Status badge */}
+              <div className="px-8 pt-4">
+              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-black uppercase tracking-widest ${statusColor}`}>
+                {app.status === 'CONCLUIDO_PAGO' ? <Check size={12}/> : app.status === 'CANCELADO' ? <X size={12}/> : <Clock size={12}/>}
+                {statusLabel}
+              </div>
+              </div>
+
+              {/* Scrollable body */}
+              <div className="overflow-y-auto flex-1 px-8 py-4 space-y-3">
+              {/* Info grid */}
+              <div className="space-y-3">
+                <div className={`p-4 rounded-2xl ${theme === 'light' ? 'bg-zinc-50' : 'bg-white/5'}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Scissors size={16} className="text-[#C58A4A] shrink-0"/>
+                      <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Serviço</p>
+                    </div>
+                    {app.status !== 'CONCLUIDO_PAGO' && (
+                      <button onClick={() => { setEditDetailService(v => !v); setEditDetailPrice(String(app.price || 0)); }}
+                        className="text-[9px] font-black text-[#C58A4A] hover:underline uppercase tracking-widest">
+                        {editDetailService ? 'Cancelar' : '✏️ Editar'}
+                      </button>
+                    )}
+                  </div>
+                  {editDetailService ? (
+                    <div className="space-y-3 animate-in slide-in-from-top-1">
+                      <select
+                        value={app.serviceId}
+                        onChange={async e => {
+                          const svc = services.find((s: any) => s.id === e.target.value);
+                          if (!svc) return;
+                          await updateAppointment(app.id, { serviceId: svc.id, serviceName: svc.name, price: svc.price });
+                          setShowDetailModal({ ...app, serviceId: svc.id, serviceName: svc.name, price: svc.price });
+                          setEditDetailPrice(String(svc.price));
+                        }}
+                        className={`w-full border p-3 rounded-xl text-sm font-bold outline-none ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-zinc-300 text-zinc-900'}`}
+                      >
+                        {services.map((s: any) => <option key={s.id} value={s.id} className="bg-zinc-950">{s.name} — R$ {s.price?.toFixed(2)}</option>)}
+                      </select>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-bold ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>Valor:</span>
+                        <span className={`text-[10px] font-bold ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>R$</span>
+                        <input type="number" min="0" step="0.01" value={editDetailPrice}
+                          onChange={e => setEditDetailPrice(e.target.value)}
+                          className={`flex-1 border p-2 rounded-xl text-sm font-bold outline-none text-center ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-zinc-300 text-zinc-900'}`}
+                        />
+                        <button onClick={async () => {
+                          const newPrice = parseFloat(editDetailPrice) || 0;
+                          await updateAppointment(app.id, { price: newPrice });
+                          setShowDetailModal({ ...app, price: newPrice });
+                          setEditDetailService(false);
+                        }} className="px-4 py-2 bg-[#C58A4A] text-black rounded-xl font-black text-[10px] uppercase">Salvar</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <p className={`text-sm font-black ${theme === 'light' ? 'text-zinc-900' : 'text-white'}`}>{app.serviceName || 'Serviço não informado'}</p>
+                      {service && <p className="text-[9px] text-zinc-500 mt-0.5">{service.durationMinutes} min • R$ {app.price?.toFixed(2)}</p>}
+                    </>
+                  )}
+                </div>
+
+                <div className={`flex items-center gap-4 p-4 rounded-2xl ${theme === 'light' ? 'bg-zinc-50' : 'bg-white/5'}`}>
+                  <User size={16} className="text-[#C58A4A] shrink-0"/>
+                  <div>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Profissional</p>
+                    <p className={`text-sm font-black ${theme === 'light' ? 'text-zinc-900' : 'text-white'}`}>{app.professionalName}</p>
+                  </div>
+                </div>
+
+                <div className={`flex items-center gap-4 p-4 rounded-2xl ${theme === 'light' ? 'bg-zinc-50' : 'bg-white/5'}`}>
+                  <Calendar size={16} className="text-[#C58A4A] shrink-0"/>
+                  <div>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Data e Horário</p>
+                    <p className={`text-sm font-black ${theme === 'light' ? 'text-zinc-900' : 'text-white'}`}>{formatDateLabel(app.date)} • {app.startTime} – {app.endTime}</p>
+                  </div>
+                </div>
+
+                {client?.phone && (
+                  <div className={`flex items-center gap-4 p-4 rounded-2xl ${theme === 'light' ? 'bg-zinc-50' : 'bg-white/5'}`}>
+                    <Phone size={16} className="text-[#C58A4A] shrink-0"/>
+                    <div>
+                      <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500">WhatsApp</p>
+                      <a href={`https://wa.me/55${client.phone.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" className="text-sm font-black text-[#C58A4A] hover:underline">{client.phone}</a>
+                    </div>
+                  </div>
+                )}
+
+                {client?.email && (
+                  <div className={`flex items-center gap-4 p-4 rounded-2xl ${theme === 'light' ? 'bg-zinc-50' : 'bg-white/5'}`}>
+                    <Mail size={16} className="text-[#C58A4A] shrink-0"/>
+                    <div>
+                      <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500">E-mail</p>
+                      <p className={`text-sm font-black ${theme === 'light' ? 'text-zinc-900' : 'text-white'}`}>{client.email}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ── Fotos do Corte ─────────────────────────────── */}
+              {client && (() => {
+                const photos: string[] = client.photos || [];
+                return (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500 flex items-center gap-2">
+                        <Camera size={12} className="text-[#C58A4A]"/> Fotos do Corte
+                      </p>
+                      <label className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer text-[9px] font-black uppercase transition-all ${photoUploading ? 'opacity-50 pointer-events-none' : 'bg-[#C58A4A]/10 text-[#C58A4A] hover:bg-[#C58A4A]/20'}`}>
+                        <ImagePlus size={12}/>
+                        {photoUploading ? 'Enviando…' : 'Adicionar'}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={e => {
+                            const file = e.target.files?.[0];
+                            if (file) handleUploadCutPhoto(client.id, file);
+                            e.target.value = '';
+                          }}
+                        />
+                      </label>
+                    </div>
+                    {photos.length === 0 ? (
+                      <p className="text-[10px] text-zinc-600 italic">Nenhuma foto adicionada ainda.</p>
+                    ) : (
+                      <div className="grid grid-cols-3 gap-2">
+                        {photos.map((url: string, i: number) => (
+                          <div key={i} className="relative group aspect-square rounded-2xl overflow-hidden border border-white/10">
+                            <img
+                              src={url}
+                              alt={`Corte ${i+1}`}
+                              className="w-full h-full object-cover cursor-pointer"
+                              onClick={() => setLightboxUrl(url)}
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all pointer-events-none"/>
+                            <button
+                              onClick={e => { e.stopPropagation(); handleDeleteCutPhoto(client.id, url); }}
+                              className="absolute top-1.5 right-1.5 bg-black/70 text-red-400 rounded-xl p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 hover:text-white"
+                            >
+                              <Trash2 size={10}/>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              </div>{/* end scrollable body */}
+              {/* Actions — fixo no rodapé */}
+              <div className="px-8 pb-8 pt-4 border-t border-white/5">
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => { setShowDetailModal(null); setShowRescheduleModal(app); }} 
+                    className="flex-1 bg-white/5 border border-white/10 py-3 rounded-xl font-black uppercase text-[9px] text-zinc-400 hover:text-white transition-all flex items-center justify-center gap-2"
+                  >
+                    <RefreshCw size={12}/> Reagendar
+                  </button>
+                  <button 
+                    onClick={() => { app.status === 'CONCLUIDO_PAGO' ? updateAppointmentStatus(app.id, 'PENDENTE') : (setShowDetailModal(null), openFinModal(app)); }} 
+                    className={`flex-1 py-3 rounded-xl font-black uppercase text-[9px] flex items-center justify-center gap-2 ${app.status === 'CONCLUIDO_PAGO' ? 'bg-white/10 text-zinc-300 border border-white/10' : 'gradiente-ouro text-black'}`}
+                  >
+                    <DollarSign size={12}/> {app.status === 'CONCLUIDO_PAGO' ? 'Voltar a Pendente' : 'Finalizar e Pagar'}
+                  </button>
+                </div>
+                {app.status !== 'CONCLUIDO_PAGO' && app.status !== 'NAO_COMPARECEU' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (window.confirm(`Marcar ${app.clientName} como não compareceu? O próximo agendamento exigirá pagamento antecipado.`)) {
+                        markNoShow(app.id);
+                        setShowDetailModal(null);
+                      }
+                    }}
+                    className="w-full py-3 rounded-xl font-black uppercase text-[9px] flex items-center justify-center gap-2 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-all"
+                  >
+                    🚫 Não Compareceu
+                  </button>
+                )}
+                {app.status === 'NAO_COMPARECEU' && (
+                  <div className="w-full py-3 rounded-xl text-center text-[9px] font-black uppercase bg-red-500/10 border border-red-500/30 text-red-400">
+                    🚫 Marcado como Não Compareceu
+                  </div>
+                )}
+              </div>
+              </div>{/* end footer */}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* ══════════════════════════════════════════════════════
+          MODAL DE FINALIZAÇÃO — Adicionais + Pagamento Asaas
+      ══════════════════════════════════════════════════════ */}
+      {finModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className={`w-full max-w-lg rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] ${isDark ? 'bg-[#0f0f0f] border border-white/10' : 'bg-white border border-zinc-200'}`}>
+            
+            {/* Header */}
+            <div className="p-6 flex items-center justify-between border-b border-white/5">
+              <div>
+                <h2 className={`text-xl font-black font-display italic ${isDark ? 'text-white' : 'text-zinc-900'}`}>Finalizar Atendimento</h2>
+                <p className={`text-[10px] font-black uppercase tracking-widest mt-1 ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>{finModal.clientName} · {finModal.serviceName}</p>
+              </div>
+              <button onClick={() => setFinModal(null)} className={`p-2 rounded-xl ${isDark ? 'bg-white/5 text-zinc-400 hover:text-white' : 'bg-zinc-100 text-zinc-500 hover:text-zinc-900'}`}>✕</button>
+            </div>
+
+            <div className="overflow-y-auto flex-1 p-6 space-y-5">
+
+              {finResult ? (
+                /* ── Resultado do pagamento ── */
+                <div className="space-y-4 text-center">
+                  <div className="text-4xl">
+                    {(finResult as any)._method === 'PIX' ? '📱' :
+                     (finResult as any)._method === 'DEBITO' ? '💳' :
+                     (finResult as any)._method === 'CREDITO' ? '💳' :
+                     (finResult as any)._method === 'FIADO' ? '📒' : '💵'}
+                  </div>
+                  <p className={`font-black text-lg ${isDark ? 'text-white' : 'text-zinc-900'}`}>
+                    {(finResult as any)._method === 'FIADO' ? 'Registrado como fiado!' : 'Pagamento registrado!'}
+                  </p>
+                  <p className={`text-[10px] ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>R$ {finTotal.toFixed(2)}</p>
+                  <p className={`text-[10px] ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                    {(finResult as any)._method === 'FIADO'
+                      ? 'Atendimento registrado. Combine o acerto com o cliente.'
+                      : 'Atendimento concluído e registrado com sucesso.'}
+                  </p>
+                  <button onClick={() => setFinModal(null)} className={`w-full py-3 rounded-xl font-black text-[10px] uppercase border ${isDark ? 'border-white/10 text-zinc-400' : 'border-zinc-200 text-zinc-500'}`}>Fechar</button>
+                </div>
+              ) : (
+                <>
+                  {/* ── Serviço base ── */}
+                  <div className={`flex items-center justify-between gap-3 p-4 rounded-2xl ${isDark ? 'bg-white/3 border border-white/5' : 'bg-zinc-50 border border-zinc-100'}`}>
+                    <p className={`font-black text-sm flex-1 ${isDark ? 'text-white' : 'text-zinc-900'}`}>{finModal.serviceName}</p>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <span className={`text-[10px] font-bold ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>R$</span>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={editedServicePrice !== '' ? editedServicePrice : (finModal.price || 0).toFixed(2)}
+                        onChange={e => setEditedServicePrice(e.target.value)}
+                        className={`w-20 text-right font-black text-[#C58A4A] text-sm border-b-2 outline-none bg-transparent transition-all ${isDark ? 'border-white/10 focus:border-[#C58A4A]' : 'border-zinc-300 focus:border-[#C58A4A]'}`}
+                        title="Toque para editar o valor do serviço"
+                      />
+                    </div>
+                  </div>
+
+                  {/* ── Adicionais existentes ── */}
+                  {finAdditionals.length > 0 && (
+                    <div className="space-y-2">
+                      <p className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>Adicionais</p>
+                      {finAdditionals.map(item => (
+                        <div key={item.id} className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-white/3 border border-white/5' : 'bg-zinc-50 border border-zinc-100'}`}>
+                          <div className="flex items-center gap-1">
+                            <button onClick={() => setFinAdditionals(prev => prev.map(a => a.id === item.id ? {...a, qty: Math.max(1, a.qty-1)} : a))} className="w-6 h-6 rounded-lg bg-white/10 text-zinc-400 font-black text-xs flex items-center justify-center">-</button>
+                            <span className={`text-xs font-black w-4 text-center ${isDark ? 'text-white' : 'text-zinc-900'}`}>{item.qty}</span>
+                            <button onClick={() => setFinAdditionals(prev => prev.map(a => a.id === item.id ? {...a, qty: a.qty+1} : a))} className="w-6 h-6 rounded-lg bg-white/10 text-zinc-400 font-black text-xs flex items-center justify-center">+</button>
+                          </div>
+                          <p className={`flex-1 text-sm font-bold ${isDark ? 'text-zinc-300' : 'text-zinc-700'}`}>{item.name}</p>
+                          <p className="text-sm font-black text-[#C58A4A]">R$ {(item.price * item.qty).toFixed(2)}</p>
+                          <button onClick={() => setFinAdditionals(prev => prev.filter(a => a.id !== item.id))} className="text-red-400 hover:text-red-500 text-xs">✕</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* ── Adicionar item ── */}
+                  <div className={`p-4 rounded-2xl space-y-3 ${isDark ? 'border border-white/5 bg-white/2' : 'border border-zinc-100 bg-zinc-50'}`}>
+                    <div className="flex items-center justify-between">
+                      <p className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>+ Adicionar produto ou serviço extra</p>
+                      {clientVipDiscount > 0 && (
+                        <span className="text-[9px] font-black px-2 py-1 rounded-full bg-[#C58A4A]/20 text-[#C58A4A] uppercase tracking-widest">
+                          👑 {clientVipDiscount}% VIP aplicado
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        placeholder="Nome (ex: Pomada, Cerveja...)"
+                        value={finNewItem.name}
+                        onChange={e => setFinNewItem(p => ({...p, name: e.target.value}))}
+                        className={`flex-1 border p-3 rounded-xl text-sm font-bold outline-none ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-zinc-300 text-zinc-900'}`}
+                      />
+                      <input
+                        placeholder="R$"
+                        type="number"
+                        min="0"
+                        value={finNewItem.price}
+                        onChange={e => setFinNewItem(p => ({...p, price: e.target.value}))}
+                        onKeyDown={e => e.key === 'Enter' && addFinItem()}
+                        className={`w-20 border p-3 rounded-xl text-sm font-bold outline-none text-center ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-zinc-300 text-zinc-900'}`}
+                      />
+                      <button onClick={addFinItem} className="px-4 py-3 gradiente-ouro text-black rounded-xl font-black text-sm">+</button>
+                    </div>
+                  </div>
+
+                  {/* ── Total ── */}
+                  <div className={`flex items-center justify-between p-4 rounded-2xl border ${isDark ? 'border-[#C58A4A]/30 bg-[#C58A4A]/5' : 'border-amber-200 bg-amber-50'}`}>
+                    <p className={`font-black uppercase text-[10px] tracking-widest ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>Total</p>
+                    <p className="font-black text-xl text-[#C58A4A]">R$ {finTotal.toFixed(2)}</p>
+                  </div>
+
+                  {/* ── Plano VIP ativo ── */}
+                  {clientVipSub && (() => {
+                    const { sub, plan } = clientVipSub;
+                    const cutsUsed = sub.cutsThisPeriod || 0;
+                    const maxCuts = plan.maxCuts || 0;
+                    const available = maxCuts === 0 || cutsUsed < maxCuts;
+                    return (
+                      <div className={`p-4 rounded-2xl border-2 ${available ? 'border-[#C58A4A]/50 bg-[#C58A4A]/5' : 'border-red-500/30 bg-red-500/5'}`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Crown size={14} className="text-[#C58A4A]"/>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-[#C58A4A]">{plan.name}</p>
+                          </div>
+                          {available
+                            ? <span className="text-[8px] font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">CORTE INCLUÍDO</span>
+                            : <span className="text-[8px] font-black text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full">LIMITE ATINGIDO</span>
+                          }
+                        </div>
+                        {maxCuts > 0 && (
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className={`flex-1 h-1.5 rounded-full ${isDark ? 'bg-white/10' : 'bg-zinc-200'}`}>
+                              <div className={`h-full rounded-full ${cutsUsed >= maxCuts ? 'bg-red-500' : 'bg-[#C58A4A]'}`} style={{width:`${Math.min((cutsUsed/maxCuts)*100,100)}%`}}/>
+                            </div>
+                            <span className={`text-[9px] font-black ${cutsUsed >= maxCuts ? 'text-red-400' : 'text-[#C58A4A]'}`}>{cutsUsed}/{maxCuts}</span>
+                          </div>
+                        )}
+                        <button type="button"
+                          onClick={() => setFinPayMethod('PLANO_VIP')}
+                          disabled={!available}
+                          className={`w-full py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${finPayMethod === 'PLANO_VIP' ? 'gradiente-ouro text-black' : available ? `${isDark ? 'bg-white/5 border border-white/10 text-zinc-300' : 'bg-zinc-100 border border-zinc-200 text-zinc-600'} hover:border-[#C58A4A]/40` : 'opacity-40 cursor-not-allowed bg-white/5 text-zinc-600'}`}>
+                          {finPayMethod === 'PLANO_VIP' ? '✅ Corte pelo Plano Selecionado' : available ? '👑 Usar Corte do Plano' : '⛔ Limite de Cortes Atingido'}
+                        </button>
+                      </div>
+                    );
+                  })()}
+
+                  {/* ── Forma de pagamento ── */}
+                  <div className="space-y-2">
+                    <p className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>Forma de pagamento — recebido na barbearia</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {/* PIX */}
+                      <button
+                        onClick={() => setFinPayMethod('PIX')}
+                        className={`flex flex-col items-center gap-1.5 p-4 rounded-2xl border-2 transition-all font-black text-[10px] uppercase tracking-widest ${finPayMethod === 'PIX' ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : isDark ? 'border-white/10 bg-white/5 text-zinc-500 hover:border-white/20' : 'border-zinc-200 bg-zinc-50 text-zinc-400 hover:border-zinc-300'}`}
+                      >
+                        <span className="text-2xl">📱</span>
+                        PIX
+                        {finPayMethod === 'PIX' && <span className="text-[8px] text-emerald-400">Recebido na conta</span>}
+                      </button>
+                      {/* Dinheiro */}
+                      <button
+                        onClick={() => setFinPayMethod('DINHEIRO')}
+                        className={`flex flex-col items-center gap-1.5 p-4 rounded-2xl border-2 transition-all font-black text-[10px] uppercase tracking-widest ${finPayMethod === 'DINHEIRO' ? 'border-yellow-500 bg-yellow-500/10 text-yellow-400' : isDark ? 'border-white/10 bg-white/5 text-zinc-500 hover:border-white/20' : 'border-zinc-200 bg-zinc-50 text-zinc-400 hover:border-zinc-300'}`}
+                      >
+                        <span className="text-2xl">💵</span>
+                        Dinheiro
+                        {finPayMethod === 'DINHEIRO' && <span className="text-[8px] text-yellow-400">Recebido na conta</span>}
+                      </button>
+                      {/* Débito */}
+                      <button
+                        onClick={() => setFinPayMethod('DEBITO')}
+                        className={`flex flex-col items-center gap-1.5 p-4 rounded-2xl border-2 transition-all font-black text-[10px] uppercase tracking-widest ${finPayMethod === 'DEBITO' ? 'border-blue-500 bg-blue-500/10 text-blue-400' : isDark ? 'border-white/10 bg-white/5 text-zinc-500 hover:border-white/20' : 'border-zinc-200 bg-zinc-50 text-zinc-400 hover:border-zinc-300'}`}
+                      >
+                        <span className="text-2xl">💳</span>
+                        Débito
+                        {finPayMethod === 'DEBITO' && <span className="text-[8px] text-blue-400">Recebido na conta</span>}
+                      </button>
+                      {/* Crédito */}
+                      <button
+                        onClick={() => setFinPayMethod('CREDITO')}
+                        className={`flex flex-col items-center gap-1.5 p-4 rounded-2xl border-2 transition-all font-black text-[10px] uppercase tracking-widest ${finPayMethod === 'CREDITO' ? 'border-purple-500 bg-purple-500/10 text-purple-400' : isDark ? 'border-white/10 bg-white/5 text-zinc-500 hover:border-white/20' : 'border-zinc-200 bg-zinc-50 text-zinc-400 hover:border-zinc-300'}`}
+                      >
+                        <span className="text-2xl">💳</span>
+                        Crédito
+                        {finPayMethod === 'CREDITO' && <span className="text-[8px] text-purple-400">Recebido na conta</span>}
+                      </button>
+                    </div>
+                    {/* Fiado — linha separada */}
+                    <button
+                      onClick={() => setFinPayMethod('FIADO')}
+                      className={`w-full flex items-center justify-center gap-2 p-3 rounded-2xl border-2 transition-all font-black text-[10px] uppercase tracking-widest ${finPayMethod === 'FIADO' ? 'border-orange-500 bg-orange-500/10 text-orange-400' : isDark ? 'border-white/10 bg-white/5 text-zinc-500 hover:border-white/20' : 'border-zinc-200 bg-zinc-50 text-zinc-400 hover:border-zinc-300'}`}
+                    >
+                      <span className="text-lg">📒</span>
+                      Fiado — acertar depois
+                      {finPayMethod === 'FIADO' && <span className="text-[8px] text-orange-400 ml-1">Registrado sem cobrança</span>}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Footer */}
+            {!finResult && (
+              <div className={`p-6 border-t ${isDark ? 'border-white/5' : 'border-zinc-100'}`}>
+                <button onClick={handleFinalize} disabled={finLoading}
+                  className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100 ${
+                    finPayMethod === 'FIADO' ? 'bg-orange-500/20 border border-orange-500/40 text-orange-400' :
+                    finPayMethod === 'PIX' ? 'bg-emerald-500 text-white' :
+                    finPayMethod === 'DINHEIRO' ? 'bg-yellow-500 text-black' :
+                    finPayMethod === 'DEBITO' ? 'bg-blue-500 text-white' :
+                    finPayMethod === 'CREDITO' ? 'bg-purple-500 text-white' :
+                    'gradiente-ouro text-black'
+                  }`}>
+                  {finLoading ? '⟳ Processando...' :
+                   finPayMethod === 'PLANO_VIP' ? `👑 Finalizar — Corte do Plano ${clientVipSub?.plan?.name || ''}` :
+                   finPayMethod === 'PIX' ? `📱 Receber R$ ${finTotal.toFixed(2)} via PIX` :
+                   finPayMethod === 'DINHEIRO' ? `💵 Receber R$ ${finTotal.toFixed(2)} em Dinheiro` :
+                   finPayMethod === 'DEBITO' ? `💳 Receber R$ ${finTotal.toFixed(2)} no Débito` :
+                   finPayMethod === 'CREDITO' ? `💳 Receber R$ ${finTotal.toFixed(2)} no Crédito` :
+                   `📒 Registrar R$ ${finTotal.toFixed(2)} como Fiado`}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      {lightboxUrl && (
+        <div
+          className="fixed inset-0 z-[600] flex items-center justify-center bg-black/95 backdrop-blur-sm animate-in fade-in"
+          onClick={() => setLightboxUrl(null)}
+        >
+          <button
+            onClick={() => setLightboxUrl(null)}
+            className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 rounded-2xl text-white transition-all"
+          >
+            <X size={22}/>
+          </button>
+          <img
+            src={lightboxUrl}
+            alt="Foto do corte"
+            className="max-w-[92vw] max-h-[88vh] rounded-3xl shadow-2xl object-contain"
+            onClick={e => e.stopPropagation()}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Appointments;
