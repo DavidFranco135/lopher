@@ -129,7 +129,9 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, allo
 
           <div className="flex items-center gap-3">
             {/* Botão de tema */}
-{/* Botão de tema ocultado */}
+            <button onClick={toggleTheme} className={`p-3 rounded-2xl border transition-all ${theme === 'light' ? 'bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100 hover:border-amber-300' : 'bg-zinc-900 border-zinc-800 text-amber-500 hover:bg-zinc-800 hover:border-zinc-700'}`}>
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
             
             <div className="relative">
               <button onClick={() => setShowNotifs(!showNotifs)} className={`p-3 rounded-2xl border transition-all relative ${theme === 'light' ? 'bg-zinc-100 border-zinc-200 text-zinc-700 hover:bg-zinc-200 hover:border-zinc-300' : 'bg-white/5 border-white/10 text-zinc-400 hover:text-[#C58A4A]'}`}>
