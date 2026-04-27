@@ -111,7 +111,7 @@ const MonthOffCalendar: React.FC<MonthCalProps> = ({ offDays, weekSchedule, onCh
           marked
             ? 'bg-red-500 text-white shadow-lg shadow-red-500/30'
             : today
-              ? isDark ? 'bg-[#C58A4A]/20 text-[#C58A4A] border border-[#C58A4A]/50' : 'bg-amber-100 text-amber-700 border border-amber-300'
+              ? isDark ? 'bg-[#C58A4A]/20 text-white border border-[#C58A4A]/50' : 'bg-amber-100 text-white border border-amber-300'
               : isDark ? 'bg-white/5 text-zinc-300 hover:bg-white/10' : 'bg-zinc-50 text-zinc-700 hover:bg-zinc-200 border border-zinc-200'
         }`}>
         {day}
@@ -302,7 +302,7 @@ const Professionals: React.FC = () => {
                 <div className="flex items-center gap-2 mt-2 flex-wrap">
                   <p className={`text-[10px] uppercase tracking-widest font-black ${isDark?'text-zinc-500':'text-zinc-500'}`}>Mestre Barbeiro · Signature</p>
                   {(p as any).isMaster && (
-                    <span className="inline-flex items-center gap-1 bg-[#C58A4A]/20 text-[#C58A4A] border border-[#C58A4A]/40 text-[8px] font-black px-2 py-0.5 rounded-lg uppercase">★ Master{(p as any).masterSurcharge>0?` +R$${(p as any).masterSurcharge}`:''}</span>
+                    <span className="inline-flex items-center gap-1 bg-[#C58A4A]/20 text-white border border-[#C58A4A]/40 text-[8px] font-black px-2 py-0.5 rounded-lg uppercase">★ Master{(p as any).masterSurcharge>0?` +R$${(p as any).masterSurcharge}`:''}</span>
                   )}
                   {(p as any).phone && (
                     <span className={`inline-flex items-center gap-1 text-[8px] font-black px-2 py-0.5 rounded-lg border ${isDark?'bg-emerald-500/10 text-emerald-400 border-emerald-500/20':'bg-emerald-50 text-emerald-700 border-emerald-200'}`}>
@@ -316,7 +316,7 @@ const Professionals: React.FC = () => {
               {ws && (
                 <div className="mt-5 flex gap-1 flex-wrap">
                   {DAYS.map(d=>(
-                    <span key={d.key} className={`text-[8px] font-black px-2 py-1 rounded-lg uppercase tracking-widest ${ws[d.key]?.active?'bg-[#C58A4A]/20 text-[#C58A4A] border border-[#C58A4A]/30':isDark?'bg-white/5 text-zinc-600 border border-white/5':'bg-zinc-100 text-zinc-400 border border-zinc-200'}`}>
+                    <span key={d.key} className={`text-[8px] font-black px-2 py-1 rounded-lg uppercase tracking-widest ${ws[d.key]?.active?'bg-[#C58A4A]/20 text-white border border-[#C58A4A]/30':isDark?'bg-white/5 text-zinc-600 border border-white/5':'bg-zinc-100 text-zinc-400 border border-zinc-200'}`}>
                       {d.label}
                     </span>
                   ))}
@@ -335,7 +335,7 @@ const Professionals: React.FC = () => {
 
               <div className="mt-5 grid grid-cols-3 gap-3">
                 {[
-                  {label:'Comissão', value:`${p.commission}%`,             color:'text-[#C58A4A]'},
+                  {label:'Comissão', value:`${p.commission}%`,             color:'text-white'},
                   {label:'Atend.',   value:stats.count,                    color:isDark?'text-white':'text-zinc-900'},
                   {label:'Receita',  value:`R$${stats.revenue.toFixed(0)}`, color:'text-emerald-500'},
                 ].map(item=>(
@@ -445,7 +445,7 @@ const Professionals: React.FC = () => {
             <div className="space-y-4">
               {/* Abas Semana / Mês */}
               <div className="flex items-center gap-2">
-                <Calendar size={16} className="text-[#C58A4A]"/>
+                <Calendar size={16} className="text-white"/>
                 <span className={`text-[10px] font-black uppercase tracking-widest ${isDark?'text-zinc-400':'text-zinc-600'}`}>Disponibilidade</span>
               </div>
 
@@ -481,7 +481,7 @@ const Professionals: React.FC = () => {
                         </button>
                         {day.active ? (
                           <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                            <Clock size={11} className="text-[#C58A4A] shrink-0"/>
+                            <Clock size={11} className="text-white shrink-0"/>
                             <input type="time" value={day.start} onChange={e=>setDayTime(d.key,'start',e.target.value)} className={`border rounded-xl p-1.5 text-xs font-bold outline-none min-w-0 flex-1 ${isDark?'bg-white/5 border-white/10 text-white':'bg-white border-zinc-300 text-zinc-900'}`}/>
                             <span className={`text-[9px] font-black shrink-0 ${isDark?'text-zinc-500':'text-zinc-400'}`}>—</span>
                             <input type="time" value={day.end}   onChange={e=>setDayTime(d.key,'end',e.target.value)}   className={`border rounded-xl p-1.5 text-xs font-bold outline-none min-w-0 flex-1 ${isDark?'bg-white/5 border-white/10 text-white':'bg-white border-zinc-300 text-zinc-900'}`}/>
