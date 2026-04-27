@@ -27,7 +27,7 @@ const Automacoes: React.FC = () => {
   // ── Estados de configuração de cada módulo ─────────────────
   const [cfg1, setCfg1] = useState({ ativo: false, diasSemana: [0,1,2,3,4,5,6], antecedencia: 30 });
   const [cfg2, setCfg2] = useState({ ativo: false, diasFracos: ['terça','quarta'], mensagem: '🔥 Promo meio de semana! Corte + barba hoje por R$45 até 18h. Agende agora!' });
-  const [cfg3, setCfg3] = useState({ ativo: false, desconto: 10, mensagem: '🎉 Feliz Aniversário, {{nome}}! Você tem {{desconto}}% de desconto essa semana na Barbearia Novo Jeito. Agende agora!' });
+  const [cfg3, setCfg3] = useState({ ativo: false, desconto: 10, mensagem: '🎉 Feliz Aniversário, {{nome}}! Você tem {{desconto}}% de desconto essa semana na Barbearia LOPHER. Agende agora!' });
   const [cfg4, setCfg4] = useState({ ativo: false, credito: 10, mensagem: '🎁 Indique um amigo e ganhe R${{credito}} de crédito no próximo corte! Seu código: {{codigo}}' });
   const [cfg5, setCfg5] = useState({ ativo: false, dias: 18, mensagem: '✂️ {{nome}}, já faz {{dias}} dias desde seu último corte. Que tal renovar o visual? Agende agora!' });
   const [cfg7, setCfg7] = useState({ ativo: false, percentual: 5 });
@@ -156,7 +156,7 @@ const Automacoes: React.FC = () => {
           <div className="text-left">
             <div className="flex items-center gap-2">
               <p className={`font-black text-sm ${txt}`}>{title}</p>
-              {badge && <span className="text-[9px] font-black px-2 py-0.5 bg-[#C58A4A]/20 text-[#C58A4A] rounded-lg uppercase">{badge}</span>}
+              {badge && <span className="text-[9px] font-black px-2 py-0.5 bg-[#C58A4A]/20 text-white rounded-lg uppercase">{badge}</span>}
             </div>
             <p className={`text-[10px] font-bold uppercase tracking-widest ${sub}`}>{subtitle}</p>
           </div>
@@ -212,7 +212,7 @@ const Automacoes: React.FC = () => {
           {[
             { label: 'Cancelados hoje', value: stats.canceladosHoje, icon: AlertCircle, color: 'text-red-400' },
             { label: 'Aniversariantes', value: stats.aniversariantesHoje, icon: Gift, color: 'text-pink-400' },
-            { label: 'Precisam de corte', value: stats.inativosMaitenence, icon: Clock, color: 'text-amber-400' },
+            { label: 'Precisam de corte', value: stats.inativosMaitenence, icon: Clock, color: 'text-white' },
             { label: 'Cortes no mês', value: stats.totalCortesMes, icon: TrendingUp, color: 'text-emerald-400' },
           ].map(({ label, value, icon: Icon, color }) => (
             <div key={label} className={`rounded-2xl border p-4 ${card}`}>
@@ -412,8 +412,8 @@ const Automacoes: React.FC = () => {
           </div>
           {ranking.length > 0 && (
             <div className={`flex items-center gap-2 p-3 rounded-xl ${isDark ? 'bg-amber-500/10 border border-amber-500/20' : 'bg-amber-50 border border-amber-200'}`}>
-              <BarChart2 size={14} className="text-amber-500" />
-              <p className={`text-[10px] font-black uppercase ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>
+              <BarChart2 size={14} className="text-white" />
+              <p className={`text-[10px] font-black uppercase ${isDark ? 'text-white' : 'text-white'}`}>
                 Mês atual · Total: {stats.totalCortesMes} cortes concluídos
               </p>
             </div>
@@ -454,9 +454,9 @@ const Automacoes: React.FC = () => {
 
         {/* ── Nota sobre Cloud Functions ── */}
         <div className={`rounded-2xl border p-5 flex gap-4 items-start ${isDark ? 'border-[#C58A4A]/20 bg-[#C58A4A]/5' : 'border-amber-200 bg-amber-50'}`}>
-          <Zap size={18} className="text-[#C58A4A] mt-0.5 shrink-0" />
+          <Zap size={18} className="text-white mt-0.5 shrink-0" />
           <div>
-            <p className={`text-[10px] font-black uppercase tracking-widest text-[#C58A4A] mb-1`}>Deploy de Cloud Functions necessário</p>
+            <p className={`text-[10px] font-black uppercase tracking-widest text-white mb-1`}>Deploy de Cloud Functions necessário</p>
             <p className={`text-xs ${sub}`}>
               Os módulos 1, 2, 3 e 5 precisam de novas Cloud Functions e templates WhatsApp configurados no Meta Business Manager para funcionar de forma totalmente automática. Os módulos 6 e 7 funcionam direto nesta tela.
             </p>
