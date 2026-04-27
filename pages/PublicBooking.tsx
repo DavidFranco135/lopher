@@ -1199,7 +1199,7 @@ const PublicBooking: React.FC<PublicBookingProps> = ({ initialView = 'HOME' }) =
             <div className="relative z-20 text-center px-6 mt-10">
                <div className="w-32 h-32 rounded-3xl gradiente-ouro p-1 mx-auto mb-6"><div className="w-full h-full rounded-[2.2rem] bg-black overflow-hidden"><img src={config.logo} className="w-full h-full object-cover" alt="Logo" /></div></div>
                <h1 className={`text-5xl md:text-7xl font-black font-display italic tracking-tight ${theme === 'light' ? 'text-white drop-shadow-lg' : 'text-white'}`}>{config.name}</h1>
-               <p className="text-[#8B1F1C] text-[10px] font-black uppercase tracking-[0.4em] mt-3">{config.description}</p>
+               <p className="text-white/80 text-[10px] font-black uppercase tracking-[0.4em] mt-3">{config.description}</p>
             </div>
           </header>
 
