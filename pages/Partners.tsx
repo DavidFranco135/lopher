@@ -193,7 +193,7 @@ const Partners: React.FC = () => {
 
   const themeCard = theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : 'cartao-vidro border-white/5';
   const txt = theme === 'light' ? 'text-zinc-900' : 'text-white';
-  const inp = `w-full border p-4 rounded-xl outline-none font-bold text-xs transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-[#3b0f7a]' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]'}`;
+  const inp = `w-full border p-4 rounded-xl outline-none font-bold text-xs transition-all ${theme === 'light' ? 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-blue-500' : 'bg-white/5 border-white/10 text-white focus:border-[#C58A4A]'}`;
 
   const tabs = [
     { id: 'parceiros', label: 'Parceiros', icon: QrCode },
@@ -291,7 +291,7 @@ const Partners: React.FC = () => {
                   <div className="flex-1 min-w-0">
                     <p className={`font-black text-lg truncate ${txt}`}>{p.businessName || p.name}</p>
                     {p.category && (
-                      <span className="text-[8px] font-black uppercase tracking-widest text-[#C58A4A] bg-[#C58A4A]/10 px-2 py-0.5 rounded-full">
+                      <span className="text-[8px] font-black uppercase tracking-widest text-white bg-[#C58A4A]/10 px-2 py-0.5 rounded-full">
                         {p.category}
                       </span>
                     )}
@@ -329,7 +329,7 @@ const Partners: React.FC = () => {
                 <div className="grid grid-cols-3 gap-2 mb-4">
                   <div className={`p-3 rounded-xl text-center ${theme === 'light' ? 'bg-zinc-50 border border-zinc-200' : 'bg-white/5 border border-white/5'}`}>
                     <p className="text-[7px] font-black uppercase text-zinc-500">Desconto</p>
-                    <p className="text-sm font-black text-[#C58A4A]">{p.discount}%</p>
+                    <p className="text-sm font-black text-white">{p.discount}%</p>
                   </div>
                   <div className={`p-3 rounded-xl text-center ${theme === 'light' ? 'bg-zinc-50 border border-zinc-200' : 'bg-white/5 border border-white/5'}`}>
                     <p className="text-[7px] font-black uppercase text-zinc-500">Benefícios</p>
@@ -364,7 +364,7 @@ const Partners: React.FC = () => {
 
                 {p.monthlyFee && p.monthlyFee > 0 ? (
                   <p className="text-[9px] text-zinc-500 font-black mt-3 text-right">
-                    Mensalidade: <span className="text-[#C58A4A]">R$ {p.monthlyFee.toFixed(2)}</span>
+                    Mensalidade: <span className="text-white">R$ {p.monthlyFee.toFixed(2)}</span>
                   </p>
                 ) : null}
               </div>
@@ -380,9 +380,9 @@ const Partners: React.FC = () => {
           {/* Cards de resumo */}
           <div className="grid grid-cols-3 gap-4">
             <div className={`rounded-[2rem] p-6 border ${themeCard}`}>
-              <DollarSign size={20} className="text-[#C58A4A] mb-3"/>
+              <DollarSign size={20} className="text-white mb-3"/>
               <p className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Total Mensal</p>
-              <p className="text-2xl font-black text-[#C58A4A] font-display italic">R$ {totalMensalidades.toFixed(2)}</p>
+              <p className="text-2xl font-black text-white font-display italic">R$ {totalMensalidades.toFixed(2)}</p>
             </div>
             <div className={`rounded-[2rem] p-6 border ${themeCard}`}>
               <Check size={20} className="text-emerald-500 mb-3"/>
@@ -417,7 +417,7 @@ const Partners: React.FC = () => {
                         {p.logo ? (
                           <img src={p.logo} className="w-12 h-12 rounded-2xl object-cover border border-white/10" alt=""/>
                         ) : (
-                          <div className="w-12 h-12 rounded-2xl bg-[#C58A4A]/10 flex items-center justify-center text-[#C58A4A] font-black text-lg">
+                          <div className="w-12 h-12 rounded-2xl bg-[#C58A4A]/10 flex items-center justify-center text-white font-black text-lg">
                             {(p.businessName || p.name || '?').charAt(0)}
                           </div>
                         )}
@@ -430,7 +430,7 @@ const Partners: React.FC = () => {
                         </div>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className="text-xl font-black text-[#C58A4A]">R$ {(p.monthlyFee || 0).toFixed(2)}</p>
+                        <p className="text-xl font-black text-white">R$ {(p.monthlyFee || 0).toFixed(2)}</p>
                         <p className={`text-[8px] font-black uppercase tracking-widest mt-1 ${isPago ? 'text-emerald-500' : 'text-red-400'}`}>
                           {isPago ? '✅ Pago' : '⚠️ Em Aberto'}
                         </p>
@@ -451,7 +451,7 @@ const Partners: React.FC = () => {
                             <div className="grid grid-cols-4 gap-2">
                               {(['PIX','DINHEIRO','DEBITO','CREDITO']).map(m => (
                                 <button key={m} onClick={() => setCobrancaPayMethod(m)}
-                                  className={`py-2 rounded-xl text-[8px] font-black uppercase border-2 transition-all ${cobrancaPayMethod === m ? 'border-[#C58A4A] bg-[#C58A4A]/20 text-[#C58A4A]' : theme === 'light' ? 'border-zinc-200 bg-zinc-50 text-zinc-400' : 'border-white/10 bg-white/5 text-zinc-500'}`}>
+                                  className={`py-2 rounded-xl text-[8px] font-black uppercase border-2 transition-all ${cobrancaPayMethod === m ? 'border-[#C58A4A] bg-[#C58A4A]/20 text-white' : theme === 'light' ? 'border-zinc-200 bg-zinc-50 text-zinc-400' : 'border-white/10 bg-white/5 text-zinc-500'}`}>
                                   {m === 'DINHEIRO' ? '💵' : m === 'PIX' ? '📱 PIX' : m === 'DEBITO' ? '💳 Déb' : '💳 Cré'}
                                 </button>
                               ))}
@@ -533,7 +533,7 @@ const Partners: React.FC = () => {
           {/* Uso por parceiro */}
           <div className={`rounded-[2rem] p-8 border ${themeCard}`}>
             <h3 className={`text-lg font-black font-display italic mb-6 flex items-center gap-3 ${txt}`}>
-              <BarChart3 size={20} className="text-[#C58A4A]" /> Benefícios Usados por Parceiro
+              <BarChart3 size={20} className="text-white" /> Benefícios Usados por Parceiro
             </h3>
             {benefitsByPartner.length === 0 ? (
               <p className="text-[10px] text-zinc-500 italic text-center py-8">Nenhum benefício utilizado ainda.</p>
@@ -545,7 +545,7 @@ const Partners: React.FC = () => {
                     <div key={key}>
                       <div className="flex items-center justify-between mb-1">
                         <span className={`text-xs font-bold ${txt}`}>{data.name}</span>
-                        <span className="text-xs font-black text-[#C58A4A]">{data.count} usos</span>
+                        <span className="text-xs font-black text-white">{data.count} usos</span>
                       </div>
                       <div className={`h-2 rounded-full ${theme === 'light' ? 'bg-zinc-100' : 'bg-white/10'}`}>
                         <div
@@ -589,13 +589,13 @@ const Partners: React.FC = () => {
                           <p className="text-[9px] text-zinc-500">{b.clientPhone}</p>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-xs font-bold text-[#C58A4A]">{b.partnerName || '—'}</p>
+                          <p className="text-xs font-bold text-white">{b.partnerName || '—'}</p>
                         </td>
                         <td className="px-6 py-4">
                           <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[8px] font-black uppercase border ${
                             b.status === 'USADO' ? 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20' :
-                            b.status === 'DISPONIVEL' ? 'text-white bg-blue-400/10 border-[#3b0f7a]/20' :
-                            b.status === 'QR_GERADO' ? 'text-amber-500 bg-amber-500/10 border-amber-500/20' :
+                            b.status === 'DISPONIVEL' ? 'text-white bg-blue-400/10 border-blue-400/20' :
+                            b.status === 'QR_GERADO' ? 'text-white bg-amber-500/10 border-amber-500/20' :
                             'text-zinc-500 bg-white/5 border-white/10'
                           }`}>
                             {b.status === 'USADO' ? <Check size={9} /> :
@@ -636,7 +636,7 @@ const Partners: React.FC = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/95 backdrop-blur-xl animate-in zoom-in-95">
           <div className={`w-full max-w-sm rounded-[3rem] p-10 space-y-8 border text-center shadow-2xl ${theme === 'light' ? 'bg-white border-zinc-200' : 'cartao-vidro border-[#C58A4A]/20'}`}>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-[#C58A4A] mb-2">QR Code do Parceiro</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-white mb-2">QR Code do Parceiro</p>
               <h2 className={`text-2xl font-black font-display italic ${txt}`}>
                 {showQrModal.businessName || showQrModal.name}
               </h2>
@@ -736,7 +736,7 @@ const Partners: React.FC = () => {
                 <select
                   value={formData.category}
                   onChange={e => setFormData({ ...formData, category: e.target.value })}
-                  className={`w-full border p-4 rounded-xl outline-none font-bold text-xs transition-all appearance-none cursor-pointer ${theme === 'light' ? 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-[#3b0f7a]' : 'bg-zinc-900 border-white/10 text-white focus:border-[#C58A4A]'}`}
+                  className={`w-full border p-4 rounded-xl outline-none font-bold text-xs transition-all appearance-none cursor-pointer ${theme === 'light' ? 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-blue-500' : 'bg-zinc-900 border-white/10 text-white focus:border-[#C58A4A]'}`}
                   style={{ colorScheme: theme === 'dark' ? 'dark' : 'light' }}
                 >
                   {PARTNER_CATEGORIES.map(c => (
