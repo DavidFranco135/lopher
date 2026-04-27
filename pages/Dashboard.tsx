@@ -133,7 +133,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className={`text-3xl md:text-4xl font-black font-display tracking-tight flex items-center gap-3 ${isDark ? 'text-white' : 'text-zinc-900'}`}>
-            Gestão <span className="text-[#C58A4A] italic">LOPHER</span>
+            Gestão <span className="text-[#24094f] italic">LOPHER</span>
           </h1>
           <p className={`mt-1 text-sm font-medium opacity-60 ${subTextClass}`}>Controle completo da sua unidade.</p>
         </div>
@@ -141,7 +141,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         <div className="flex gap-3">
           <button
             onClick={() => onNavigate('appointments')}
-            className="flex items-center gap-2 gradiente-ouro text-black px-5 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:scale-105 transition-all"
+            className="flex items-center gap-2 gradiente-ouro text-white px-5 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:scale-105 transition-all"
           >
             <Calendar size={14} /> Novo Agendamento
           </button>
@@ -157,7 +157,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
       {/* ── Faturamento: Diário / Semanal / Mensal / Total ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Hoje', value: revenue.daily, color: '#C58A4A', sub: 'Faturamento diário' },
+          { label: 'Hoje', value: revenue.daily, color: '#24094f', sub: 'Faturamento diário' },
           { label: 'Esta Semana', value: revenue.weekly, color: '#10b981', sub: 'Faturamento semanal' },
           { label: 'Este Mês', value: revenue.monthly, color: '#3b82f6', sub: 'Faturamento mensal' },
           { label: 'Total Geral', value: revenue.total, color: '#a855f7', sub: 'Faturamento acumulado' },
@@ -165,7 +165,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
           <div
             key={item.label}
             onClick={() => onNavigate('financial')}
-            className={`${cardClass} p-6 rounded-[2rem] cursor-pointer group hover:border-[#C58A4A]/40 transition-all duration-300 relative overflow-hidden`}
+            className={`${cardClass} p-6 rounded-[2rem] cursor-pointer group hover:border-[#24094f]/40 transition-all duration-300 relative overflow-hidden`}
           >
             <div className="absolute inset-x-0 top-0 h-1 rounded-t-[2rem]" style={{ background: item.color, opacity: 0.7 }} />
             <p className={`text-[9px] font-black uppercase tracking-widest mb-2 ${subTextClass}`}>{item.sub}</p>
@@ -184,12 +184,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
           { label: 'Pendentes', value: statusCount.pendentes, icon: AlertCircle, color: '#f59e0b' },
           { label: 'Concluídos', value: statusCount.concluidos, icon: CheckCircle2, color: '#10b981' },
           { label: 'Cancelados', value: statusCount.cancelados, icon: XCircle, color: '#ef4444' },
-          { label: 'Novos Clientes/Mês', value: newClientsMonth, icon: Users, color: '#C58A4A' },
+          { label: 'Novos Clientes/Mês', value: newClientsMonth, icon: Users, color: '#24094f' },
         ].map((item) => (
           <div
             key={item.label}
             onClick={() => onNavigate('appointments')}
-            className={`${cardClass} p-5 rounded-2xl cursor-pointer hover:border-[#C58A4A]/30 transition-all group`}
+            className={`${cardClass} p-5 rounded-2xl cursor-pointer hover:border-[#24094f]/30 transition-all group`}
           >
             <div className="flex items-center justify-between mb-3">
               <item.icon size={18} style={{ color: item.color }} />
@@ -240,9 +240,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
               <div
                 key={app.id}
                 onClick={() => onNavigate('appointments')}
-                className={`flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all group border border-transparent hover:border-[#C58A4A]/20 ${isDark ? 'hover:bg-white/5' : 'hover:bg-zinc-50'}`}
+                className={`flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all group border border-transparent hover:border-[#24094f]/20 ${isDark ? 'hover:bg-white/5' : 'hover:bg-zinc-50'}`}
               >
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm transition-all group-hover:bg-[#C58A4A] group-hover:text-black ${isDark ? 'bg-zinc-900 text-[#C58A4A]' : 'bg-zinc-100 text-[#C58A4A]'}`}>
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm transition-all group-hover:bg-[#24094f] group-hover:text-black ${isDark ? 'bg-zinc-900 text-[#24094f]' : 'bg-zinc-100 text-[#24094f]'}`}>
                   {app.clientName.charAt(0)}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -270,7 +270,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         {/* Ranking de Serviços */}
         <div className={`${cardClass} rounded-[2rem] p-6 md:p-8`}>
           <div className="flex items-center gap-3 mb-6">
-            <Trophy size={18} className="text-[#C58A4A]" />
+            <Trophy size={18} className="text-[#24094f]" />
             <h3 className={`text-base font-bold italic ${isDark ? 'text-white' : 'text-zinc-900'}`}>Serviços Mais Realizados</h3>
           </div>
           {serviceRanking.length === 0 ? (
@@ -279,7 +279,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
             <div className="space-y-3">
               {serviceRanking.map((svc, i) => (
                 <div key={svc.name} className="flex items-center gap-4">
-                  <span className={`text-[10px] font-black w-5 ${i === 0 ? 'text-[#C58A4A]' : subTextClass}`}>#{i + 1}</span>
+                  <span className={`text-[10px] font-black w-5 ${i === 0 ? 'text-[#24094f]' : subTextClass}`}>#{i + 1}</span>
                   <div className="flex-1">
                     <div className="flex justify-between mb-1">
                       <span className={`text-xs font-bold ${isDark ? 'text-white' : 'text-zinc-800'}`}>{svc.name}</span>
@@ -301,7 +301,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         {/* Ranking de Profissionais */}
         <div className={`${cardClass} rounded-[2rem] p-6 md:p-8`}>
           <div className="flex items-center gap-3 mb-6">
-            <Zap size={18} className="text-[#C58A4A]" />
+            <Zap size={18} className="text-[#24094f]" />
             <h3 className={`text-base font-bold italic ${isDark ? 'text-white' : 'text-zinc-900'}`}>Profissionais por Receita</h3>
           </div>
           {professionalRanking.length === 0 ? (
@@ -310,7 +310,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
             <div className="space-y-3">
               {professionalRanking.map((prof, i) => (
                 <div key={prof.id} className="flex items-center gap-4">
-                  <span className={`text-[10px] font-black w-5 ${i === 0 ? 'text-[#C58A4A]' : subTextClass}`}>#{i + 1}</span>
+                  <span className={`text-[10px] font-black w-5 ${i === 0 ? 'text-[#24094f]' : subTextClass}`}>#{i + 1}</span>
                   <img src={prof.avatar} className="w-7 h-7 rounded-xl object-cover" alt={prof.name} />
                   <div className="flex-1">
                     <div className="flex justify-between mb-1">
