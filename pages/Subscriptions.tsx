@@ -179,7 +179,7 @@ const Subscriptions: React.FC = () => {
     ATIVA:    { color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20', icon: Check },
     VENCIDA:  { color: 'text-red-500 bg-red-500/10 border-red-500/20',            icon: AlertCircle },
     CANCELADA:{ color: 'text-zinc-500 bg-white/5 border-white/10',                icon: X },
-    PAUSADA:  { color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',      icon: Clock },
+    PAUSADA:  { color: 'text-purple-300 bg-purple-950/200/10 border-amber-500/20',      icon: Clock },
   };
 
 
@@ -207,11 +207,11 @@ const Subscriptions: React.FC = () => {
   const txt        = isDark ? 'text-white' : 'text-zinc-900';
   const optStyle   = { backgroundColor: isDark ? '#18181b' : '#fff', color: isDark ? '#fff' : '#18181b' };
   const inp        = `w-full border p-4 rounded-xl outline-none font-bold text-sm transition-all
-    ${isDark ? 'bg-zinc-900 border-white/10 text-white focus:border-[#C58A4A]'
-             : 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-[#C58A4A]'}`;
+    ${isDark ? 'bg-zinc-900 border-white/10 text-white focus:border-[#24094f]'
+             : 'bg-zinc-50 border-zinc-300 text-zinc-900 focus:border-[#24094f]'}`;
   const overlay    = 'fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl animate-in zoom-in-95';
   const mdl        = `w-full max-w-md rounded-[3rem] p-10 space-y-7 border shadow-2xl
-    ${isDark ? 'bg-[#111] border-[#C58A4A]/30' : 'bg-white border-zinc-200'}`;
+    ${isDark ? 'bg-[#111] border-[#24094f]/30' : 'bg-white border-zinc-200'}`;
   const btnCancel  = `flex-1 py-4 rounded-2xl font-black uppercase text-[9px]
     ${isDark ? 'bg-white/5 text-zinc-500' : 'bg-zinc-100 text-zinc-600'}`;
   const lbl        = `text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`;
@@ -235,7 +235,7 @@ const Subscriptions: React.FC = () => {
           <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest">Controle de planos · lembretes · renovações</p>
         </div>
         <button onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 gradiente-ouro text-black px-6 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl">
+          className="flex items-center gap-2 gradiente-ouro text-white px-6 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl">
           <Plus size={16} /> Nova Assinatura
         </button>
       </div>
@@ -243,7 +243,7 @@ const Subscriptions: React.FC = () => {
       {/* ── Métricas ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total',    value: stats.total,              icon: Users,       color: '#C58A4A' },
+          { label: 'Total',    value: stats.total,              icon: Users,       color: '#24094f' },
           { label: 'Ativas',   value: stats.ativas,             icon: Crown,       color: '#10b981' },
           { label: 'MRR',      value: `R$ ${stats.mrr.toFixed(2)}`, icon: TrendingUp, color: '#3b82f6' },
           { label: 'Vencidas', value: stats.vencidas,           icon: AlertCircle, color: '#ef4444' },
@@ -263,14 +263,14 @@ const Subscriptions: React.FC = () => {
             className={`relative flex items-center gap-1.5 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all
               ${filterStatus === t.key
                 ? t.key === 'A_VENCER'
-                  ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30'
-                  : 'bg-[#C58A4A] text-black shadow-lg'
+                  ? 'bg-purple-950/200 text-black shadow-lg shadow-amber-500/30'
+                  : 'bg-[#24094f] text-black shadow-lg'
                 : isDark ? 'bg-white/5 text-zinc-500 hover:text-white' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'}`}>
             {t.key === 'A_VENCER' && <Bell size={11} />}
             {t.label}
             {t.badge !== undefined && t.badge > 0 && (
               <span className={`ml-1 rounded-full px-1.5 py-0.5 text-[8px] font-black
-                ${filterStatus === t.key ? 'bg-black/20 text-white' : 'bg-amber-500 text-black'}`}>
+                ${filterStatus === t.key ? 'bg-black/20 text-white' : 'bg-purple-950/200 text-black'}`}>
                 {t.badge}
               </span>
             )}
@@ -281,11 +281,11 @@ const Subscriptions: React.FC = () => {
       {/* ── Banner + ações quando está na aba A VENCER ── */}
       {filterStatus === 'A_VENCER' && (
         <div className={`rounded-2xl p-5 border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4
-          ${isDark ? 'border-amber-500/20 bg-amber-500/5' : 'border-amber-400/30 bg-amber-50'}`}>
+          ${isDark ? 'border-amber-500/20 bg-purple-950/200/5' : 'border-amber-400/30 bg-purple-950/20'}`}>
           <div className="flex items-center gap-3">
-            <Bell size={20} className="text-amber-500 flex-shrink-0" />
+            <Bell size={20} className="text-purple-300 flex-shrink-0" />
             <div>
-              <p className="text-amber-500 font-black text-sm">
+              <p className="text-purple-300 font-black text-sm">
                 {aVencerCount} assinatura{aVencerCount !== 1 ? 's' : ''} vence{aVencerCount === 1 ? '' : 'm'} em até 5 dias
               </p>
               <p className={`text-[10px] font-bold mt-0.5 ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
@@ -336,7 +336,7 @@ const Subscriptions: React.FC = () => {
                 ${isAVencer && filterStatus === 'A_VENCER'
                   ? isDark
                     ? `${bg} border-amber-500/30 ${isSelected ? 'ring-2 ring-amber-500/50' : ''}`
-                    : `bg-amber-50 border-amber-300 ${isSelected ? 'ring-2 ring-amber-400' : ''}`
+                    : `bg-purple-950/20 border-purple-700 ${isSelected ? 'ring-2 ring-amber-400' : ''}`
                   : bg}`}>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
 
@@ -346,14 +346,14 @@ const Subscriptions: React.FC = () => {
                     <button onClick={() => toggleSelect(sub.id)}
                       className="flex-shrink-0 transition-transform hover:scale-110">
                       {isSelected
-                        ? <CheckSquare size={22} className="text-amber-500" />
+                        ? <CheckSquare size={22} className="text-purple-300" />
                         : <Square size={22} className={isDark ? 'text-zinc-600' : 'text-zinc-400'} />}
                     </button>
                   )}
 
                   {/* Avatar + info */}
                   <div className="flex items-center gap-5 flex-1">
-                    <div className="w-14 h-14 rounded-2xl bg-[#C58A4A]/10 flex items-center justify-center text-2xl font-black text-[#C58A4A] flex-shrink-0">
+                    <div className="w-14 h-14 rounded-2xl bg-[#24094f]/10 flex items-center justify-center text-2xl font-black text-[#24094f] flex-shrink-0">
                       {sub.clientName?.charAt(0) || '?'}
                     </div>
                     <div>
@@ -364,12 +364,12 @@ const Subscriptions: React.FC = () => {
                           <StatusIcon size={10} /> {sub.computedStatus}
                         </span>
                         {sub.computedStatus === 'ATIVA' && sub.daysLeft > 0 && (
-                          <span className={`text-[9px] font-black ${sub.daysLeft <= 5 ? 'text-amber-500' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                          <span className={`text-[9px] font-black ${sub.daysLeft <= 5 ? 'text-purple-300' : isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>
                             {sub.daysLeft <= 5 ? `⚠️ Vence em ${sub.daysLeft}d` : `${sub.daysLeft}d restantes`}
                           </span>
                         )}
                         {sub.computedStatus === 'ATIVA' && sub.daysLeft <= 0 && (
-                          <span className="text-[9px] font-black text-amber-500">Vence hoje</span>
+                          <span className="text-[9px] font-black text-purple-300">Vence hoje</span>
                         )}
                       </div>
                     </div>
@@ -383,13 +383,13 @@ const Subscriptions: React.FC = () => {
                     <p className={`font-black text-xl ${txt}`}>{sub.usageCount}{sub.usageLimit ? `/${sub.usageLimit}` : ''}</p>
                     {usagePct !== null && (
                       <div className={`mt-1 w-16 h-1.5 rounded-full ${isDark ? 'bg-white/10' : 'bg-zinc-200'}`}>
-                        <div className="h-full bg-[#C58A4A] rounded-full" style={{ width: `${usagePct}%` }} />
+                        <div className="h-full bg-[#24094f] rounded-full" style={{ width: `${usagePct}%` }} />
                       </div>
                     )}
                   </div>
                   <div className="text-center">
                     <p className="text-[8px] font-black uppercase text-zinc-500 mb-1">Valor</p>
-                    <p className="font-black text-xl text-[#C58A4A]">R$ {sub.price.toFixed(2)}</p>
+                    <p className="font-black text-xl text-[#24094f]">R$ {sub.price.toFixed(2)}</p>
                 {(() => {
                   const plan = (config as any).vipPlans?.find((p: any) => p.id === sub.planId);
                   if (!plan) return null;
@@ -408,12 +408,12 @@ const Subscriptions: React.FC = () => {
                             <div key={member.label}>
                               <div className="flex justify-between text-[9px] font-black uppercase mb-1">
                                 <span className={isDark ? 'text-zinc-400' : 'text-zinc-600'}>{member.label}</span>
-                                <span className={used >= max ? 'text-purple-400' : 'text-[#C58A4A]'}>{used}/{max}</span>
+                                <span className={used >= max ? 'text-red-400' : 'text-[#24094f]'}>{used}/{max}</span>
                               </div>
                               <div className={`w-full h-1.5 rounded-full ${isDark ? 'bg-white/10' : 'bg-zinc-200'}`}>
-                                <div className={`h-full rounded-full transition-all ${used >= max ? 'bg-red-500' : 'bg-[#C58A4A]'}`} style={{width: `${pct}%`}}/>
+                                <div className={`h-full rounded-full transition-all ${used >= max ? 'bg-red-500' : 'bg-[#24094f]'}`} style={{width: `${pct}%`}}/>
                               </div>
-                              {used >= max && <p className="text-[9px] text-purple-400 font-black">⛔ {member.label} atingiu o limite</p>}
+                              {used >= max && <p className="text-[9px] text-red-400 font-black">⛔ {member.label} atingiu o limite</p>}
                             </div>
                           );
                         })}
@@ -430,12 +430,12 @@ const Subscriptions: React.FC = () => {
                     <div className="mt-2">
                       <div className="flex justify-between text-[9px] font-black uppercase mb-1">
                         <span className={isDark ? 'text-zinc-500' : 'text-zinc-400'}>Cortes usados</span>
-                        <span className={used >= max ? 'text-purple-400' : 'text-[#C58A4A]'}>{used}/{max}</span>
+                        <span className={used >= max ? 'text-red-400' : 'text-[#24094f]'}>{used}/{max}</span>
                       </div>
                       <div className={`w-full h-1.5 rounded-full ${isDark ? 'bg-white/10' : 'bg-zinc-200'}`}>
-                        <div className={`h-full rounded-full transition-all ${used >= max ? 'bg-red-500' : 'bg-[#C58A4A]'}`} style={{width: `${pct}%`}}/>
+                        <div className={`h-full rounded-full transition-all ${used >= max ? 'bg-red-500' : 'bg-[#24094f]'}`} style={{width: `${pct}%`}}/>
                       </div>
-                      {used >= max && <p className="text-[9px] text-purple-400 font-black mt-1">⛔ Limite atingido — renovar plano</p>}
+                      {used >= max && <p className="text-[9px] text-red-400 font-black mt-1">⛔ Limite atingido — renovar plano</p>}
                     </div>
                   );
                 })()}
@@ -452,7 +452,7 @@ const Subscriptions: React.FC = () => {
                     )}
                     {sub.computedStatus === 'ATIVA' && (
                       <button onClick={() => updateSubscription(sub.id, { usageCount: (sub.usageCount || 0) + 1 })}
-                        className="p-3 gradiente-ouro text-black rounded-xl font-black text-[10px]">+Uso</button>
+                        className="p-3 gradiente-ouro text-white rounded-xl font-black text-[10px]">+Uso</button>
                     )}
                     <button onClick={() => updateSubscription(sub.id, { status: sub.status === 'ATIVA' ? 'CANCELADA' : 'ATIVA' })}
                       className={`p-3 rounded-xl text-[9px] font-black border transition-all
@@ -466,7 +466,7 @@ const Subscriptions: React.FC = () => {
                     </button>
                     <button onClick={() => handleDeleteSub(sub.id)}
                       title="Excluir assinatura"
-                      className={`p-3 rounded-xl border transition-all ${isDark ? 'bg-red-500/10 border-red-500/20 text-purple-400 hover:bg-red-500/20' : 'bg-red-50 border-red-200 text-red-600 hover:bg-purple-100'}`}>
+                      className={`p-3 rounded-xl border transition-all ${isDark ? 'bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20' : 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'}`}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
                     </button>
                   </div>
@@ -523,7 +523,7 @@ const Subscriptions: React.FC = () => {
                   ))}
                 </select>
                 {plans.length === 0 && (
-                  <p className="text-[10px] text-amber-500 font-bold">⚠️ Nenhum plano VIP ativo. Crie um em Configurações.</p>
+                  <p className="text-[10px] text-purple-300 font-bold">⚠️ Nenhum plano VIP ativo. Crie um em Configurações.</p>
                 )}
                 {/* Preview do plano selecionado */}
                 {formData.planId && (() => {
@@ -531,8 +531,8 @@ const Subscriptions: React.FC = () => {
                   if (!plan) return null;
                   const end = calcEndDate(plan);
                   return (
-                    <div className={`p-3 rounded-xl border mt-2 ${isDark ? 'border-[#C58A4A]/20 bg-[#C58A4A]/5' : 'border-amber-300 bg-amber-50'}`}>
-                      <p className="text-[9px] font-black uppercase text-[#C58A4A]">
+                    <div className={`p-3 rounded-xl border mt-2 ${isDark ? 'border-[#24094f]/20 bg-[#24094f]/5' : 'border-purple-700 bg-purple-950/20'}`}>
+                      <p className="text-[9px] font-black uppercase text-[#24094f]">
                         Vencimento: {end.toLocaleDateString('pt-BR')} · {periodLabel(plan)}
                       </p>
                     </div>
@@ -569,7 +569,7 @@ const Subscriptions: React.FC = () => {
 
             <div className="flex gap-3">
               <button onClick={() => { setShowModal(false); setEditingSub(null); }} className={btnCancel}>Cancelar</button>
-              <button onClick={handleCreate} className="flex-1 gradiente-ouro text-black py-4 rounded-2xl font-black uppercase text-[9px]">
+              <button onClick={handleCreate} className="flex-1 gradiente-ouro text-white py-4 rounded-2xl font-black uppercase text-[9px]">
                 Criar Assinatura
               </button>
             </div>
