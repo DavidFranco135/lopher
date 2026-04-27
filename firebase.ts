@@ -2,18 +2,21 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
+// ── Credenciais lidas do .env (nunca hardcoded) ───────────────
+// Cada cliente tem seu próprio projeto Firebase configurado
+// nas variáveis de ambiente do Cloudflare Pages (ou .env local)
 const firebaseConfig = {
-  apiKey: "AIzaSyDx2p5tkMaeAjL6WrHNxFvK7rKZ77iFZ4w",
-  authDomain: "financeiro-a7116.firebaseapp.com",
-  projectId: "financeiro-a7116",
-  storageBucket: "financeiro-a7116.firebasestorage.app",
-  messagingSenderId: "952138197288",
-  appId: "1:952138197288:web:11b60ce4a514d346ce081d"
+  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId:             import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Inicializar Firebase
 export const app = initializeApp(firebaseConfig);
 
 // Inicializar e exportar serviços
-export const db = getFirestore(app);
+export const db   = getFirestore(app);
 export const auth = getAuth(app);
