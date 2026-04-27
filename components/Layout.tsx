@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Zap, 
   LayoutDashboard, Package, MessageCircle, Calendar, Users, Scissors, Briefcase, DollarSign, Settings, 
-  Menu, LogOut, Bell, ChevronLeft, Sun, Moon, X, Trash2,
+  Menu, LogOut, Bell, Sparkles, ChevronLeft, Sun, Moon, X, Trash2, ChevronRight,
   MessageSquare, Star, Crown, QrCode, CalendarX, Camera
 } from 'lucide-react';
 import { useBarberStore } from '../store';
-import { FEATURES } from '../features';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,6 +16,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, allowedPages }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Set mobile browser bar color
   React.useEffect(() => {
     let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
     if (!meta) {
@@ -31,36 +31,29 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, allo
   const [showNotifs, setShowNotifs] = useState(false);
   const { logout, user, notifications, clearNotifications, markNotificationAsRead, theme, toggleTheme } = useBarberStore();
 
-  // ── Monta menu filtrando pelas feature flags ──────────────
   const ALL_MENU_ITEMS = [
-    { id: 'dashboard',     label: 'Dashboard',        icon: LayoutDashboard, feature: true },
-    { id: 'appointments',  label: 'Agenda Digital',    icon: Calendar,        feature: true },
-    { id: 'clients',       label: 'Membros',           icon: Users,           feature: true },
-    { id: 'professionals', label: 'Barbeiros',         icon: Briefcase,       feature: true },
-    { id: 'services',      label: 'Serviços',          icon: Scissors,        feature: true },
-    { id: 'loyalty',       label: 'Fidelidade',        icon: Star,            feature: true },
-    { id: 'subscriptions', label: 'Assinaturas',       icon: Crown,           feature: true },
-    // ── Feature: Clube de Benefícios ──────────────────────
-    { id: 'partners',      label: 'Parceiros',         icon: QrCode,          feature: FEATURES.clubeBeneficios },
-    // ── Feature: Controle de Agenda ───────────────────────
-    { id: 'schedule',      label: 'Controle Agenda',   icon: CalendarX,       feature: true },
-    { id: 'financial',     label: 'Fluxo de Caixa',    icon: DollarSign,      feature: true },
-    { id: 'suggestions',   label: 'Sugestões',         icon: MessageSquare,   feature: true },
-    // ── Feature: WhatsApp / Automações ────────────────────
-    { id: 'automacoes',    label: 'Automações',        icon: Zap,             feature: FEATURES.whatsapp },
-    // ── Feature: Inbox ────────────────────────────────────
-    { id: 'inbox',         label: 'Mensagens',         icon: MessageCircle,   feature: true },
-    { id: 'products',      label: 'Produtos',          icon: Package,         feature: true },
-    { id: 'staff',         label: 'Colaboradores',     icon: Users,           feature: true },
-    { id: 'galeria',       label: 'Galeria de Cortes', icon: Camera,          feature: true },
-    { id: 'settings',      label: 'Ajustes Master',    icon: Settings,        feature: true },
+    { id: 'dashboard',     label: 'Dashboard',        icon: LayoutDashboard },
+    { id: 'appointments',  label: 'Agenda Digital',    icon: Calendar },
+    { id: 'clients',       label: 'Membros',           icon: Users },
+    { id: 'professionals', label: 'Barbeiros',         icon: Briefcase },
+    { id: 'services',      label: 'Serviços',          icon: Scissors },
+    { id: 'loyalty',       label: 'Fidelidade',        icon: Star },
+    { id: 'subscriptions', label: 'Assinaturas',       icon: Crown },
+    { id: 'partners',      label: 'Parceiros',         icon: QrCode },
+    { id: 'schedule',      label: 'Controle Agenda',   icon: CalendarX },
+    { id: 'financial',     label: 'Fluxo de Caixa',    icon: DollarSign },
+    { id: 'suggestions',   label: 'Sugestões',         icon: MessageSquare },
+    { id: 'automacoes',    label: 'Automações',         icon: Zap },
+    { id: 'inbox',         label: 'Mensagens',         icon: MessageCircle },
+    { id: 'products',      label: 'Produtos',          icon: Package },
+    { id: 'staff',         label: 'Colaboradores',     icon: Users },
+    { id: 'galeria',       label: 'Galeria de Cortes', icon: Camera },
+    { id: 'settings',      label: 'Ajustes Master',    icon: Settings },
   ];
-
-  // Filtra: (1) feature flag, (2) allowedPages se modo staff, (3) 'staff' só para ADMIN
-  const menuItems = ALL_MENU_ITEMS
-    .filter(i => i.feature)                         // feature flag
-    .filter(i => allowedPages ? allowedPages.includes(i.id) : true)
-    .filter(i => i.id !== 'staff' ? true : user?.role === 'ADMIN');
+  // Filter by allowedPages if provided (staff mode), else show all except 'staff' which only ADMIN sees
+  const menuItems = allowedPages
+    ? ALL_MENU_ITEMS.filter(i => allowedPages.includes(i.id))
+    : ALL_MENU_ITEMS.filter(i => i.id !== 'staff' ? true : user?.role === 'ADMIN');
 
   return (
     <div className={`flex h-screen overflow-hidden ${theme === 'light' ? 'bg-zinc-50' : 'bg-[#050505]'}`}>
@@ -114,15 +107,6 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, allo
             })}
           </nav>
 
-          {/* Versão no rodapé da sidebar */}
-          {!isCollapsed && (
-            <div className={`px-6 pb-2 pt-1`}>
-              <span className={`text-[8px] font-black uppercase tracking-widest ${theme === 'light' ? 'text-zinc-400' : 'text-zinc-700'}`}>
-                {import.meta.env.VITE_APP_LABEL || 'Gestão Barbearia'}
-              </span>
-            </div>
-          )}
-
           <div className={`p-4 border-t ${theme === 'light' ? 'border-zinc-200' : 'border-white/5'}`}>
             <button onClick={logout} className={`w-full flex items-center gap-4 px-4 py-4 rounded-2xl transition-all ${theme === 'light' ? 'text-red-600 hover:bg-red-50' : 'text-red-500 hover:bg-red-500/10'}`}>
               <LogOut size={22} className="flex-shrink-0" />
@@ -144,6 +128,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, allo
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Botão de tema */}
 {/* Botão de tema ocultado */}
             
             <div className="relative">
@@ -158,7 +143,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, allo
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowNotifs(false)}></div>
                   <div className={`absolute right-0 mt-4 w-80 rounded-[2rem] shadow-2xl z-50 border overflow-hidden animate-in slide-in-from-top-2 ${theme === 'light' ? 'bg-white border-zinc-200' : 'bg-[#111111] border-white/10'}`}>
-                    <div className="p-6 border-b flex justify-between items-center bg-[#C58A4A]">
+                    <div className={`p-6 border-b flex justify-between items-center bg-[#C58A4A]`}>
                        <h3 className="text-xs font-black text-black uppercase">Notificações</h3>
                        <button onClick={clearNotifications} className="text-black/50 hover:text-black transition-colors"><Trash2 size={14}/></button>
                     </div>
