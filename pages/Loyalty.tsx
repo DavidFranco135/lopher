@@ -132,7 +132,7 @@ const Loyalty: React.FC = () => {
       {/* Métricas */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Cartões Ativos', value: stats.totalCards, icon: CreditCard, color: '#C58A4A' },
+          { label: 'Cartões Ativos', value: stats.totalCards, icon: CreditCard, color: '#24094f' },
           { label: 'Créditos em Circulação', value: `R$ ${stats.totalCredits.toFixed(2)}`, icon: Zap, color: '#10b981' },
           { label: 'Cortes Cortesia Dados', value: stats.totalFreeCutsUsed, icon: Gift, color: '#a855f7' },
           { label: 'Total de Selos', value: stats.totalStamps, icon: Star, color: '#3b82f6' },
@@ -153,7 +153,7 @@ const Loyalty: React.FC = () => {
           placeholder="Buscar cliente pelo nome ou telefone..."
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
-          className={`w-full border rounded-2xl py-4 pl-16 pr-8 text-sm focus:border-[#C58A4A]/50 outline-none font-bold ${theme === 'light' ? 'bg-zinc-50 border-zinc-300 text-zinc-900' : 'bg-white/[0.03] border-white/10 text-white'}`}
+          className={`w-full border rounded-2xl py-4 pl-16 pr-8 text-sm focus:border-[#24094f]/50 outline-none font-bold ${theme === 'light' ? 'bg-zinc-50 border-zinc-300 text-zinc-900' : 'bg-white/[0.03] border-white/10 text-white'}`}
         />
       </div>
 
@@ -170,10 +170,10 @@ const Loyalty: React.FC = () => {
           })
           .slice(0, 6)
           .map(client => (
-            <div key={client.id} className={`rounded-[2rem] p-6 border border-dashed cursor-pointer hover:border-[#C58A4A]/50 transition-all group ${theme === 'light' ? 'bg-zinc-50 border-zinc-300' : 'border-white/10 bg-white/[0.01]'}`}
+            <div key={client.id} className={`rounded-[2rem] p-6 border border-dashed cursor-pointer hover:border-[#24094f]/50 transition-all group ${theme === 'light' ? 'bg-zinc-50 border-zinc-300' : 'border-white/10 bg-white/[0.01]'}`}
               onClick={() => handleCreateCard(client.id)}>
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-[#C58A4A]/20 flex items-center justify-center font-black text-[#C58A4A] text-lg">
+                <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-[#24094f]/20 flex items-center justify-center font-black text-[#24094f] text-lg">
                   {client.name.charAt(0)}
                 </div>
                 <div>
@@ -181,7 +181,7 @@ const Loyalty: React.FC = () => {
                   <p className="text-[9px] text-zinc-500 font-bold uppercase">{client.phone}</p>
                 </div>
               </div>
-              <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest text-center py-3 group-hover:text-[#C58A4A] transition-colors">
+              <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest text-center py-3 group-hover:text-[#24094f] transition-colors">
                 + Criar Cartão Fidelidade
               </p>
             </div>
@@ -194,12 +194,12 @@ const Loyalty: React.FC = () => {
             <div
               key={card.id}
               onClick={() => { setSelectedClient(card.clientId); setShowManualModal(true); }}
-              className={`rounded-[2rem] p-6 border cursor-pointer hover:border-[#C58A4A]/50 transition-all group ${themeCard}`}
+              className={`rounded-[2rem] p-6 border cursor-pointer hover:border-[#24094f]/50 transition-all group ${themeCard}`}
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#C58A4A]/10 flex items-center justify-center font-black text-[#C58A4A] text-lg">
+                  <div className="w-12 h-12 rounded-2xl bg-[#24094f]/10 flex items-center justify-center font-black text-[#24094f] text-lg">
                     {card.client?.name?.charAt(0) || '?'}
                   </div>
                   <div>
@@ -210,7 +210,7 @@ const Loyalty: React.FC = () => {
                   </div>
                 </div>
                 {(card.freeCutsPending || 0) > 0 && (
-                  <span className="bg-[#C58A4A] text-black text-[9px] font-black px-3 py-1 rounded-full uppercase">
+                  <span className="bg-[#24094f] text-black text-[9px] font-black px-3 py-1 rounded-full uppercase">
                     {card.freeCutsPending}x Grátis!
                   </span>
                 )}
@@ -227,7 +227,7 @@ const Loyalty: React.FC = () => {
                     <div
                       key={i}
                       className={`h-5 rounded-md transition-all ${i < (card.stamps || 0)
-                        ? 'bg-[#C58A4A]'
+                        ? 'bg-[#24094f]'
                         : theme === 'light' ? 'bg-zinc-200' : 'bg-white/10'
                       }`}
                     />
@@ -235,7 +235,7 @@ const Loyalty: React.FC = () => {
                 </div>
                 <div className={`mt-1.5 h-1.5 rounded-full overflow-hidden ${theme === 'light' ? 'bg-zinc-200' : 'bg-white/10'}`}>
                   <div
-                    className="h-full bg-[#C58A4A] transition-all duration-500"
+                    className="h-full bg-[#24094f] transition-all duration-500"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -254,9 +254,9 @@ const Loyalty: React.FC = () => {
       {/* Modal de Ações Manuais */}
       {showManualModal && selectedCard && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/95 backdrop-blur-xl animate-in zoom-in-95">
-          <div className={`w-full max-w-md rounded-[3rem] p-10 space-y-8 border shadow-2xl ${theme === 'light' ? 'bg-white border-zinc-200' : 'cartao-vidro border-[#C58A4A]/20'}`}>
+          <div className={`w-full max-w-md rounded-[3rem] p-10 space-y-8 border shadow-2xl ${theme === 'light' ? 'bg-white border-zinc-200' : 'cartao-vidro border-[#24094f]/20'}`}>
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-[#C58A4A] text-black flex items-center justify-center text-2xl font-black">
+              <div className="w-14 h-14 rounded-2xl bg-[#24094f] text-black flex items-center justify-center text-2xl font-black">
                 {selectedCard.client?.name?.charAt(0)}
               </div>
               <div>
@@ -271,7 +271,7 @@ const Loyalty: React.FC = () => {
             <div className="grid grid-cols-3 gap-3">
               <div className={`p-4 rounded-2xl text-center ${theme === 'light' ? 'bg-zinc-50 border border-zinc-200' : 'bg-white/5 border border-white/5'}`}>
                 <p className="text-[8px] font-black uppercase text-zinc-500 mb-1">Selos</p>
-                <p className="text-xl font-black text-[#C58A4A]">{selectedCard.stamps || 0}<span className="text-xs">/{stampsForFreeCut}</span></p>
+                <p className="text-xl font-black text-[#24094f]">{selectedCard.stamps || 0}<span className="text-xs">/{stampsForFreeCut}</span></p>
               </div>
               <div className={`p-4 rounded-2xl text-center ${theme === 'light' ? 'bg-zinc-50 border border-zinc-200' : 'bg-white/5 border border-white/5'}`}>
                 <p className="text-[8px] font-black uppercase text-zinc-500 mb-1">Créditos</p>
@@ -288,7 +288,7 @@ const Loyalty: React.FC = () => {
               <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Ação</label>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { type: 'add_stamp' as const, label: '+ Selo', color: 'bg-[#C58A4A] text-black' },
+                  { type: 'add_stamp' as const, label: '+ Selo', color: 'bg-[#24094f] text-black' },
                   { type: 'add_credit' as const, label: '+ Crédito', color: 'bg-emerald-600 text-white' },
                   { type: 'remove_credit' as const, label: '- Crédito', color: 'bg-red-600 text-white' },
                   { type: 'use_free_cut' as const, label: 'Usar Corte Grátis', color: 'bg-purple-600 text-white' },
@@ -333,7 +333,7 @@ const Loyalty: React.FC = () => {
               </button>
               <button
                 onClick={handleSave}
-                className="flex-1 gradiente-ouro text-black py-4 rounded-2xl font-black uppercase text-[9px]"
+                className="flex-1 gradiente-ouro text-white py-4 rounded-2xl font-black uppercase text-[9px]"
               >
                 Confirmar
               </button>
